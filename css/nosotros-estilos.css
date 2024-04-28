@@ -1,0 +1,50 @@
+* {
+    box-sizing: border-box;
+}
+
+.miga {
+    margin: 10px;
+    font-size: 1.375em;
+    border-bottom: 5px dashed blueviolet;
+}
+
+.breadcrumb-item a {
+    color: black;
+    text-decoration: none;
+}
+
+.principal {
+    margin: 20px;
+    display: grid;
+    grid-template-columns: repeat(2, 40%);
+    column-gap: 20px;
+    place-content: center center;
+}
+
+.principal div {
+    font-size: 1.875em;
+    text-align: center;
+    font-weight: bold;
+}
+
+.imgGaleria {
+    width: 23.5em;
+    height: 13.6em;
+}
+
+.imgtexto {
+    width: 25em;
+    height: 20em;
+}
+
+.cabecera-menu {
+    height: 40px;
+    display: flex;
+    gap: 80px;
+    /* justify-content: center;
+    align-items: center; */
+}
+
+hr {
+    border: 0.20em solid blueviolet;
+}

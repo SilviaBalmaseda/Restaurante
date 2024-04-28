@@ -1,0 +1,118 @@
+* {
+    box-sizing: border-box;
+}
+
+.miga {
+    margin: 10px;
+    font-size: 1.375em;
+    border-bottom: 5px dashed blueviolet;
+}
+
+.breadcrumb-item a {
+    color: black;
+    text-decoration: none;
+}
+
+/* Formulario (main) */
+.formu {
+    border: 0.55em ridge blueviolet;
+    background-color: lightgrey;
+    font-size: 1.25em;
+    width: 75%;
+    margin: 1em auto;
+}
+
+.campos {
+    padding: 0.75em;
+    row-gap: 0.55em;
+}
+
+.botones {
+    text-align: center;
+    margin: 10px;
+}
+
+/* Para validar */
+.formu-input {
+    display: block;
+    margin: 5px;
+}
+
+.formu-input-fecha {
+    display: block;
+    margin: 5px;
+    color: white;
+}
+
+::placeholder {
+    color: white;
+}
+
+.formu-input:invalid {
+    background-color: red;
+}
+
+.formu-input:valid {
+    border: 3px solid greenyellow;
+}
+
+.formu-input-fecha:invalid {
+    background-color: red;
+}
+
+.formu-input-fecha.invalid {
+    background-color: red;
+}
+
+.formu-input-fecha.valid {
+    border: 3px solid greenyellow;
+    color: black;
+}
+
+#error-msg {
+    color: red;
+    font-size: 0.90em;
+}
+
+/* Mostrar el botón de enviar solo cuando el formulario es válido */
+#formulario input[type="submit"] {
+    display: none;
+}
+
+#formulario:valid input[type="submit"] {
+    display: inline-block;
+}
+
+/* Para la barra de progreso */
+.progress {
+    position: relative;/* Agregar posición relativa para el posicionamiento absoluto del texto */
+}
+
+.progress-text {
+    font-size: 0.938em;
+    font-weight: bold;
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.atras {
+    text-decoration: none;
+    color: white;
+}
+
+@media screen and (min-width: 992px) and (max-width: 1400px) {
+    .campos {
+        padding: 1em;
+        display: grid;
+        grid-template-columns: repeat(2, 50%);
+        grid-template-rows: repeat(5, 20%);
+        place-content: center center;
+        row-gap: 0.55em;
+    }
+}

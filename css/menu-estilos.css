@@ -1,0 +1,27 @@
+/* header */
+
+.miga {
+    margin: 0.30em;
+    font-size: 1.375em;
+    border-bottom: 5px dashed blueviolet;
+}
+
+.breadcrumb-item a {
+    color: black;
+    text-decoration: none;
+}
+
+/* main */
+.principalM section {
+    text-align: center;
+    font-size: 1.25em;
+}
+
+.principalM section div {
+    margin: 0.55em;
+}
+
+.imagenes {
+    width: 17em;
+    height: 12em
+}

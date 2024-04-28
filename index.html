@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <link href="https://fonts.googleapis.com/css?family=Righteous" rel="stylesheet" />
+
+    <!-- Para el símbolo para mostrar el menú -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" />
+    
+    <!-- Bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous" />
+
+    <!-- Locales -->
+    <link rel="stylesheet" href="css/normalize.css" />
+    <link rel="stylesheet" href="css/estilos.css" />
+    <link rel="icon" type="image/png" href="img/favicon.png" />
+
+    <title>Serendipia</title>
+</head>
+
+<body>
+    <header>
+        <nav class="cabecera">
+            <div class="cabecera-menu">
+                <a class="lang" key="inicio" href="index.html" title="Link para recargar la página">Inicio</a>
+            </div>
+
+            <div class="cabecera-menu">
+                <a class="lang" key="menu" href="menu.html" title="Link hacia el Menú">Menú</a>
+            </div>
+
+            <div class="cabecera-menu">
+                <a class="lang" key="formulario" href="formulario.html" title="Link hacia el formulario">Reservas</a>
+            </div>
+        </nav>
+
+        <div class="eslogan">
+            <img class="animacionLogo peque" src="img/favicon.png" alt="Logo de la página" />
+            <div class="lang" key="eslogan">Sentirse como en casa estando fuera</div>
+            <img class="animacionLogo peque" src="img/favicon.png" alt="Logo de la página" />
+        </div>
+    </header>
+
+    <main class="container text-center">
+        <!-- <div class="row justify-content-md-center principal">
+            <div class="col-md-auto">
+                <figure>
+                    <p>Cocina en directo</p>
+                    <img class="grande" src="img/imagenChef.jpg" alt="plato en directo" />
+                </figure>
+            </div>
+
+            <div class="col-md-auto">
+                <figure>
+                    <p>Especialidades</p>
+                    <img class="grande" src="img/pulpoGallega.jpg" alt="especialidad del día" />
+                </figure>
+            </div>
+
+            <div class="col-md-auto">
+                <figure>
+                    <p>Cocina en directo</p>
+                    <img class="grande" src="img/imagenChef.jpg" alt="plato en directo" />
+                </figure>
+            </div>
+        </div> -->
+        
+    </main>
+
+    <!-- Footer -->
+    <footer class="text-center text-lg-start text-white" style="background-color: black">
+        <section class="d-flex justify-content-center justify-content-lg-between p-4 border-bottom">
+            <div class="me-5 d-none d-lg-block">
+                <h4 class="lang" key="redesSociales">Nuestras redes sociales:</h4>
+            </div>
+
+            <div class="me-5">
+                <a href="https://www.instagram.com/" title="Link hacia Instagram">
+                    <img class="peque" itemprop="email" src="img/logoInsta.jfif" alt="icono del Instagram" />
+                </a>
+
+                <a href="https://twitter.com/?lang=es" title="Link hacia Twitter/X">
+                    <img class="peque bordeB" itemprop="telephone" src="img/logoTwitter.png" alt="icono Twitter/X" />
+                </a>
+
+                <a href="https://www.facebook.com/?locale=es_ES" title="Link hacia Facebook">
+                    <img class="peque" src="img/logoFace.png" alt="icono de Facebook" />
+                </a>
+            </div>
+        </section>
+
+        <section>
+            <div class="container text-center text-md-start mt-5">
+                <div class="row mt-3">
+                    <div class="col-md-3 col-lg-4 col-xl-3 mx-auto mb-4">
+                        <h6 class="text-uppercase fw-bold mb-4 lang" key="nosotros">
+                            <i class="fas fa-gem me-3"></i>Sobre Nosotros
+                        </h6>
+                    </div>
+
+                    <div class="col-md-2 col-lg-2 col-xl-2 mx-auto mb-4" itemscope itemtype="https://schema.org/Place">
+                        <h6 class="text-uppercase fw-bold mb-4 lang" key="ubicacion" itemprop="address">Ubicación</h6>
+                        <p>
+                            <a href="https://www.google.es/maps/preview" title="Link hacia la ubicacion">
+                                <img class="peque" itemprop="email" src="img/ubicacion.jpg" alt="icono de ubicacion" />
+                            </a>
+                        </p>
+                    </div>
+
+                    <div class="col-md- col-lg-3 col-xl-3 mx-auto mb-md-0 mb-4">
+                        <h6 class="text-uppercase fw-bold mb-4 lang" key="contacto">Contacto</h6>
+                        <div>
+                            <figure itemscope itemtype="https://schema.org/Reservation">
+                                <img class="peque" itemprop="email" src="img/contactoA.jpg"
+                                    alt="icono de arroba, para el email" />
+                                <i class="fas fa-envelope me-3">serendipia@gmail.com</i>
+                            </figure>
+                        </div>
+
+                        <div>
+                            <figure itemscope itemtype="https://schema.org/Place">
+                                <img class="peque" itemprop="telephone" src="img/contactoT.jpg"
+                                    alt="icono de un teléfono" />
+                                <i class="fas fa-phone me-3">654332211 // 965332211</i>
+                            </figure>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <div class="text-center p-4" style="background-color: rgba(255, 255, 255, 0.425)">
+            © 2024 Copyright:
+            <a class="text-reset fw-bold" href="indix.html" title="Link hacia la página de inicio">Serendipia</a>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
+        crossorigin="anonymous"></script>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    
+    <!-- mis scripts -->
+    <script type="module" src="js/miRestaurant.js"></script>
+</body>
+
+</html>
