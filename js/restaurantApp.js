@@ -1,10 +1,10 @@
-import RestaurantModel from "./restaurantModel.js";
+import RestaurantsModel, { Restaurant } from "./restaurantModel.js";
 import RestaurantController from "./restaurantController.js";
 import RestaurantView from "./restaurantView.js";
 
 const RestaurantApp = new RestaurantController(
-  RestaurantModel.getInstance(),
-  new RestaurantView()
+    RestaurantsModel.getInstance(),
+    new RestaurantView()
 );
 
 export default RestaurantApp;
