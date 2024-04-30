@@ -19,9 +19,9 @@ class RestaurantController {
         this[VIEW].init();
     };
 
-
     onLoad = () => {
         this[LOAD_RESTAURANT_OBJECTS]();
+        this[VIEW].showCategories(this[MODEL].categories);
     };
 
 
