@@ -27,56 +27,15 @@
     <header>
         <nav class="cabecera">
             <div class="cabecera-menu">
-                <a id="init" href="#" title="Link para recargar la página">Inicio</a>
+                <a class="lang" key="inicio" href="index.html" title="Link para recargar la página">Inicio</a>
             </div>
 
             <div class="cabecera-menu">
-                <div class="dropdown">
-                    <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                        <a href="#">Categorías</a>
-                    </button>
-                    <!-- Categorías -->
-                    <ul id="categories" data-type="list" class="dropdown-menu">
-
-                    </ul>
-                </div>
+                <a class="lang" key="menu" href="menu.html" title="Link hacia el Menú">Menú</a>
             </div>
 
             <div class="cabecera-menu">
-                <div class="dropdown">
-                    <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                        <a href="#">Alérgenos</a>
-                    </button>
-                    <!-- Alérgenos -->
-                    <ul id="allergens" data-type="list" class="dropdown-menu">
-
-                    </ul>
-                </div>
-            </div>
-
-            <div class="cabecera-menu">
-                <div class="dropdown">
-                    <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                        <a href="#">Menús</a>
-                    </button>
-                    <!-- Menús -->
-                    <ul id="menus" data-type="list" class="dropdown-menu">
-
-                    </ul>
-                </div>
-            </div>
-
-
-            <div class="cabecera-menu">
-                <div class="dropdown">
-                    <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                        <a href="#">Restaurantes</a>
-                    </button>
-                    <!-- Restaurantes -->
-                    <ul id="restaurants" data-type="list" class="dropdown-menu">
-
-                    </ul>
-                </div>
+                <a class="lang" key="formulario" href="formulario.html" title="Link hacia el formulario">Reservas</a>
             </div>
         </nav>
 
@@ -87,16 +46,30 @@
         </div>
     </header>
 
-    <main class="principalM">
+    <main class="container text-center">
+        <!-- <div class="row justify-content-md-center principal">
+            <div class="col-md-auto">
+                <figure>
+                    <p>Cocina en directo</p>
+                    <img class="grande" src="img/imagenChef.jpg" alt="plato en directo" />
+                </figure>
+            </div>
 
-        <section id="categoriesMain" data-type="list" class="row justify-content-md-center principal">
+            <div class="col-md-auto">
+                <figure>
+                    <p>Especialidades</p>
+                    <img class="grande" src="img/pulpoGallega.jpg" alt="especialidad del día" />
+                </figure>
+            </div>
 
-        </section>
-
-        <div id="random" class="row justify-content-md-center principal">
-
-        </div>
-
+            <div class="col-md-auto">
+                <figure>
+                    <p>Cocina en directo</p>
+                    <img class="grande" src="img/imagenChef.jpg" alt="plato en directo" />
+                </figure>
+            </div>
+        </div> -->
+        
     </main>
 
     <!-- Footer -->
@@ -175,7 +148,6 @@
 
     <!-- mis scripts -->
     <script type="module" src="js/miRestaurant.js"></script>
-
 </body>
 
 </html>
