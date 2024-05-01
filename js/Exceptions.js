@@ -26,12 +26,38 @@ class EmptyValueException extends BaseException {
     }
 }
 
+//Excepciones de validación de parámetros. Reutilizables en todas las clases
+class ParameterValidationException extends BaseException {
+    constructor(param, fileName, lineNumber) {
+        super("Error: The parameter " + param + " is invalid.", fileName, lineNumber);
+        this.param = param;
+        this.name = "ParameterValidationException";
+    }
+}
+
 //Excepción de valor inválido
 class InvalidValueException extends BaseException {
     constructor(param, value, fileName, lineNumber) {
         super(`Error: The paramenter ${param} has an invalid value. (${param}: ${value})`, fileName, lineNumber);
         this.param = param;
         this.name = "InvalidValueException";
+    }
+}
+
+//Excepción personalizada para clases abstractas.
+class AbstractClassException extends BaseException {
+    constructor(className, fileName, lineNumber) {
+        super(`Error: The class  ${className} is abstract.`, fileName, lineNumber);
+        this.className = className;
+        this.name = "AbstractClassException";
+    }
+}
+
+// Excepción personalizada para indicar fuera de límite.
+class PositionOutBoundsException extends BaseException {
+    constructor(fileName, lineNumber) {
+        super(`Error: The position is out of limit.`, fileName, lineNumber);
+        this.name = "PositionOutBoundsException";
     }
 }
 
@@ -67,53 +93,16 @@ class NullObjectException extends BaseException {
     }
 }
 
-//
-
-//Excepciones de validación de parámetros. Reutilizables en todas las clases.
-class ParameterValidationException extends BaseException {
-    constructor(param, fileName, lineNumber) {
-        super("Error: The parameter " + param + " is invalid.", fileName, lineNumber);
-        this.param = param;
-        this.name = "ParameterValidationException";
-    }
-}
-
-//Excepción personalizada para clases abstractas. 
-class AbstractClassException extends BaseException {
-    constructor(className, fileName, lineNumber) {
-        super(`Error: The class  ${className} is abstract.`, fileName, lineNumber);
-        this.className = className;
-        this.name = "AbstractClassException";
-    }
-}
-
-// Excepción personalizada para indicar fuera de límite.
-class PositionOutBoundsException extends BaseException {
-    constructor(fileName, lineNumber) {
-        super(`Error: The position is out of limit.`, fileName, lineNumber);
-        this.name = "PositionOutBoundsException";
-    }
-}
-
-// Excepción personalizada para indicar que no se encontro el Objeto.
-class NotFoundObjectException extends BaseException {
-    constructor(object, fileName, lineNumber) {
-        super(`Error: The object ${object} not found.`, fileName, lineNumber);
-        this.name = "NotFoundObjectException";
-    }
-}
-
 export {
     BaseException,
     InvalidAccessConstructorException,
     EmptyValueException,
+    ParameterValidationException,
     InvalidValueException,
+    AbstractClassException,
+    PositionOutBoundsException,
     ObjectException,
     ExistsObjectException,
     RegisteredException,
-    NullObjectException,
-    ParameterValidationException, 
-    AbstractClassException, 
-    PositionOutBoundsException, 
-    NotFoundObjectException 
+    NullObjectException
 };

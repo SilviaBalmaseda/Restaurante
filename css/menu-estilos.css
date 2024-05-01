@@ -19,6 +19,7 @@
 
 .principalM section div {
     margin: 0.55em;
+    border-bottom: 1px solid black;
 }
 
 .imagenes {

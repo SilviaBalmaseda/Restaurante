@@ -12,7 +12,8 @@ const nombre = /^[a-zA-ZáéíóúÁÉÍÓÚüÜñÑ]+(?: [a-zA-ZáéíóúÁÉ�
 const descripcion = /^[a-zA-ZáéíóúÁÉÍÓÚüÜñÑ0-9.,:;'"()¿?¡!\-_\s]+$/;
 
 // Expresión para un String con la ruta donde está ubicada una imagen(image).
-const ruta = /^.*\.(jpg|jpeg|png|gif|bmp)$/;
+const ruta = /^.*\.(jpg|jpeg|png|gif|bmp|webp)$/;
+
 
 class Dish {
     #name;
@@ -64,9 +65,9 @@ class Dish {
         return this.#description;
     }
     set description(value) {
-        if (description === 'undefined' || description === '') throw new EmptyValueException("description");
-        if (descripcion.test(description) !== true)
-            throw new InvalidValueException("description", description);
+        if (value === 'undefined' || value === '') throw new EmptyValueException("description");
+        if (descripcion.test(value) !== true)
+            throw new InvalidValueException("description", value);
         this.#description = value;
     }
 
@@ -74,7 +75,7 @@ class Dish {
         return this.#ingredients;
     }
     set ingredients(value) {
-        if (ingredients === 'undefined' || ingredients === '') throw new EmptyValueException("ingredients");
+        if (value === 'undefined' || value === '') throw new EmptyValueException("ingredients");
         if (!(Array.isArray(value))) throw EmptyValueException("ingredients");
 
         this.#ingredients = value;
@@ -132,9 +133,9 @@ class Category {
         return this.#description;
     }
     set description(value) {
-        if (description === 'undefined' || description === '') throw new EmptyValueException("description");
-        if (descripcion.test(description) !== true)
-            throw new InvalidValueException("description", description);
+        if (value === 'undefined' || value === '') throw new EmptyValueException("description");
+        if (descripcion.test(value) !== true)
+            throw new InvalidValueException("description", value);
         this.#description = value;
     }
 
@@ -179,9 +180,9 @@ class Allergen {
         return this.#description;
     }
     set description(value) {
-        if (description === 'undefined' || description === '') throw new EmptyValueException("description");
-        if (descripcion.test(description) !== true)
-            throw new InvalidValueException("description", description);
+        if (value === 'undefined' || value === '') throw new EmptyValueException("description");
+        if (descripcion.test(value) !== true)
+            throw new InvalidValueException("description", value);
         this.#description = value;
     }
 
@@ -226,9 +227,9 @@ class Menu {
         return this.#description;
     }
     set description(value) {
-        if (description === 'undefined' || description === '') throw new EmptyValueException("description");
-        if (descripcion.test(description) !== true)
-            throw new InvalidValueException("description", description);
+        if (value === 'undefined' || value === '') throw new EmptyValueException("description");
+        if (descripcion.test(value) !== true)
+            throw new InvalidValueException("description", value);
         this.#description = value;
     }
 
@@ -290,8 +291,6 @@ class Restaurant {
         if (!new.target) throw new InvalidAccessConstructorException();
 
         if (name === 'undefined' || name === '' || !name) throw new EmptyValueException("name");
-        if (nombre.test(name) !== true)
-            throw new InvalidValueException("name", name);
 
         // No son obligatorias.
         if (description) {
@@ -314,8 +313,6 @@ class Restaurant {
     }
     set name(value) {
         if (value === 'undefined' || value === '' || !value) throw new EmptyValueException("name");
-        if (nombre.test(value) !== true)
-            throw new InvalidValueException("name", value);
         this.#name = value;
     }
 
@@ -323,9 +320,9 @@ class Restaurant {
         return this.#description;
     }
     set description(value) {
-        if (description === 'undefined' || description === '') throw new EmptyValueException("description");
-        if (descripcion.test(description) !== true)
-            throw new InvalidValueException("description", description);
+        if (value === 'undefined' || value === '') throw new EmptyValueException("description");
+        if (descripcion.test(value) !== true)
+            throw new InvalidValueException("description", value);
         this.#description = value;
     }
 
@@ -333,7 +330,7 @@ class Restaurant {
         return this.#location;
     }
     set location(value) {
-        if (location instanceof Coordinate) throw new InvalidValueException("location", location);
+        if (value instanceof Coordinate) throw new InvalidValueException("location", location);
         this.#location = value;
     }
 

@@ -1,1 +1,1 @@
-import RestaurantApp from "./restaurantApp";
+import RestaurantApp from "./restaurantApp.js";

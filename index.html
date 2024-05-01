@@ -9,7 +9,7 @@
 
     <!-- Para el símbolo para mostrar el menú -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" />
-    
+
     <!-- Bootstrap -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous" />
@@ -17,6 +17,7 @@
     <!-- Locales -->
     <link rel="stylesheet" href="css/normalize.css" />
     <link rel="stylesheet" href="css/estilos.css" />
+    <link rel="stylesheet" href="css/menu-estilos.css" />
     <link rel="icon" type="image/png" href="img/favicon.png" />
 
     <title>Serendipia</title>
@@ -26,56 +27,83 @@
     <header>
         <nav class="cabecera">
             <div class="cabecera-menu">
-                <a class="lang" key="inicio" href="index.html" title="Link para recargar la página">Inicio</a>
+                <a id="init" href="#" title="Link para recargar la página">Inicio</a>
             </div>
 
             <div class="cabecera-menu">
-                <a class="lang" key="menu" href="menu.html" title="Link hacia el Menú">Menú</a>
+                <div class="dropdown">
+                    <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        <a href="#">Categorías</a>
+                    </button>
+                    <!-- Categorías -->
+                    <ul id="categories" data-type="list" class="dropdown-menu">
+
+                    </ul>
+                </div>
             </div>
 
             <div class="cabecera-menu">
-                <a class="lang" key="formulario" href="formulario.html" title="Link hacia el formulario">Reservas</a>
+                <div class="dropdown">
+                    <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        <a href="#">Alérgenos</a>
+                    </button>
+                    <!-- Alérgenos -->
+                    <ul id="allergens" data-type="list" class="dropdown-menu">
+
+                    </ul>
+                </div>
+            </div>
+
+            <div class="cabecera-menu">
+                <div class="dropdown">
+                    <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        <a href="#">Menús</a>
+                    </button>
+                    <!-- Menús -->
+                    <ul id="menus" data-type="list" class="dropdown-menu">
+
+                    </ul>
+                </div>
+            </div>
+
+
+            <div class="cabecera-menu">
+                <div class="dropdown">
+                    <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        <a href="#">Restaurantes</a>
+                    </button>
+                    <!-- Restaurantes -->
+                    <ul id="restaurants" data-type="list" class="dropdown-menu">
+
+                    </ul>
+                </div>
             </div>
         </nav>
 
         <div class="eslogan">
             <img class="animacionLogo peque" src="img/favicon.png" alt="Logo de la página" />
-            <div class="lang" key="eslogan">Sentirse como en casa estando fuera</div>
+            <div>Sentirse como en casa estando fuera</div>
             <img class="animacionLogo peque" src="img/favicon.png" alt="Logo de la página" />
         </div>
     </header>
 
-    <main class="container text-center">
-        <!-- <div class="row justify-content-md-center principal">
-            <div class="col-md-auto">
-                <figure>
-                    <p>Cocina en directo</p>
-                    <img class="grande" src="img/imagenChef.jpg" alt="plato en directo" />
-                </figure>
-            </div>
+    <main class="principalM">
 
-            <div class="col-md-auto">
-                <figure>
-                    <p>Especialidades</p>
-                    <img class="grande" src="img/pulpoGallega.jpg" alt="especialidad del día" />
-                </figure>
-            </div>
+        <section id="categoriesMain" data-type="list" class="row justify-content-md-center principal">
 
-            <div class="col-md-auto">
-                <figure>
-                    <p>Cocina en directo</p>
-                    <img class="grande" src="img/imagenChef.jpg" alt="plato en directo" />
-                </figure>
-            </div>
-        </div> -->
-        
+        </section>
+
+        <div id="random" class="row justify-content-md-center principal">
+
+        </div>
+
     </main>
 
     <!-- Footer -->
     <footer class="text-center text-lg-start text-white" style="background-color: black">
         <section class="d-flex justify-content-center justify-content-lg-between p-4 border-bottom">
             <div class="me-5 d-none d-lg-block">
-                <h4 class="lang" key="redesSociales">Nuestras redes sociales:</h4>
+                <h4>Nuestras redes sociales:</h4>
             </div>
 
             <div class="me-5">
@@ -97,13 +125,13 @@
             <div class="container text-center text-md-start mt-5">
                 <div class="row mt-3">
                     <div class="col-md-3 col-lg-4 col-xl-3 mx-auto mb-4">
-                        <h6 class="text-uppercase fw-bold mb-4 lang" key="nosotros">
+                        <h6 class="text-uppercase fw-bold mb-4">
                             <i class="fas fa-gem me-3"></i>Sobre Nosotros
                         </h6>
                     </div>
 
                     <div class="col-md-2 col-lg-2 col-xl-2 mx-auto mb-4" itemscope itemtype="https://schema.org/Place">
-                        <h6 class="text-uppercase fw-bold mb-4 lang" key="ubicacion" itemprop="address">Ubicación</h6>
+                        <h6 class="text-uppercase fw-bold mb-4" itemprop="address">Ubicación</h6>
                         <p>
                             <a href="https://www.google.es/maps/preview" title="Link hacia la ubicacion">
                                 <img class="peque" itemprop="email" src="img/ubicacion.jpg" alt="icono de ubicacion" />
@@ -112,7 +140,7 @@
                     </div>
 
                     <div class="col-md- col-lg-3 col-xl-3 mx-auto mb-md-0 mb-4">
-                        <h6 class="text-uppercase fw-bold mb-4 lang" key="contacto">Contacto</h6>
+                        <h6 class="text-uppercase fw-bold mb-4">Contacto</h6>
                         <div>
                             <figure itemscope itemtype="https://schema.org/Reservation">
                                 <img class="peque" itemprop="email" src="img/contactoA.jpg"
@@ -135,7 +163,7 @@
 
         <div class="text-center p-4" style="background-color: rgba(255, 255, 255, 0.425)">
             © 2024 Copyright:
-            <a class="text-reset fw-bold" href="indix.html" title="Link hacia la página de inicio">Serendipia</a>
+            <a id="init" class="text-reset fw-bold" href="#" title="Link hacia la página de inicio">Serendipia</a>
         </div>
     </footer>
 
@@ -144,9 +172,10 @@
         crossorigin="anonymous"></script>
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-    
+
     <!-- mis scripts -->
     <script type="module" src="js/miRestaurant.js"></script>
+
 </body>
 
 </html>

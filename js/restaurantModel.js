@@ -1,6 +1,8 @@
 "use strict";
 import {
     InvalidAccessConstructorException,
+    EmptyValueException,
+    InvalidValueException,
     ObjectException,
     ExistsObjectException,
     RegisteredException,
@@ -8,13 +10,12 @@ import {
 } from './exceptions.js';
 import { Dish, Category, Allergen, Menu, Coordinate, Restaurant } from './objectsRestaurants.js';
 
-let RestaurantModel = (function () {
-    let instantiated; // Objeto con la instancia única Restaurant.
+let RestaurantsModel = (function () {
+    let instantiated; // Objeto con la instancia única RestaurantsModel.
 
     function init() { // Inicialización del Singleton.
-
-        // Declaración de la clase Restaurant.
-        class Restaurant {
+        // Declaración de la clase RestaurantsModel.
+        class RestaurantsModel {
             #systemName = "Anonimous";
             // Colección de categorías de platos. Los platos pueden pertenecer a más de una categoría.
             #categories;
@@ -39,29 +40,36 @@ let RestaurantModel = (function () {
 
             // Devuelve un iterador que permite recorrer las categorías del sistema.
             *getCategories() {
-                for (let cat of this.#categories) {
+                for (let cat of this.#categories.values()) {
                     yield cat;
                 }
             }
 
             // Devuelve un iterador que permite recorrer los menus del sistema.
             *getMenus() {
-                for (let men of this.#menus) {
+                for (let men of this.#menus.values()) {
                     yield men;
                 }
             }
 
             // Devuelve un iterador que permite recorrer los alérgenos del sistema.
             *getAllergens() {
-                for (let all of this.#allergens) {
+                for (let all of this.#allergens.values()) {
                     yield all;
                 }
             }
 
             // Devuelve un iterador que permite recorrer los restaurantes del sistema.
             *getRestaurants() {
-                for (let res of this.#restaurants) {
+                for (let res of this.#restaurants.values()) {
                     yield res;
+                }
+            }
+
+            // Devuelve un iterador que permite recorrer los platos del sistema.
+            *getDishes() {
+                for (let dis of this.#dishes.values()) {
+                    yield dis;
                 }
             }
 
@@ -377,101 +385,65 @@ let RestaurantModel = (function () {
                 // Menu no puede ser NULL.
                 if (men === undefined) throw new NullObjectException();
                 if (!(men instanceof Menu)) throw new ObjectException("Menu");
-                
+
                 // Dish no puede ser NULL.
                 if (dis1 === undefined || dis2 === undefined) throw new NullObjectException();
                 if (!(dis1 instanceof Dish) || !(dis2 instanceof Dish)) throw new ObjectException("Dish");
-            
-                // Recorremos los menus.
-                this.#menus.entries().forEach(([key, value]) => {
-                    // Entramos en el menu pasado por parámetro.
-                    if (value.elem === men) {
-                        // Guardamos el objeto.
-                        let pos1 = value.dishes.get(dis1.name);
-                        let pos2 = value.dishes.get(dis2.name);
 
-                        this.deassignDishToMenu(pos1, men);
-                        this.deassignDishToMenu(pos2, men);
+                let array = this.#menus.get(men.name).dishes;
+                let pos1 = array.findIndex((x) => x.name === dis1.name);
 
-                        this.assignDishToMenu(pos2, men);
-                        this.assignDishToMenu(pos1, men);
-                        // Lo pone al final del todo.
-                    }
-                });
+                // let arrayD = this.#menus.get(menu.name).dishes;
+                // let pos1 = arrayD.findIndex((x) => x.name === dish1.name);
+                // let pos2 = arrayD.findIndex((x) => x.name === dish2.name);
+
+                // if (pos1 !== -1 && pos2 !== -1) {
+                //   let temp = arrayD[pos1];
+                //   arrayD[pos1] = arrayD[pos2];
+                //   arrayD[pos2] = temp;
+                // } else {
+                //   throw new NotAssignedException();
+                // }
             }
 
             // Obtiene un iterador con la relación de los platos a una categoría. 
-            *getDishesInCategory(cat, func) {
+            // El iterador puede estar ordenado.
+            getDishesInCategory(cat, func) {
                 // Category es null.
                 if (cat === undefined) throw new NullObjectException();
-                
-                let array = [];
+                // Category no está registrado
+                if (!this.#dishes.has(cat.name)) throw new RegisteredException(cat.name);
 
-                // Recorremos los platos.
-                this.#dishes.entries().forEach(([key, value]) => {
-                    if (value.elem === cat) {
-                        // Category no está registrado
-                        if (!value.categories.has(cat.name)) throw new RegisteredException(cat.name);
-                        // Recorremos las categorías.
-                        value.categories.entries().forEach(([keyC, valueC]) => {
-                            if (valueC === cat) {
-                                // Añadir el plato al array.
-                                array.push(value.elem);
-                            }
-                        });
-                    }
-                });
 
-                // El iterador puede estar ordenado.
-                if (func instanceof Function) {
-                    array.sort(func);
-                }
 
-                // Iterador.
-                for (let diss of array) {
-                    yield diss;
-                }
             }
 
             // Obtiene un iterador con los platos que tiene un determinado alérgeno. 
-            *getDishesWithAllergen(all, func) {
+            // El iterador puede estar ordenado
+            getDishesWithAllergen(all, func) {
                 // Allergen es null.
                 if (all === undefined) throw new NullObjectException();
-
-                let array = [];
-                
-                // Recorremos los platos.
+                // Allergen no está registrado
+                // if (!this.#dishes.has(all.name)) throw new RegisteredException(all.name);
+                console.log(all);
                 this.#dishes.entries().forEach(([key, value]) => {
-                    if (value.elem === all) {
-                        // Allergen no está registrado
-                        if (!value.allergens.has(all.name)) throw new RegisteredException(all.name);
-                        // Recorremos los alérgenos.
-                        value.allergens.entries().forEach(([keyA, valueA]) => {
-                            if (valueA === all) {
-                                // Añadir el plato al array.
-                                array.push(value.elem);
-                            }
-                        });
-                    }
+                    value.allergens.entries().forEach(([keyA, valueA]) => {
+                        if (valueA === all) {
+                            console.log(value.elem);
+                            // Devolver el iterador.
+                        }
+                    });
                 });
 
-                // El iterador puede estar ordenado.
-                if (func instanceof Function) {
-                    array.sort(func);
-                }
-
-                // Iterador.
-                for (let diss of array) {
-                    yield diss;
-                }
             }
+
 
             // Obtiene un iterador que cumpla un criterio concreto en base a una función de callback.
             *findDishes(criterion, ordered) {
                 let array = []; // Variable para ordenar los datos.
 
                 // Si coincide con el criterio pasado, se añade al array.
-                for (const d of this.#dishes.values()){
+                for (const d of this.#dishes.values()) {
                     // Dish no puede ser NULL.
                     if (d.elem === undefined) throw new NullObjectException();
 
@@ -480,7 +452,7 @@ let RestaurantModel = (function () {
 
                     if (criterion(d.elem)) array.push(d.elem);
                 }
-               
+
                 // El iterador puede estar ordenado.
                 if (ordered) {
                     array.sort(ordered);
@@ -550,7 +522,7 @@ let RestaurantModel = (function () {
 
         }
 
-        let instance = new RestaurantModel();// Devolvemos el objeto RestaurantModel para que sea una instancia única.
+        let instance = new RestaurantsModel();// Devolvemos el objeto RestaurantsModel para que sea una instancia única.
         Object.freeze(instance);
         return instance;
     } // Fin inicialización del Singleton.
@@ -566,5 +538,10 @@ let RestaurantModel = (function () {
     };
 })();
 
+export {
+    InvalidAccessConstructorException,
+    EmptyValueException,
+    InvalidValueException
+};
 export { Dish, Category, Allergen, Menu, Coordinate, Restaurant };
-export default RestaurantModel;
+export default RestaurantsModel;
