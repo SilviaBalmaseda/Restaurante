@@ -16,7 +16,7 @@ class RestaurantController {
     }
 
     onInit = () => {
-        // this[VIEW].init();
+        this[VIEW].init();
     };
 
     onLoad = () => {
@@ -26,11 +26,19 @@ class RestaurantController {
         this[VIEW].showAllergens(this[MODEL].getAllergens());
         this[VIEW].showMenus(this[MODEL].getMenus());
         this[VIEW].showRestaurants(this[MODEL].getRestaurants());
-        this[VIEW].ShowRandomDishes(this[MODEL].getDishes());
+        this[VIEW].showRandomDishes(this[MODEL].getDishes());
+
+        this[VIEW].showThatCategories(this[MODEL].getCategories(), this[MODEL].getDishes());
     };
 
     handleInit = () => {
         this.onInit();
+    };
+
+    handleProductsCategoryList = (title) => {
+        const category = this[MODEL].getCategory(title);
+        this[VIEW].listProducts(this[MODEL].getCategoryProducts(category), category.title);
+        this[VIEW].bindShowProduct(this.handleShowProduct);
     };
 
     [LOAD_RESTAURANT_OBJECTS]() {

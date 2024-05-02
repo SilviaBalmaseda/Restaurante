@@ -1,5 +1,6 @@
 class RestaurantView {
   constructor() {
+    this.breadcrumb = document.getElementById("breadcrumb");
     this.main = document.getElementsByTagName("main")[0];
     this.categories = document.getElementById("categories");
     this.categoriesMain = document.getElementById("categoriesMain");
@@ -10,7 +11,24 @@ class RestaurantView {
   }
 
   init() {
-    
+    // Migas de pan.
+    this.breadcrumb.replaceChildren();
+    this.breadcrumb.insertAdjacentHTML("beforeend",
+      `<li class="breadcrumb-item">
+            <a id="init" href="#">Inicio</a>
+       </li>`
+    );
+  }
+
+  showCategoriesMain(cats) {
+    this.categoriesMain.replaceChildren();
+    for (const category of cats) {
+      this.categoriesMain.insertAdjacentHTML("beforeend",
+        `<button id="btnCategory" class="col-md-auto">
+          <a id="cat-${category.name}" class="dropdown-item">${category.name}</a>
+        </button>`
+      );
+    }
   }
 
   // Desplegables.
@@ -18,22 +36,11 @@ class RestaurantView {
   showCategories(cats) {
     this.categories.replaceChildren();
     for (const category of cats) {
-        this.categories.insertAdjacentHTML(
+      this.categories.insertAdjacentHTML(
         "beforeend",
         `<li>
-            <a class="dropdown-item">${category.name}</a>
+            <a class="dropdown-item" id="cat-${category.name}">${category.name}</a>
         </li>`
-      );
-    }
-  }
-
-  showCategoriesMain(cats) {
-    this.categoriesMain.replaceChildren();
-    for (const category of cats) {
-        this.categoriesMain.insertAdjacentHTML("beforeend",
-        `<div class="col-md-auto">
-          <a class="dropdown-item">${category.name}</a>
-        </div>`
       );
     }
   }
@@ -41,10 +48,10 @@ class RestaurantView {
   showAllergens(alls) {
     this.allergens.replaceChildren();
     for (const allergen of alls) {
-        this.allergens.insertAdjacentHTML(
+      this.allergens.insertAdjacentHTML(
         "beforeend",
         `<li>
-            <a class="dropdown-item">${allergen.name}</a>
+            <a class="dropdown-item" id="all-${allergen.name}">${allergen.name}</a>
         </li>`
       );
     }
@@ -53,10 +60,10 @@ class RestaurantView {
   showMenus(mens) {
     this.menus.replaceChildren();
     for (const men of mens) {
-        this.menus.insertAdjacentHTML(
+      this.menus.insertAdjacentHTML(
         "beforeend",
         `<li>
-            <a class="dropdown-item">${men.elem.name}</a>
+            <a class="dropdown-item" id="men-${men.name}">${men.elem.name}</a>
         </li>`
       );
     }
@@ -65,16 +72,17 @@ class RestaurantView {
   showRestaurants(rests) {
     this.restaurants.replaceChildren();
     for (const rest of rests) {
-        this.restaurants.insertAdjacentHTML(
+      this.restaurants.insertAdjacentHTML(
         "beforeend",
         `<li>
-            <a class="dropdown-item">${rest.name}</a>
+            <a class="dropdown-item" id="res-${rest.name}">${rest.name}</a>
         </li>`
       );
     }
   }
 
-  ShowRandomDishes(dishes) {
+  // Mostrar 3 platos random.
+  showRandomDishes(dishes) {
     this.random.replaceChildren();
 
     const array = Array.from(dishes); // Guardamos en un array.
@@ -92,9 +100,43 @@ class RestaurantView {
     }
   }
 
+  showThatCategories(cats, dishes) {
+
+    // for (const category of cats) {
+
+    document.getElementById("cat-Estrella").addEventListener("click", () => {
+
+      // Migas de pan.
+      this.breadcrumb.insertAdjacentHTML("beforeend",
+        `<li class="breadcrumb-item">
+            <a href="#">${category.name}</a>
+          </li>`
+      );
+
+      console.log("aaaaaaaaaaaaaaaa");
+      // 
+
+      this.main.replaceChildren();
+      this.main.insertAdjacentHTML("beforeend",
+        `<div class="col-md-auto">
+            <a class="dropdown-item" id="cat-${category.name}">${category.name}</a>
+          </div>`
+      );
+    });
+
+
+    // }
+
+  }
+
   // Métodos bind.
   bindInit(handler) {
-    document.getElementById("init").addEventListener("click", (event) => {
+    // Les pone el enlace a los de inicio.
+    document.querySelectorAll('#init').forEach(function (init) {
+      init.setAttribute('href', 'index.html');
+    });
+
+    document.getElementById('init').addEventListener("click", (event) => {
       handler();
     });
   }
@@ -103,6 +145,6 @@ class RestaurantView {
   getRandom(max) {
     return Math.floor(Math.random() * max);
   }
-  
+
 }
 export default RestaurantView;
