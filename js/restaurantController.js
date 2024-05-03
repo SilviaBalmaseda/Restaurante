@@ -28,17 +28,15 @@ class RestaurantController {
         this[VIEW].showRestaurants(this[MODEL].getRestaurants());
         this[VIEW].showRandomDishes(this[MODEL].getDishes());
 
-        this[VIEW].showThatCategories(this[MODEL].getCategories(), this[MODEL].getDishes());
+        // Almacenar los platos en un array.
+        const dishes = [...this[MODEL].getDishes()];
+        this[VIEW].showThatCategories(this[MODEL].getCategories(), dishes);
+
+        // this[VIEW].showThatCategories(this[MODEL].getCategories(), this[MODEL].getDishes());
     };
 
     handleInit = () => {
         this.onInit();
-    };
-
-    handleProductsCategoryList = (title) => {
-        const category = this[MODEL].getCategory(title);
-        this[VIEW].listProducts(this[MODEL].getCategoryProducts(category), category.title);
-        this[VIEW].bindShowProduct(this.handleShowProduct);
     };
 
     [LOAD_RESTAURANT_OBJECTS]() {

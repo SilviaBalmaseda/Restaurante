@@ -3,15 +3,20 @@ class RestaurantView {
     this.breadcrumb = document.getElementById("breadcrumb");
     this.main = document.getElementsByTagName("main")[0];
     this.categories = document.getElementById("categories");
-    this.categoriesMain = document.getElementById("categoriesMain");
+    this.categoryArea = document.getElementById("categoryArea");
     this.allergens = document.getElementById("allergens");
     this.menus = document.getElementById("menus");
     this.restaurants = document.getElementById("restaurants");
-    this.random = document.getElementById("random");
+    this.mainArea = document.getElementById("mainArea");
   }
 
   init() {
     // Migas de pan.
+    this.showBreadcrumb();
+  }
+
+  // Migas de pan.
+  showBreadcrumb() {
     this.breadcrumb.replaceChildren();
     this.breadcrumb.insertAdjacentHTML("beforeend",
       `<li class="breadcrumb-item">
@@ -20,13 +25,14 @@ class RestaurantView {
     );
   }
 
+  // Mostrar categorías en el main.
   showCategoriesMain(cats) {
-    this.categoriesMain.replaceChildren();
+    this.categoryArea.replaceChildren();
     for (const category of cats) {
-      this.categoriesMain.insertAdjacentHTML("beforeend",
-        `<button id="btnCategory" class="col-md-auto">
-          <a id="cat-${category.name}" class="dropdown-item">${category.name}</a>
-        </button>`
+      this.categoryArea.insertAdjacentHTML("beforeend",
+        `<div class="col-md-auto">
+          <a id="cat-${category.name}" href="#">${category.name}</a>
+        </div>`
       );
     }
   }
@@ -83,15 +89,15 @@ class RestaurantView {
 
   // Mostrar 3 platos random.
   showRandomDishes(dishes) {
-    this.random.replaceChildren();
+    this.mainArea.replaceChildren();
 
     const array = Array.from(dishes); // Guardamos en un array.
     for (let index = 0; index < 3; index++) {
       // Para no repetir el plato le borramos.
       let diss = array.splice(this.getRandom(array.length), 1);
 
-      this.random.insertAdjacentHTML("afterbegin",
-        `<div class="col-md-auto randomDishes">
+      this.mainArea.insertAdjacentHTML("afterbegin",
+        `<div class="col-md-auto mainArea">
           </figure>
                   <p>${diss[0].elem.name}</p>
                   <img class="grande" src="./img/${diss[0].elem.image}" alt="Imagen del plato: ${diss[0].elem.name}" />
@@ -101,33 +107,91 @@ class RestaurantView {
   }
 
   showThatCategories(cats, dishes) {
+    // Recorremos las categorías.
+    for (const category of cats) {
+      // Obtener el ID del botón de categoría
+      const buttonId = `cat-${category.name}`;
+      // Obtener el botón de categoría por su ID
+      const categoryButton = document.getElementById(buttonId);
+      console.log(categoryButton);
 
-    // for (const category of cats) {
+      // Verificar si el botón existe y si ya se le agregó un evento clic
+      if (categoryButton) {
 
-    document.getElementById("cat-Estrella").addEventListener("click", () => {
+        // Eliminar cualquier evento clic anterior
+        categoryButton.removeEventListener('click', this.categoryClickHandler);
 
-      // Migas de pan.
-      this.breadcrumb.insertAdjacentHTML("beforeend",
-        `<li class="breadcrumb-item">
-            <a href="#">${category.name}</a>
-          </li>`
-      );
+        // Definir el manejador de eventos clic
+        this.categoryClickHandler = (event) => {
+          // Prevenir el comportamiento por defecto del enlace
+          event.preventDefault();
 
-      console.log("aaaaaaaaaaaaaaaa");
-      // 
-
-      this.main.replaceChildren();
-      this.main.insertAdjacentHTML("beforeend",
-        `<div class="col-md-auto">
-            <a class="dropdown-item" id="cat-${category.name}">${category.name}</a>
-          </div>`
-      );
-    });
+          // Migas de pan(añadimos la categoría que se ha seleccionado).
+          this.breadcrumb.insertAdjacentHTML("beforeend",
+            `<li class="breadcrumb-item">
+                <a href="#">${category.name}</a>
+            </li>`
+          );
 
 
-    // }
+          this.mainArea.replaceChildren();
 
+          let cont = 1; // Variable contador para los botones de descripción.
+
+          for (const diss of dishes) {
+            if (diss.categories.get(category.name) === category) {
+
+              // this.mainArea.insertAdjacentHTML("beforeend",
+              //   `<div class="row">
+              //   </div>`);
+
+
+              // Para los botones de descripción.
+              let cadena = "cl" + cont++;
+
+              this.mainArea.insertAdjacentHTML("beforeend",
+                `<div class="col">
+                  <div class="card" style="width: 22.6rem">
+                    <img class="tamImg" src="./img/${diss.elem.image}" alt="Imagen del plato: ${diss.elem.name}" />
+                    <div class="card-body">
+                        <h5 class="card-title">${diss.elem.name}</h5>
+
+                        <button class="btn btn-dark" type="button"
+                                data-bs-toggle="collapse" data-bs-target="#${cadena}" aria-expanded="false"
+                                aria-controls="${cadena}">
+                            Descripción
+                        </button>
+
+                        <div class="collapse">
+                            <div class="card-text">
+                              ${diss.elem.description}
+                            </div>
+                        
+                            <div class="card-text">
+                              ${diss.elem.ingredients}
+                            </div>
+                        </div>
+                    </div>
+                  </div>
+                </div>`);
+
+              //   this.mainArea.insertAdjacentHTML("beforeend",
+              //     `<div class="col-md-auto mainArea">
+              //         <figure>
+              //             <p>${diss.elem.name}</p>
+              //             <img class="grande" src="./img/${diss.elem.image}" alt="Imagen del plato: ${diss.elem.name}" />
+              //         </figure>
+              //     </div>`);
+            }
+          }
+        };
+
+        // Agregar el evento clic al botón de categoría.
+        categoryButton.addEventListener('click', this.categoryClickHandler);
+      }
+    }
   }
+
 
   // Métodos bind.
   bindInit(handler) {
