@@ -385,56 +385,93 @@ let RestaurantsModel = (function () {
                 // Menu no puede ser NULL.
                 if (men === undefined) throw new NullObjectException();
                 if (!(men instanceof Menu)) throw new ObjectException("Menu");
-
+                
                 // Dish no puede ser NULL.
                 if (dis1 === undefined || dis2 === undefined) throw new NullObjectException();
                 if (!(dis1 instanceof Dish) || !(dis2 instanceof Dish)) throw new ObjectException("Dish");
+            
+                // Recorremos los menus.
+                this.#menus.entries().forEach(([key, value]) => {
+                    // Entramos en el menu pasado por parámetro.
+                    if (value.elem === men) {
+                        // Guardamos el objeto.
+                        let pos1 = value.dishes.get(dis1.name);
+                        let pos2 = value.dishes.get(dis2.name);
 
-                let array = this.#menus.get(men.name).dishes;
-                let pos1 = array.findIndex((x) => x.name === dis1.name);
+                        this.deassignDishToMenu(pos1, men);
+                        this.deassignDishToMenu(pos2, men);
 
-                // let arrayD = this.#menus.get(menu.name).dishes;
-                // let pos1 = arrayD.findIndex((x) => x.name === dish1.name);
-                // let pos2 = arrayD.findIndex((x) => x.name === dish2.name);
-
-                // if (pos1 !== -1 && pos2 !== -1) {
-                //   let temp = arrayD[pos1];
-                //   arrayD[pos1] = arrayD[pos2];
-                //   arrayD[pos2] = temp;
-                // } else {
-                //   throw new NotAssignedException();
-                // }
+                        this.assignDishToMenu(pos2, men);
+                        this.assignDishToMenu(pos1, men);
+                        // Lo pone al final del todo.
+                    }
+                });
             }
 
             // Obtiene un iterador con la relación de los platos a una categoría. 
-            // El iterador puede estar ordenado.
-            getDishesInCategory(cat, func) {
+            *getDishesInCategory(cat, func) {
                 // Category es null.
                 if (cat === undefined) throw new NullObjectException();
-                // Category no está registrado
-                if (!this.#dishes.has(cat.name)) throw new RegisteredException(cat.name);
+                
+                let array = [];
 
+                // Recorremos los platos.
+                this.#dishes.entries().forEach(([key, value]) => {
+                    if (value.elem === cat) {
+                        // Category no está registrado
+                        if (!value.categories.has(cat.name)) throw new RegisteredException(cat.name);
+                        // Recorremos las categorías.
+                        value.categories.entries().forEach(([keyC, valueC]) => {
+                            if (valueC === cat) {
+                                // Añadir el plato al array.
+                                array.push(value.elem);
+                            }
+                        });
+                    }
+                });
 
+                // El iterador puede estar ordenado.
+                if (func instanceof Function) {
+                    array.sort(func);
+                }
 
+                // Iterador.
+                for (let diss of array) {
+                    yield diss;
+                }
             }
 
             // Obtiene un iterador con los platos que tiene un determinado alérgeno. 
-            // El iterador puede estar ordenado
-            getDishesWithAllergen(all, func) {
+            *getDishesWithAllergen(all, func) {
                 // Allergen es null.
                 if (all === undefined) throw new NullObjectException();
-                // Allergen no está registrado
-                // if (!this.#dishes.has(all.name)) throw new RegisteredException(all.name);
-                console.log(all);
+
+                let array = [];
+                
+                // Recorremos los platos.
                 this.#dishes.entries().forEach(([key, value]) => {
-                    value.allergens.entries().forEach(([keyA, valueA]) => {
-                        if (valueA === all) {
-                            console.log(value.elem);
-                            // Devolver el iterador.
-                        }
-                    });
+                    if (value.elem === all) {
+                        // Allergen no está registrado
+                        if (!value.allergens.has(all.name)) throw new RegisteredException(all.name);
+                        // Recorremos los alérgenos.
+                        value.allergens.entries().forEach(([keyA, valueA]) => {
+                            if (valueA === all) {
+                                // Añadir el plato al array.
+                                array.push(value.elem);
+                            }
+                        });
+                    }
                 });
 
+                // El iterador puede estar ordenado.
+                if (func instanceof Function) {
+                    array.sort(func);
+                }
+
+                // Iterador.
+                for (let diss of array) {
+                    yield diss;
+                }
             }
 
 

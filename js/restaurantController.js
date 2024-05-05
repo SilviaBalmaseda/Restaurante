@@ -1,3 +1,5 @@
+import { Coordinate } from "./objectsRestaurants.js";
+
 const MODEL = Symbol('RestaurantModel');
 const VIEW = Symbol('RestaurantView');
 const LOAD_RESTAURANT_OBJECTS = Symbol('Load Restaurant Objects');
@@ -31,8 +33,9 @@ class RestaurantController {
         // Almacenar los platos en un array.
         const dishes = [...this[MODEL].getDishes()];
         this[VIEW].showThatCategories(this[MODEL].getCategories(), dishes);
-
-        // this[VIEW].showThatCategories(this[MODEL].getCategories(), this[MODEL].getDishes());
+        this[VIEW].showThatAllergens(this[MODEL].getAllergens(), dishes);
+        this[VIEW].showThatMenus(this[MODEL].getMenus());
+        this[VIEW].showThatRestaurants(this[MODEL].getRestaurants());
     };
 
     handleInit = () => {
@@ -219,9 +222,9 @@ class RestaurantController {
         const men3 = this[MODEL].createMenu("Internacional", "Platos de diferentes continentes");
 
         // Los restaurantes.
-        const res1 = this[MODEL].createRestaurant("Serendipia 1º");
-        const res2 = this[MODEL].createRestaurant("Serendipia 2º");
-        const res3 = this[MODEL].createRestaurant("Serendipia 3º");
+        const res1 = this[MODEL].createRestaurant("Serendipia 1º", "Primer restaurante", new Coordinate(12, 20));
+        const res2 = this[MODEL].createRestaurant("Serendipia 2º", "Segundo restaurante", new Coordinate(35, 62));
+        const res3 = this[MODEL].createRestaurant("Serendipia 3º", "Tercer restaurante", new Coordinate(71, 29));
 
         // Añadimos.
         this[MODEL].addDish(dis1, dis2, dis3, dis4, dis5, dis6, dis7, dis8, dis9, dis10, dis11, dis12);

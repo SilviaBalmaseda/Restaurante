@@ -19,7 +19,7 @@ class RestaurantView {
   showBreadcrumb() {
     this.breadcrumb.replaceChildren();
     this.breadcrumb.insertAdjacentHTML("beforeend",
-      `<li class="breadcrumb-item">
+      `<li class="breadcrumb-item" id="breadcrumb-item">
             <a id="init" href="#">Inicio</a>
        </li>`
     );
@@ -69,7 +69,7 @@ class RestaurantView {
       this.menus.insertAdjacentHTML(
         "beforeend",
         `<li>
-            <a class="dropdown-item" id="men-${men.name}">${men.elem.name}</a>
+            <a class="dropdown-item" id="men-${men.elem.name}">${men.elem.name}</a>
         </li>`
       );
     }
@@ -109,49 +109,44 @@ class RestaurantView {
   showThatCategories(cats, dishes) {
     // Recorremos las categorías.
     for (const category of cats) {
-      // Obtener el ID del botón de categoría
+      // Obtener el id del botón de categoría.
       const buttonId = `cat-${category.name}`;
-      // Obtener el botón de categoría por su ID
+      // Botón de categoría.
       const categoryButton = document.getElementById(buttonId);
-      console.log(categoryButton);
 
-      // Verificar si el botón existe y si ya se le agregó un evento clic
+      // Verificar si el botón existe y si ya se le agregó un evento clic.
       if (categoryButton) {
 
-        // Eliminar cualquier evento clic anterior
+        // Eliminar cualquier evento clic anterior.
         categoryButton.removeEventListener('click', this.categoryClickHandler);
 
-        // Definir el manejador de eventos clic
+        // Definir el manejador de eventos clic.
         this.categoryClickHandler = (event) => {
-          // Prevenir el comportamiento por defecto del enlace
+          // Prevenir el comportamiento por defecto del enlace.
           event.preventDefault();
 
+          // Eliminamos la anterior categoría si se ha seleccionado.
+          if (document.getElementById("breadcrumb-item1")) {
+            this.breadcrumb.removeChild(document.getElementById("breadcrumb-item1"));
+          }
           // Migas de pan(añadimos la categoría que se ha seleccionado).
           this.breadcrumb.insertAdjacentHTML("beforeend",
-            `<li class="breadcrumb-item">
+            `<li class="breadcrumb-item" id="breadcrumb-item1">
                 <a href="#">${category.name}</a>
             </li>`
           );
 
-
-          this.mainArea.replaceChildren();
-
           let cont = 1; // Variable contador para los botones de descripción.
 
+          this.mainArea.replaceChildren();
           for (const diss of dishes) {
             if (diss.categories.get(category.name) === category) {
-
-              // this.mainArea.insertAdjacentHTML("beforeend",
-              //   `<div class="row">
-              //   </div>`);
-
-
               // Para los botones de descripción.
-              let cadena = "cl" + cont++;
+              let cadena = "dis" + cont++;
 
               this.mainArea.insertAdjacentHTML("beforeend",
                 `<div class="col">
-                  <div class="card" style="width: 22.6rem">
+                  <div class="card" style="width: 23rem">
                     <img class="tamImg" src="./img/${diss.elem.image}" alt="Imagen del plato: ${diss.elem.name}" />
                     <div class="card-body">
                         <h5 class="card-title">${diss.elem.name}</h5>
@@ -161,27 +156,16 @@ class RestaurantView {
                                 aria-controls="${cadena}">
                             Descripción
                         </button>
-
-                        <div class="collapse">
-                            <div class="card-text">
-                              ${diss.elem.description}
-                            </div>
                         
+                        <div class="collapse" id="${cadena}">
                             <div class="card-text">
-                              ${diss.elem.ingredients}
+                              Descripción: ${diss.elem.description}. 
+                              Incredientes: ${diss.elem.description}      
                             </div>
                         </div>
                     </div>
                   </div>
                 </div>`);
-
-              //   this.mainArea.insertAdjacentHTML("beforeend",
-              //     `<div class="col-md-auto mainArea">
-              //         <figure>
-              //             <p>${diss.elem.name}</p>
-              //             <img class="grande" src="./img/${diss.elem.image}" alt="Imagen del plato: ${diss.elem.name}" />
-              //         </figure>
-              //     </div>`);
             }
           }
         };
@@ -192,6 +176,204 @@ class RestaurantView {
     }
   }
 
+  showThatAllergens(alls, dishes) {
+    // Recorremos las categorías.
+    for (const allergen of alls) {
+      // Obtener el id del botón de categoría.
+      const buttonId = `all-${allergen.name}`;
+      // Botón de categoría.
+      const allergenButton = document.getElementById(buttonId);
+
+      // Verificar si el botón existe y si ya se le agregó un evento clic.
+      if (allergenButton) {
+
+        // Eliminar cualquier evento clic anterior.
+        allergenButton.removeEventListener('click', this.allergenClickHandler);
+
+        // Definir el manejador de eventos clic.
+        this.allergenClickHandler = (event) => {
+          // Prevenir el comportamiento por defecto del enlace.
+          event.preventDefault();
+
+          // Eliminamos la anterior categoría si se ha seleccionado.
+          if (document.getElementById("breadcrumb-item1")) {
+            this.breadcrumb.removeChild(document.getElementById("breadcrumb-item1"));
+          }
+          // Migas de pan(añadimos la categoría que se ha seleccionado).
+          this.breadcrumb.insertAdjacentHTML("beforeend",
+            `<li class="breadcrumb-item" id="breadcrumb-item1">
+                <a href="#">${allergen.name}</a>
+            </li>`
+          );
+
+          let cont = 1; // Variable contador para los botones de descripción.
+
+          this.mainArea.replaceChildren();
+          for (const diss of dishes) {
+            if (diss.allergens.get(allergen.name) === allergen) {
+
+              // Para los botones de descripción.
+              let cadena = "dis" + cont++;
+
+              this.mainArea.insertAdjacentHTML("beforeend",
+                `<div class="col">
+                  <div class="card" style="width: 23rem">
+                    <img class="tamImg" src="./img/${diss.elem.image}" alt="Imagen del plato: ${diss.elem.name}" />
+                    <div class="card-body">
+                        <h5 class="card-title">${diss.elem.name}</h5>
+
+                        <button class="btn btn-dark" type="button"
+                                data-bs-toggle="collapse" data-bs-target="#${cadena}" aria-expanded="false"
+                                aria-controls="${cadena}">
+                            Descripción
+                        </button>
+                        
+                        <div class="collapse" id="${cadena}">
+                            <div class="card-text">
+                              Descripción: ${diss.elem.description}. 
+                              Incredientes: ${diss.elem.description}      
+                            </div>
+                        </div>
+                    </div>
+                  </div>
+                </div>`);
+            }
+          }
+          
+          // Quitamos la categorías del main.
+          this.categoryArea.replaceChildren();
+        };
+
+        // Agregar el evento clic al botón de alérgenos.
+        allergenButton.addEventListener('click', this.allergenClickHandler);
+      }
+    }
+  }
+
+  showThatMenus(mens) {
+    // Recorremos las categorías.
+    for (const men of mens) {
+      // Obtener el id del botón de categoría.
+      const buttonId = `men-${men.elem.name}`;
+      // Botón de categoría.
+      const menButton = document.getElementById(buttonId);
+      
+      // Verificar si el botón existe y si ya se le agregó un evento clic.
+      if (menButton) {
+
+        // Eliminar cualquier evento clic anterior.
+        menButton.removeEventListener('click', this.menClickHandler);
+
+        // Definir el manejador de eventos clic.
+        this.menClickHandler = (event) => {
+          // Prevenir el comportamiento por defecto del enlace.
+          event.preventDefault();
+
+          // Eliminamos la anterior categoría si se ha seleccionado.
+          if (document.getElementById("breadcrumb-item1")) {
+            this.breadcrumb.removeChild(document.getElementById("breadcrumb-item1"));
+          }
+          // Migas de pan(añadimos la categoría que se ha seleccionado).
+          this.breadcrumb.insertAdjacentHTML("beforeend",
+            `<li class="breadcrumb-item" id="breadcrumb-item1">
+                <a href="#">${men.elem.name}</a>
+            </li>`
+          );
+
+          let cont = 1; // Variable contador para los botones de descripción.
+
+          this.mainArea.replaceChildren();
+          // Para recorres los platos(value). 
+          men.dishes.entries().forEach(([key, value]) => {
+
+            // Para los botones de descripción.
+            let cadena = "dis" + cont++;
+
+            this.mainArea.insertAdjacentHTML("beforeend",
+              `<div class="col">
+                <div class="card" style="width: 23rem">
+                  <img class="tamImg" src="./img/${value.image}" alt="Imagen del plato: ${value.name}" />
+                  <div class="card-body">
+                      <h5 class="card-title">${value.name}</h5>
+
+                      <button class="btn btn-dark" type="button"
+                              data-bs-toggle="collapse" data-bs-target="#${cadena}" aria-expanded="false"
+                              aria-controls="${cadena}">
+                          Descripción
+                      </button>
+                      
+                      <div class="collapse" id="${cadena}">
+                          <div class="card-text">
+                            Descripción: ${value.description}. 
+                            Incredientes: ${value.description}      
+                          </div>
+                      </div>
+                  </div>
+                </div>
+              </div>`
+            );
+
+              // Quitamos la categorías del main.
+              this.categoryArea.replaceChildren();
+          });
+        };
+
+        // Agregar el evento clic al botón de alérgenos.
+        menButton.addEventListener('click', this.menClickHandler);
+      }
+    }
+  }
+
+  showThatRestaurants(rests) {
+    // Recorremos las categorías.
+    for (const rest of rests) {
+      // Obtener el ID del botón de categoría.
+      const buttonId = `res-${rest.name}`;
+      // Botón de categoría.
+      const restButton = document.getElementById(buttonId);
+      
+      // Verificar si el botón existe y si ya se le agregó un evento clic.
+      if (restButton) {
+
+        // Eliminar cualquier evento clic anterior.
+        restButton.removeEventListener('click', this.restClickHandler);
+
+        // Definir el manejador de eventos clic.
+        this.restClickHandler = (event) => {
+          // Prevenir el comportamiento por defecto del enlace.
+          event.preventDefault();
+
+          // Eliminamos la anterior categoría si se ha seleccionado.
+          if (document.getElementById("breadcrumb-item1")) {
+            this.breadcrumb.removeChild(document.getElementById("breadcrumb-item1"));
+          }
+          // Migas de pan(añadimos la categoría que se ha seleccionado).
+          this.breadcrumb.insertAdjacentHTML("beforeend",
+            `<li class="breadcrumb-item" id="breadcrumb-item1">
+                <a href="#">${rest.name}</a>
+            </li>`
+          );
+
+          this.mainArea.replaceChildren();
+          this.mainArea.insertAdjacentHTML("beforeend",
+            `<div><h1>${rest.name}</h1></div>
+            <div>
+              Descripción: ${rest.description}.
+            </div>
+            <div>
+              Coordenadas: ${rest.location}.
+            </div>`
+          ); 
+          
+          // Quitamos la categorías del main.
+          this.categoryArea.replaceChildren();  
+        };
+
+        // Agregar el evento clic al botón de alérgenos.
+        restButton.addEventListener('click', this.restClickHandler);
+      }
+    }
+  }
 
   // Métodos bind.
   bindInit(handler) {
