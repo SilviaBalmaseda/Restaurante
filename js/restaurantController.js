@@ -47,6 +47,8 @@ class RestaurantController {
         //         this[VIEW].bindOpenWindow(this.handleOpenWindow);
         //     }
         // }
+
+        this[VIEW].bindOpenWindow(this.handleOpenWindow);
         this[VIEW].bindCloseAllWindows(this.handleCloseAllWindows);
     };
 

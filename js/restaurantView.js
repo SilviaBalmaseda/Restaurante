@@ -158,7 +158,7 @@ class RestaurantView {
                             Descripción
                         </button>
 
-                        <button id="openWindowButton-${diss.elem.name}" class="btn btn-dark" type="button">
+                        <button data-name="${diss.elem.name}" class="btn btn-dark openWindowButton" type="button">
                             Abrir página
                         </button>
 
@@ -173,21 +173,16 @@ class RestaurantView {
                 </div>`);
             }
 
-            array.push(diss.elem.name);
-
           }
 
-          console.log(array);
-          this.bindOpenWindow(handleOpenWindow, array);
+          this.bindOpenWindow(handleOpenWindow);
         };
 
         // Agregar el evento clic al botón de categoría.
         categoryButton.addEventListener('click', this.categoryClickHandler);
 
         // Seleccionar el botón(abrir ventana) después de agregarlo al DOM.
-        this.openWindowButton = document.getElementById('openWindowButton');
-
-        this.b = document.getElementsByClassName('openWindowButton');
+        // this.openWindowButton = document.getElementById('openWindowButton');
       }
     }
   }
@@ -466,17 +461,28 @@ class RestaurantView {
     }
   }
 
-  bindOpenWindow(handler, nombre) {
+  bindOpenWindow(handler) {
+    const buttons = mainArea.getElementsByClassName('openWindowButton');
+    console.dir(buttons);
+    for (const button of buttons){
+      button.addEventListener('click', (event) => {
+        // se puede usar así(event.currentTarget) o button.
+        handler(event.currentTarget.dataset.name); // devuelve el nombre del plato.
+      })
+    }
+    /*
     document.addEventListener('DOMContentLoaded', () => {
-      let id = "openWindowButton-" + nombre;
-      console.log(id);
-      const button = document.getElementById(id);
-      if (button) {
-        button.addEventListener('click', handler);
-      } else {
-        console.error('No se encontró el botón con el id ' + id);
+      for (const diss of dishes) {
+        let id = "openWindowButton-" + diss;
+        const button = document.getElementById(id);
+        if (button) {
+          button.addEventListener('click', handler);
+        } else {
+          console.error('No se encontró el botón con el id ' + id);
+        }
       }
     });
+    */
   }
 
   bindCloseAllWindows(handler) {
