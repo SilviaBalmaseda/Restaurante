@@ -8,6 +8,7 @@ class RestaurantController {
     constructor(modelRestaurant, viewRestaurant) {
         this[MODEL] = modelRestaurant;
         this[VIEW] = viewRestaurant;
+        this.openedWindows = []; // Array para almacenar las ventanas abiertas.
 
         // Eventos iniciales del Controlador
         this.onInit();
@@ -32,15 +33,45 @@ class RestaurantController {
 
         // Almacenar los platos en un array.
         const dishes = [...this[MODEL].getDishes()];
-        this[VIEW].showThatCategories(this[MODEL].getCategories(), dishes);
+        this[VIEW].showThatCategories(this[MODEL].getCategories(), dishes, this.handleOpenWindow);
         this[VIEW].showThatAllergens(this[MODEL].getAllergens(), dishes);
         this[VIEW].showThatMenus(this[MODEL].getMenus());
         this[VIEW].showThatRestaurants(this[MODEL].getRestaurants());
+
+
+
+        // for (const c of this[MODEL].getCategories()) {
+        //     let d = document.getElementById("cat-" + c.name);
+
+        //     if (d) {
+        //         this[VIEW].bindOpenWindow(this.handleOpenWindow);
+        //     }
+        // }
+        this[VIEW].bindCloseAllWindows(this.handleCloseAllWindows);
     };
 
     handleInit = () => {
         this.onInit();
     };
+
+    // Abrir una ventana nueva.
+    handleOpenWindow = () => {
+        const newWindow = window.open('auxPage.html', '_blank', 'width=600,height=400');
+        if (newWindow) {
+            // Si la ventana se abrió correctamente, agregamos su referencia al array.
+            this.openedWindows.push(newWindow);
+        }
+    }
+
+    // Cerrar todas las ventanas abiertas.
+    handleCloseAllWindows = () => {
+        const windows = this.openedWindows;
+        windows.forEach(window => {
+            window.close();
+        });
+        this.openedWindows = [];
+    }
+
 
     [LOAD_RESTAURANT_OBJECTS]() {
         // Los platos.

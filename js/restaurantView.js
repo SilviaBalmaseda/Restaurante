@@ -106,7 +106,7 @@ class RestaurantView {
     }
   }
 
-  showThatCategories(cats, dishes) {
+  showThatCategories(cats, dishes, handleOpenWindow) {
     // Recorremos las categorías.
     for (const category of cats) {
       // Obtener el id del botón de categoría.
@@ -136,6 +136,7 @@ class RestaurantView {
             </li>`
           );
 
+          let array = [];
           let cont = 1; // Variable contador para los botones de descripción.
 
           this.mainArea.replaceChildren();
@@ -151,30 +152,120 @@ class RestaurantView {
                     <div class="card-body">
                         <h5 class="card-title">${diss.elem.name}</h5>
 
-                        <button class="btn btn-dark" type="button"
-                                data-bs-toggle="collapse" data-bs-target="#${cadena}" aria-expanded="false"
-                                aria-controls="${cadena}">
+                        <button class="btn btn-dark" type="button" 
+                          data-bs-toggle="collapse" data-bs-target="#${cadena}" aria-expanded="false"
+                          aria-controls="${cadena}">
                             Descripción
                         </button>
-                        
+
+                        <button id="openWindowButton-${diss.elem.name}" class="btn btn-dark" type="button">
+                            Abrir página
+                        </button>
+
                         <div class="collapse" id="${cadena}">
                             <div class="card-text">
-                              Descripción: ${diss.elem.description}. 
-                              Incredientes: ${diss.elem.description}      
+                                Descripción: ${diss.elem.description}. 
+                                Incredientes: ${diss.elem.ingredients}      
                             </div>
                         </div>
                     </div>
                   </div>
                 </div>`);
             }
+
+            array.push(diss.elem.name);
+
           }
+
+          console.log(array);
+          this.bindOpenWindow(handleOpenWindow, array);
         };
 
         // Agregar el evento clic al botón de categoría.
         categoryButton.addEventListener('click', this.categoryClickHandler);
+
+        // Seleccionar el botón(abrir ventana) después de agregarlo al DOM.
+        this.openWindowButton = document.getElementById('openWindowButton');
+
+        this.b = document.getElementsByClassName('openWindowButton');
       }
     }
   }
+
+  // La buena
+  // showThatCategories(cats, dishes) {
+  //   // Recorremos las categorías.
+  //   for (const category of cats) {
+  //     // Obtener el id del botón de categoría.
+  //     const buttonId = `cat-${category.name}`;
+  //     // Botón de categoría.
+  //     const categoryButton = document.getElementById(buttonId);
+
+  //     // Verificar si el botón existe y si ya se le agregó un evento clic.
+  //     if (categoryButton) {
+
+  //       // Eliminar cualquier evento clic anterior.
+  //       categoryButton.removeEventListener('click', this.categoryClickHandler);
+
+  //       // Definir el manejador de eventos clic.
+  //       this.categoryClickHandler = (event) => {
+  //         // Prevenir el comportamiento por defecto del enlace.
+  //         event.preventDefault();
+
+  //         // Eliminamos la anterior categoría si se ha seleccionado.
+  //         if (document.getElementById("breadcrumb-item1")) {
+  //           this.breadcrumb.removeChild(document.getElementById("breadcrumb-item1"));
+  //         }
+  //         // Migas de pan(añadimos la categoría que se ha seleccionado).
+  //         this.breadcrumb.insertAdjacentHTML("beforeend",
+  //           `<li class="breadcrumb-item" id="breadcrumb-item1">
+  //               <a href="#">${category.name}</a>
+  //           </li>`
+  //         );
+
+  //         let cont = 1; // Variable contador para los botones de descripción.
+
+  //         this.mainArea.replaceChildren();
+  //         for (const diss of dishes) {
+  //           if (diss.categories.get(category.name) === category) {
+  //             // Para los botones de descripción.
+  //             let cadena = "dis" + cont++;
+
+  //             this.mainArea.insertAdjacentHTML("beforeend",
+  //               `<div class="col">
+  //                 <div class="card" style="width: 23rem">
+  //                   <img class="tamImg" src="./img/${diss.elem.image}" alt="Imagen del plato: ${diss.elem.name}" />
+  //                   <div class="card-body">
+  //                       <h5 class="card-title">${diss.elem.name}</h5>
+
+  //                       <button class="btn btn-dark" type="button"
+  //                               data-bs-toggle="collapse" data-bs-target="#${cadena}" aria-expanded="false"
+  //                               aria-controls="${cadena}">
+  //                           Descripción
+  //                       </button>
+
+  //                       <button id="openWindowButton" class="btn btn-dark" type="button">
+  //                           Abrir página
+  //                       </button>
+
+  //                       <div class="collapse" id="${cadena}">
+  //                           <div class="card-text">
+  //                             Descripción: ${diss.elem.description}. 
+  //                             Incredientes: ${diss.elem.ingredients}      
+  //                           </div>
+  //                       </div>
+  //                   </div>
+  //                 </div>
+  //               </div>`);
+  //           }
+  //         }
+  //       };
+
+  //       // Agregar el evento clic al botón de categoría.
+  //       categoryButton.addEventListener('click', this.categoryClickHandler);
+  //     }
+  //   }
+  // }
 
   showThatAllergens(alls, dishes) {
     // Recorremos las categorías.
@@ -231,7 +322,7 @@ class RestaurantView {
                         <div class="collapse" id="${cadena}">
                             <div class="card-text">
                               Descripción: ${diss.elem.description}. 
-                              Incredientes: ${diss.elem.description}      
+                              Incredientes: ${diss.elem.ingredients}      
                             </div>
                         </div>
                     </div>
@@ -239,7 +330,7 @@ class RestaurantView {
                 </div>`);
             }
           }
-          
+
           // Quitamos la categorías del main.
           this.categoryArea.replaceChildren();
         };
@@ -257,7 +348,7 @@ class RestaurantView {
       const buttonId = `men-${men.elem.name}`;
       // Botón de categoría.
       const menButton = document.getElementById(buttonId);
-      
+
       // Verificar si el botón existe y si ya se le agregó un evento clic.
       if (menButton) {
 
@@ -305,7 +396,7 @@ class RestaurantView {
                       <div class="collapse" id="${cadena}">
                           <div class="card-text">
                             Descripción: ${value.description}. 
-                            Incredientes: ${value.description}      
+                            Incredientes: ${value.ingredients}      
                           </div>
                       </div>
                   </div>
@@ -313,8 +404,8 @@ class RestaurantView {
               </div>`
             );
 
-              // Quitamos la categorías del main.
-              this.categoryArea.replaceChildren();
+            // Quitamos la categorías del main.
+            this.categoryArea.replaceChildren();
           });
         };
 
@@ -331,7 +422,7 @@ class RestaurantView {
       const buttonId = `res-${rest.name}`;
       // Botón de categoría.
       const restButton = document.getElementById(buttonId);
-      
+
       // Verificar si el botón existe y si ya se le agregó un evento clic.
       if (restButton) {
 
@@ -363,16 +454,34 @@ class RestaurantView {
             <div>
               Coordenadas: ${rest.location}.
             </div>`
-          ); 
-          
+          );
+
           // Quitamos la categorías del main.
-          this.categoryArea.replaceChildren();  
+          this.categoryArea.replaceChildren();
         };
 
         // Agregar el evento clic al botón de alérgenos.
         restButton.addEventListener('click', this.restClickHandler);
       }
     }
+  }
+
+  bindOpenWindow(handler, nombre) {
+    document.addEventListener('DOMContentLoaded', () => {
+      let id = "openWindowButton-" + nombre;
+      console.log(id);
+      const button = document.getElementById(id);
+      if (button) {
+        button.addEventListener('click', handler);
+      } else {
+        console.error('No se encontró el botón con el id ' + id);
+      }
+    });
+  }
+
+  bindCloseAllWindows(handler) {
+    const closeAllWindowsButton = document.getElementById('closeAllWindowsButton');
+    closeAllWindowsButton.addEventListener('click', handler);
   }
 
   // Métodos bind.
