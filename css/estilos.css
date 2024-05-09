@@ -1,5 +1,3 @@
-/* .principal div tamaño de la fuente modificar vista */
-
 * {
     box-sizing: border-box;
     font-family: sans-serif;
@@ -66,21 +64,4 @@ html body {
 /* Borde blanco para fondo negro */
 .bordeB {
     border: 1px solid white;
-}
-
-.eslogan {
-    margin: 0.75em;
-    padding: 0.55em;
-    background-color: #f87f28;
-    font-size: 2em;
-    text-align: center;
-    font-weight: bold;
-    display: flex;
-    justify-content: space-around;
-    align-items: center;
-}
-
-.eslogan .peque {
-    width: 2em;
-    height: 2em;
 }

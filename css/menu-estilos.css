@@ -34,6 +34,21 @@
     font-size: 1.25em;
 }
 
+.dropdown-item {
+    cursor: pointer;
+}
+
+.card-text {
+    font-size: 0.25em !important;
+    font-weight: normal !important;
+}
+
+/* Botón de cerrar todas la ventanas. */
+.btn-lg {
+    margin: 0.55em;
+    font-size: 1.55em;
+}
+
 .tamImg {
     width: 9.52em;
     height: 8em

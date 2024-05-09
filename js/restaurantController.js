@@ -24,31 +24,31 @@ class RestaurantController {
 
     onLoad = () => {
         this[LOAD_RESTAURANT_OBJECTS]();
-        this[VIEW].showCategories(this[MODEL].getCategories());
-        this[VIEW].showCategoriesMain(this[MODEL].getCategories());
-        this[VIEW].showAllergens(this[MODEL].getAllergens());
-        this[VIEW].showMenus(this[MODEL].getMenus());
-        this[VIEW].showRestaurants(this[MODEL].getRestaurants());
-        this[VIEW].showRandomDishes(this[MODEL].getDishes());
-
-        // Almacenar los platos en un array.
+        // Almacenar los iteradorse en arrays.
         const dishes = [...this[MODEL].getDishes()];
-        this[VIEW].showThatCategories(this[MODEL].getCategories(), dishes, this.handleOpenWindow);
-        this[VIEW].showThatAllergens(this[MODEL].getAllergens(), dishes);
-        this[VIEW].showThatMenus(this[MODEL].getMenus());
-        this[VIEW].showThatRestaurants(this[MODEL].getRestaurants());
+        const categories = [...this[MODEL].getCategories()];
+        const allergens = [...this[MODEL].getAllergens()];
+        const menus = [...this[MODEL].getMenus()];
+        const restaurants = [...this[MODEL].getRestaurants()];
 
+        this[VIEW].showCategories(categories);
+        this[VIEW].showCategoriesMain(categories);
+        this[VIEW].showAllergens(allergens);
+        this[VIEW].showMenus(menus);
+        this[VIEW].showRestaurants(restaurants);
+        this[VIEW].showRandomDishes(dishes);
+        this[VIEW].showCloseAllWindowsButton();
 
+        // this[VIEW].showThatCategories(categories, dishes, this.handleOpenWindow);
+        // this[VIEW].showThatAllergens(allergens, dishes, this.handleOpenWindow);
+        // this[VIEW].showThatMenus(menus, this.handleOpenWindow);
 
-        // for (const c of this[MODEL].getCategories()) {
-        //     let d = document.getElementById("cat-" + c.name);
+        this[VIEW].showThatCategories(categories, dishes, this.handleShowProduct);
+        this[VIEW].showThatAllergens(allergens, dishes, this.handleShowProduct);
+        this[VIEW].showThatMenus(menus, this.handleShowProduct);
 
-        //     if (d) {
-        //         this[VIEW].bindOpenWindow(this.handleOpenWindow);
-        //     }
-        // }
+        this[VIEW].showThatRestaurants(restaurants);
 
-        this[VIEW].bindOpenWindow(this.handleOpenWindow);
         this[VIEW].bindCloseAllWindows(this.handleCloseAllWindows);
     };
 
@@ -57,11 +57,20 @@ class RestaurantController {
     };
 
     // Abrir una ventana nueva.
-    handleOpenWindow = () => {
+    handleOpenWindow = (nameD) => {
         const newWindow = window.open('auxPage.html', '_blank', 'width=600,height=400');
         if (newWindow) {
             // Si la ventana se abrió correctamente, agregamos su referencia al array.
             this.openedWindows.push(newWindow);
+
+            // Generar elementos en la nueva ventana.
+            newWindow.document.write("<h1>Nombre: " + nameD + " </h1>");
+            // newWindow.document.write("<p>Descripción " + descD + " </p>");
+            // newWindow.document.write("<p>Ingredientes: " + ingD + " </p>");
+            // newWindow.document.write("<img class='tamImg' src='./img/" + imgD + "' alt='Imagen del plato: " + nameD + "' />");
+
+            // newWindow.document.write("<script src='js/auxPage.js'></script>");
+            // newWindow.postMessage({ name: nameD, image: imgD, description: descD, ingredients: ingD }, '*');
         }
     }
 
@@ -73,6 +82,23 @@ class RestaurantController {
         });
         this.openedWindows = [];
     }
+
+
+    handleShowProduct = () => {
+        this[VIEW].bindOpenWindow(
+            this.handleShowDishInNewWindow,
+        );
+        // console.log(this);
+    };
+
+    handleShowDishInNewWindow = (nameD) => {
+        try {
+            const dish = this[MODEL].getDish(nameD);
+            this[VIEW].showProductInNewWindow(dish);
+        } catch (error) {
+            alert("no se encontro(" + nameD + "): " + dish);
+        }
+    };
 
 
     [LOAD_RESTAURANT_OBJECTS]() {

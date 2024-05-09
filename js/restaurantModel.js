@@ -385,11 +385,11 @@ let RestaurantsModel = (function () {
                 // Menu no puede ser NULL.
                 if (men === undefined) throw new NullObjectException();
                 if (!(men instanceof Menu)) throw new ObjectException("Menu");
-                
+
                 // Dish no puede ser NULL.
                 if (dis1 === undefined || dis2 === undefined) throw new NullObjectException();
                 if (!(dis1 instanceof Dish) || !(dis2 instanceof Dish)) throw new ObjectException("Dish");
-            
+
                 // Recorremos los menus.
                 this.#menus.entries().forEach(([key, value]) => {
                     // Entramos en el menu pasado por parámetro.
@@ -412,7 +412,7 @@ let RestaurantsModel = (function () {
             *getDishesInCategory(cat, func) {
                 // Category es null.
                 if (cat === undefined) throw new NullObjectException();
-                
+
                 let array = [];
 
                 // Recorremos los platos.
@@ -447,7 +447,7 @@ let RestaurantsModel = (function () {
                 if (all === undefined) throw new NullObjectException();
 
                 let array = [];
-                
+
                 // Recorremos los platos.
                 this.#dishes.entries().forEach(([key, value]) => {
                     if (value.elem === all) {
@@ -499,6 +499,11 @@ let RestaurantsModel = (function () {
                 for (let diss of array) {
                     yield diss;
                 }
+            }
+
+            // Devuelve el plato que sea igual al nombre pasado por parámetro, si no undefined.
+            getDish(nameD) {
+                return this.#dishes.get(nameD);
             }
 
             // Devuelve un objeto Dish si está registrado, o crea un nuevo.
