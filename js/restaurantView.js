@@ -1,4 +1,4 @@
-const EXCECUTE_HANDLER = Symbol('excecuteHandler');
+// const EXCECUTE_HANDLER = Symbol('excecuteHandler');
 
 class RestaurantView {
   constructor() {
@@ -12,16 +12,16 @@ class RestaurantView {
     this.mainArea = document.getElementById("mainArea");
   }
 
-  [EXCECUTE_HANDLER](handler, handlerArguments, scrollElement, data, url,
-    event) {
-    handler(...handlerArguments);
-    const scroll = document.querySelector(scrollElement);
-    console.log(scroll);
-    if (scroll) scroll.scrollIntoView();
-    //$(scrollElement).get(0).scrollIntoView();
-    history.pushState(data, null, url);
-    event.preventDefault();
-  }
+  // [EXCECUTE_HANDLER](handler, handlerArguments, scrollElement, data, url,
+  //   event) {
+  //   handler(...handlerArguments);
+  //   const scroll = document.querySelector(scrollElement);
+  //   console.log(scroll);
+  //   if (scroll) scroll.scrollIntoView();
+  //   //$(scrollElement).get(0).scrollIntoView();
+  //   history.pushState(data, null, url);
+  //   event.preventDefault();
+  // }
 
   init() {
     // Migas de pan.
@@ -66,7 +66,7 @@ class RestaurantView {
     for (const category of cats) {
       this.categories.insertAdjacentHTML(
         "beforeend",
-        `<li>
+        `<li id="category-list">
             <a class="dropdown-item" id="cat-${category.name}">${category.name}</a>
         </li>`
       );
@@ -78,7 +78,7 @@ class RestaurantView {
     for (const allergen of alls) {
       this.allergens.insertAdjacentHTML(
         "beforeend",
-        `<li>
+        `<li id="allergen-list">
             <a class="dropdown-item" id="all-${allergen.name}">${allergen.name}</a>
         </li>`
       );
@@ -90,7 +90,7 @@ class RestaurantView {
     for (const men of mens) {
       this.menus.insertAdjacentHTML(
         "beforeend",
-        `<li>
+        `<li id="menu-list">
             <a class="dropdown-item" id="men-${men.elem.name}">${men.elem.name}</a>
         </li>`
       );
@@ -102,7 +102,7 @@ class RestaurantView {
     for (const rest of rests) {
       this.restaurants.insertAdjacentHTML(
         "beforeend",
-        `<li>
+        `<li id="rest-list">
             <a class="dropdown-item" id="res-${rest.name}">${rest.name}</a>
         </li>`
       );
@@ -240,9 +240,9 @@ class RestaurantView {
     // Recorremos las categorías.
     for (const category of cats) {
       // Botón de categoría.
-      const categoryButton = document.getElementById(`cat-${category.name}`);
+      this.categoryButton = document.getElementById(`cat-${category.name}`);
 
-      this.showDishes(handleOpenWindow, categoryButton, category, dishes);
+      this.showDishes(handleOpenWindow, this.categoryButton, category, dishes);
     }
   }
 
@@ -251,9 +251,10 @@ class RestaurantView {
     // Recorremos los alérgenos.
     for (const allergen of alls) {
       // Botón de alérgenos.
-      const allergenButton = document.getElementById(`all-${allergen.name}`);
+      this.allergenButton = document.getElementById(`all-${allergen.name}`);
 
-      this.showDishes(handleOpenWindow, allergenButton, allergen, dishes);
+      this.showDishes(handleOpenWindow, this.allergenButton, allergen, dishes);
+      
     }
   }
 
@@ -262,9 +263,9 @@ class RestaurantView {
     // Recorremos los menús.
     for (const men of mens) {
       // Botón de menú.
-      const menButton = document.getElementById(`men-${men.elem.name}`);
+      this.menButton = document.getElementById(`men-${men.elem.name}`);
 
-      this.showDishes(handleOpenWindow, menButton, men);
+      this.showDishes(handleOpenWindow, this.menButton, men);
     }
   }
 
@@ -295,13 +296,15 @@ class RestaurantView {
 
           this.mainArea.replaceChildren();
           this.mainArea.insertAdjacentHTML("beforeend",
-            `<div><h1>${rest.name}</h1></div>
-            <div>
-              Descripción: ${rest.description}.
-            </div>
-            <div>
-              Coordenadas: ${rest.location}.
-            </div>`
+            `<section id="rest-list">
+              <div><h1>${rest.name}</h1></div>
+              <div>
+                Descripción: ${rest.description}.
+              </div>
+              <div>
+                Coordenadas: ${rest.location}.
+              </div>
+            </section>`
           );
 
           // Quitamos el tipo seleccionado del categoryArea.
@@ -350,6 +353,43 @@ class RestaurantView {
     const closeAllWindowsButton = document.getElementById('closeAllWindowsButton');
     closeAllWindowsButton.addEventListener('click', handler);
   }
+
+  // Para el history.
+  // bindProductsCategoryList(handler) {
+  //   const categoryList = document.getElementById('category-list');
+  //   const links = categoryList.querySelectorAll('a');
+  //   for (const link of links) {
+  //     link.addEventListener('click', (event) => {
+  //       const { category } = event.currentTarget.dataset;
+  //       this[EXCECUTE_HANDLER](
+  //         handler,
+  //         [category],
+  //         '#product-list',
+  //         { action: 'productsCategoryList', category },
+  //         '#category-list',
+  //         event,
+  //       );
+  //     });
+  //   }
+  // }
+
+  // bindProductsCategoryListInMenu(handler) {
+  //   const navCats = document.getElementById('category-list');
+  //   const links = navCats.nextSibling.querySelectorAll('a');
+  //   for (const link of links) {
+  //     link.addEventListener('click', (event) => {
+  //       const { category } = event.currentTarget.dataset;
+  //       this[EXCECUTE_HANDLER](
+  //         handler,
+  //         [category],
+  //         '#product-list',
+  //         { action: 'productsCategoryList', category },
+  //         '#category-list',
+  //         event,
+  //       );
+  //     });
+  //   }
+  // }
 
   // Devuelve un entero random entre 0 y el máximo pasado por parámetro.
   getRandom(max) {
