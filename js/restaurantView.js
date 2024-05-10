@@ -10,8 +10,6 @@ class RestaurantView {
     this.menus = document.getElementById("menus");
     this.restaurants = document.getElementById("restaurants");
     this.mainArea = document.getElementById("mainArea");
-
-    this.productWindow = null;
   }
 
   [EXCECUTE_HANDLER](handler, handlerArguments, scrollElement, data, url,
@@ -323,97 +321,6 @@ class RestaurantView {
     );
   }
 
-  // bindOpenWindow(handler) {
-  //   console.log("---------------");
-  //   const buttons = mainArea.getElementsByClassName('openWindowButton');
-  //   for (const button of buttons) {
-  //     button.addEventListener('click', (event) => {
-  //       // se puede usar así(event.currentTarget) o button.
-  //       handler(button.dataset.name);
-  //     });
-  //   }
-  // }
-
-  bindOpenWindow(handler) {
-    const buttons = mainArea.getElementsByClassName('openWindowButton');
-    for (const button of buttons) {
-      button.addEventListener('click', (event) => {
-        if (!this.productWindow || this.productWindow.closed) {
-          // this.productWindow = window.open('auxPage.html', 'ProductWindow', 'width=800, height=600, top=250, left=250, titlebar=yes, toolbar=no, menubar=no, location=no');
-          this.productWindow = window.open('auxPage.html', '_blank', 'width=600,height=400');
-          this.productWindow.addEventListener('DOMContentLoaded', () => {
-            handler(event.target.dataset.name);
-          });
-        } else {
-          handler(event.target.dataset.name);
-          this.productWindow.focus();
-        }
-      });
-    }
-  }
-
-  showDishInNewWindow(dish, message, cadena = 'd1') {
-    const main = this.productWindow.document.querySelector('main');
-    const header = this.productWindow.document.querySelector('header nav');
-    main.replaceChildren();
-    header.replaceChildren();
-    let container;
-    if (product) {
-      this.productWindow.document.title = `${dish.name}`;
-      header.insertAdjacentHTML('beforeend', `<h1 data-name="${dish.name}" class="">${dish.name}</h1>`);
-      container = document.createElement('div');
-      container.id = 'prueba';
-      // container.classList.add(`${product.constructor.name}-style`);
-      // container.classList.add('container');
-      // container.classList.add('mt-5');
-      // container.classList.add('mb-5');
-      container.insertAdjacentHTML('beforeend', `
-        <div class="row d-flex justify-content-center">
-            <div class="col">
-            <div class="card" style="width: 23rem">
-              <img class="tamImg" src="./img/${dish.image}" alt="Imagen del plato: ${value.name}" />
-              <div class="card-body">
-                <h5 class="card-title">${dish.name}</h5>
-
-                <button class="btn btn-dark" type="button"
-                  data-bs-toggle="collapse" data-bs-target="#${cadena}" aria-expanded="false"
-                  aria-controls="${cadena}">
-                    Descripción
-                </button>
-
-                <button data-name="${dish.name}" data-img="${dish.image}" 
-                  data-desc="${dish.description}" data-ing="${dish.ingredients}" 
-                  class="btn btn-dark openWindowButton" type="button">
-                    Abrir página
-                </button>
-
-                <div class="collapse" id="${cadena}">
-                  <div class="card-text">
-                    Descripción: ${dish.description}. 
-                    Incredientes: ${dish.ingredients}      
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-  			</div>`);
-      main.append(container);
-    } else {
-      container = document.createElement('div');
-      container.classList.add('container');
-      container.classList.add('mt-5');
-      container.classList.add('mb-5');
-      container.insertAdjacentHTML('beforeend', `<div class="row d-flex justify-content-center">${message}</div>`);
-    }
-    main.append(container);
-    this.productWindow.document.body.scrollIntoView();
-  }
-
-  bindCloseAllWindows(handler) {
-    const closeAllWindowsButton = document.getElementById('closeAllWindowsButton');
-    closeAllWindowsButton.addEventListener('click', handler);
-  }
-
   // Métodos bind.
   bindInit(handler) {
     // Les pone el enlace a los de inicio.
@@ -425,6 +332,23 @@ class RestaurantView {
       this[EXCECUTE_HANDLER](handler, [], 'body', { action: 'init' }, '#',
         event);
     });
+  }
+
+  // Devolver el nombre del plato y luego handler(abrir ventana nueva). 
+  bindOpenWindow(handler) {
+    const buttons = mainArea.getElementsByClassName('openWindowButton');
+    for (const button of buttons) {
+      button.addEventListener('click', (event) => {
+        // se puede usar así(event.currentTarget) o button.
+        handler(event.currentTarget.dataset.name);
+      });
+    }
+  }
+
+  // Si le ha dado click cerrar todas las ventanas abiertas(handler).
+  bindCloseAllWindows(handler) {
+    const closeAllWindowsButton = document.getElementById('closeAllWindowsButton');
+    closeAllWindowsButton.addEventListener('click', handler);
   }
 
   // Devuelve un entero random entre 0 y el máximo pasado por parámetro.

@@ -39,13 +39,9 @@ class RestaurantController {
         this[VIEW].showRandomDishes(dishes);
         this[VIEW].showCloseAllWindowsButton();
 
-        // this[VIEW].showThatCategories(categories, dishes, this.handleOpenWindow);
-        // this[VIEW].showThatAllergens(allergens, dishes, this.handleOpenWindow);
-        // this[VIEW].showThatMenus(menus, this.handleOpenWindow);
-
-        this[VIEW].showThatCategories(categories, dishes, this.handleShowProduct);
-        this[VIEW].showThatAllergens(allergens, dishes, this.handleShowProduct);
-        this[VIEW].showThatMenus(menus, this.handleShowProduct);
+        this[VIEW].showThatCategories(categories, dishes, this.handleOpenWindow);
+        this[VIEW].showThatAllergens(allergens, dishes, this.handleOpenWindow);
+        this[VIEW].showThatMenus(menus, this.handleOpenWindow);
 
         this[VIEW].showThatRestaurants(restaurants);
 
@@ -58,19 +54,29 @@ class RestaurantController {
 
     // Abrir una ventana nueva.
     handleOpenWindow = (nameD) => {
-        const newWindow = window.open('auxPage.html', '_blank', 'width=600,height=400');
-        if (newWindow) {
-            // Si la ventana se abrió correctamente, agregamos su referencia al array.
-            this.openedWindows.push(newWindow);
+        // Buscar el plato.
+        const dish = this[MODEL].getDish("nameD");
 
-            // Generar elementos en la nueva ventana.
-            newWindow.document.write("<h1>Nombre: " + nameD + " </h1>");
-            // newWindow.document.write("<p>Descripción " + descD + " </p>");
-            // newWindow.document.write("<p>Ingredientes: " + ingD + " </p>");
-            // newWindow.document.write("<img class='tamImg' src='./img/" + imgD + "' alt='Imagen del plato: " + nameD + "' />");
+        // Si lo encuentra.
+        if (dish !== undefined) {
+            const newWindow = window.open('auxPage.html', 'DishWindow', 'width=800, height=600, top=250, left=250, titlebar=yes, toolbar=no, menubar=no, location=no');
+            if (newWindow) {
+                // Si la ventana se abrió correctamente, agregamos su referencia al array.
+                this.openedWindows.push(newWindow);
+            
+                let myObj = {
+                    name: dish.elem.name,
+                    description: dish.elem.description,
+                    ingredients: dish.elem.ingredients,
+                    image: dish.elem.image,
+                };
+                // Serializar.
+                let stringJSON = JSON.stringify(myObj);
 
-            // newWindow.document.write("<script src='js/auxPage.js'></script>");
-            // newWindow.postMessage({ name: nameD, image: imgD, description: descD, ingredients: ingD }, '*');
+                newWindow.addEventListener('load', function() {
+                    newWindow.postMessage(stringJSON, '*');
+                });
+            }
         }
     }
 
@@ -82,24 +88,6 @@ class RestaurantController {
         });
         this.openedWindows = [];
     }
-
-
-    handleShowProduct = () => {
-        this[VIEW].bindOpenWindow(
-            this.handleShowDishInNewWindow,
-        );
-        // console.log(this);
-    };
-
-    handleShowDishInNewWindow = (nameD) => {
-        try {
-            const dish = this[MODEL].getDish(nameD);
-            this[VIEW].showProductInNewWindow(dish);
-        } catch (error) {
-            alert("no se encontro(" + nameD + "): " + dish);
-        }
-    };
-
 
     [LOAD_RESTAURANT_OBJECTS]() {
         // Los platos.
