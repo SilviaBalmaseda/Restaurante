@@ -32,17 +32,17 @@ class RestaurantController {
         const restaurants = [...this[MODEL].getRestaurants()];
 
         this[VIEW].showCategories(categories);
-        this[VIEW].showCategoriesMain(categories);
+        // this[VIEW].showCategoriesMain(categories);
         this[VIEW].showAllergens(allergens);
         this[VIEW].showMenus(menus);
         this[VIEW].showRestaurants(restaurants);
         this[VIEW].showRandomDishes(dishes);
+        this[VIEW].showAdmin(dishes, menus, categories, restaurants, allergens, this.handleCreateDish)
         this[VIEW].showCloseAllWindowsButton();
 
         this[VIEW].showThatCategories(categories, dishes, this.handleOpenWindow);
         this[VIEW].showThatAllergens(allergens, dishes, this.handleOpenWindow);
         this[VIEW].showThatMenus(menus, this.handleOpenWindow);
-
         this[VIEW].showThatRestaurants(restaurants);
 
         this[VIEW].bindCloseAllWindows(this.handleCloseAllWindows);
@@ -55,11 +55,11 @@ class RestaurantController {
     // Abrir una ventana nueva.
     handleOpenWindow = (nameD) => {
         // Buscar el plato.
-        const dish = this[MODEL].getDish("nameD");
+        const dish = this[MODEL].getDish(nameD);
 
         // Si lo encuentra.
         if (dish !== undefined) {
-            const newWindow = window.open('auxPage.html', 'DishWindow', 'width=800, height=600, top=250, left=250, titlebar=yes, toolbar=no, menubar=no, location=no');
+            const newWindow = window.open('auxPage.html', '_blank', 'width=800, height=600, top=250, left=250, titlebar=yes, toolbar=no, menubar=no, location=no');
             if (newWindow) {
                 // Si la ventana se abrió correctamente, agregamos su referencia al array.
                 this.openedWindows.push(newWindow);
@@ -87,6 +87,47 @@ class RestaurantController {
             window.close();
         });
         this.openedWindows = [];
+    }
+
+    handleCreateDish = (nameD, desc, ing, img, cat, all) => {
+        console.log(nameD + " " + desc + " " + cat + " " + all);
+        const dish = this[MODEL].createDish(nameD);
+    
+        if (desc != "") {
+            dish.description = desc;
+        }
+
+        if (ing != "") {
+            dish.ingredients = ing;
+        }
+
+        if (img != "") {
+            dish.image = img;
+        }
+        
+        let done;
+        let error;
+        try {
+          this[MODEL].addDish(dish);
+          if (cat != "") {
+            this[MODEL].assignCategoryToDish(cat, dish);
+          }
+    
+          if (all != "") {
+            this[MODEL].assignAllergenToDish(all, dish);
+          }
+    
+          done = true;
+          this.onAdmin();
+        } catch (exception) {
+          done = false;
+          error = exception;
+        }
+        this[VIEW].showNewDishModal(done, nameD, error);
+    };
+    
+    onAdmin = () => {
+        this[VIEW].bindCreateDish(this.handleCreateDish);
     }
 
     [LOAD_RESTAURANT_OBJECTS]() {

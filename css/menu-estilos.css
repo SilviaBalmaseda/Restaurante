@@ -53,3 +53,18 @@
     width: 9.52em;
     height: 8em
 }
+
+hr {
+    /* Para que no se salga del borde cuando se estrecha */
+    flex-shrink: unset !important; 
+    /* Para que se vea el color sin transparencia */
+    opacity: 1 !important;
+    height: 10px; 
+    background-color: #f87f28;
+}
+
+.formu h3 {
+    text-decoration: underline;
+    text-decoration-color: blueviolet;
+    text-decoration-style: dashed;
+}
