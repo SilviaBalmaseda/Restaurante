@@ -89,19 +89,20 @@ class RestaurantController {
         this.openedWindows = [];
     }
 
-    handleCreateDish = (nameD, desc, ing, img, cat, all) => {
-        console.log(nameD + " " + desc + " " + cat + " " + all);
+    handleCreateDish = (nameD, des, ing, img, cat, all) => {
+        // console.log(nameD + " " + desc + " " + ing + " " + img +" " + cat + " " + all);
         const dish = this[MODEL].createDish(nameD);
     
-        if (desc != "") {
-            dish.description = desc;
+        console.log(des);
+        if (des != "" && des != undefined) {
+            dish.description = des;
         }
 
-        if (ing != "") {
+        if (ing != "" && ing != undefined) {
             dish.ingredients = ing;
         }
 
-        if (img != "") {
+        if (img != "" && img != undefined) {
             dish.image = img;
         }
         
@@ -124,6 +125,8 @@ class RestaurantController {
           error = exception;
         }
         this[VIEW].showNewDishModal(done, nameD, error);
+        const dishes = [...this[MODEL].getDishes()];
+        console.log(dishes);
     };
     
     onAdmin = () => {

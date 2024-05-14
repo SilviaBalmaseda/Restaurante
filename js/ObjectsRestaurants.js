@@ -77,7 +77,6 @@ class Dish {
     set ingredients(value) {
         if (value === 'undefined' || value === '') throw new EmptyValueException("ingredients");
         if (!(Array.isArray(value))) throw EmptyValueException("ingredients");
-
         this.#ingredients = value;
     }
 

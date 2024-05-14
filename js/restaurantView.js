@@ -328,7 +328,7 @@ class RestaurantView {
                 <hr>
 
                 <h3>Asignar plato a categoría: </h3>
-                <select name="fCategory" class="form-select" id="fCategory" aria-describedby="fCategory" >
+                <select name="sCategory" class="form-select" id="sCategory" aria-describedby="sCategory" >
                   <option selected value=''>No tiene categoría</option> 
     `;
 
@@ -338,7 +338,7 @@ class RestaurantView {
 
     formu += `</select>
               <h3>Asignar plato a alégeno: </h3>
-                <select name="fallergen" class="form-select" id="fallergen" aria-describedby="fallergen" >
+                <select name="sAllergen" class="form-select" id="sAllergen" aria-describedby="sAllergen" >
                   <option selected value=''>No tiene alérgeno</option> 
     `;
 
@@ -347,7 +347,7 @@ class RestaurantView {
     }
 
       formu +=`</select>
-              <button class="btn btn-dark" type="submit">
+              <button class="btn btn-dark" id="btnCreateDish" type="submit">
                   CREAR PLATO
               </button>
             </div>
@@ -367,7 +367,7 @@ class RestaurantView {
           <div class="card-text">
             <form name="fDeleteDishes" role="form" class="row g-3 formu" novalidate>
               <h3>Eliminar plato: </h3>
-              <select name="fDish" class="form-select" id="fDish" aria-describedby="fDish" multiple>
+              <select name="sDish" class="form-select" id="sDish" aria-describedby="sDish" multiple>
     `;
 
     for (const dis of dishes) {
@@ -404,7 +404,7 @@ class RestaurantView {
 
               <div class="collapse" id="asign">
 
-                <select name="fDish" class="form-select" id="fDish" aria-describedby="fDish" multiple>
+                <select name="seDish" class="form-select" id="seDish" aria-describedby="seDish" multiple>
     `;
 
     for (const dis of dishes) {
@@ -412,7 +412,7 @@ class RestaurantView {
     }
 
     formu += `</select>
-              <select name="fMenus" class="form-select" id="fMenus" aria-describedby="fMenus">
+              <select name="sMenus" class="form-select" id="sMenus" aria-describedby="sMenus">
     `;
 
     for (const men of menus) {
@@ -437,7 +437,7 @@ class RestaurantView {
 
               <div class="collapse" id="desasign">
 
-                <select name="fDish" class="form-select" id="fDish" aria-describedby="fDish">
+                <select name="selDish" class="form-select" id="selDish" aria-describedby="selDish">
     `;
 
     for (const dis of dishes) {
@@ -445,7 +445,7 @@ class RestaurantView {
     }
 
     formu += `</select>
-              <select name="fMenus" class="form-select" id="fMenus" aria-describedby="fMenus" multiple>
+              <select name="seMenus" class="form-select" id="seMenus" aria-describedby="seMenus" multiple>
     `;
 
     for (const men of menus) {
@@ -500,7 +500,7 @@ class RestaurantView {
               <hr>
 
               <h3>Eliminar categoría: </h3>
-              <select name="fCategory" class="form-select" id="fCategory" aria-describedby="fCategory" multiple>
+              <select name="seCategory" class="form-select" id="seCategory" aria-describedby="seCategory" multiple>
     `;
 
     for (const cat of categories) {
@@ -585,7 +585,7 @@ class RestaurantView {
 
             <div class="collapse" id="add">
 
-              <select name="fDish" class="form-select" id="fDish" aria-describedby="fDish" multiple>
+              <select name="seleDish" class="form-select" id="seleDish" aria-describedby="seleDish" multiple>
   `;
 
   for (const dis of dishes) {
@@ -618,7 +618,7 @@ class RestaurantView {
 
             <div class="collapse" id="desasignC">
 
-              <select name="fDish" class="form-select" id="fDish" aria-describedby="fDish" multiple>
+              <select name="selecDish" class="form-select" id="selecDish" aria-describedby="selecDish" multiple>
   `;
 
   for (const dis of dishes) {
@@ -650,7 +650,10 @@ class RestaurantView {
   showAdmin(dishes, menus, categories, restaurants, allergens, handler){
     const button = document.getElementById("admin");
 
-		button.addEventListener('click', () => {
+		button.addEventListener('click', (event) => {
+			// Prevenir el comportamiento por defecto del enlace.
+			event.preventDefault();
+
 			// Eliminamos la anterior categoría si se ha seleccionado.
 			if (document.getElementById("breadcrumb-item1")) {
 				this.breadcrumb.removeChild(document.getElementById("breadcrumb-item1"));
@@ -683,7 +686,7 @@ class RestaurantView {
 			// 6 Modificar categoría de un plato.
 			this.showFormModifyCategory(dishes, categories);
 
-			this.bindCreateDish(handler);
+      this.bindCreateDish(handler);
     });
   }
 
@@ -701,7 +704,7 @@ class RestaurantView {
     } else {
       body.insertAdjacentHTML('afterbegin',
         `<div class="error text-danger p-3">
-					<i class="bi bi-exclamation-triangle"></i> El plato <strong>${nameD}</strong> ya está creado.
+					<i class="bi bi-exclamation-triangle"></i> El plato <strong>${nameD}</strong> NO se pudo crear.
 					<br>${error}
 				</div>`,
       );
@@ -785,6 +788,7 @@ class RestaurantView {
     closeAllWindowsButton.addEventListener('click', handler);
   }
 
+  // Para validar la creación de los platos.
 	bindCreateDish(handler) {
     createDishValidation(handler);
   }
