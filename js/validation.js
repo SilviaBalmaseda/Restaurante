@@ -84,6 +84,7 @@ function createDishValidation(handler) {
     form.sAllergen.addEventListener('change', defaultCheckElement);
 }
 
+// Función para eliminar varios platos.
 function deleteDishValidation(handler) {
   const form = document.forms.fDeleteDishes;
   form.setAttribute('novalidate', true);
@@ -131,7 +132,119 @@ function deleteDishValidation(handler) {
   }));
 }
 
-// Asignar
+// Función para asignar un plato a varios menús.
+function asignMenuValidation(handler) {
+  const form = document.forms.fAsignDishes;
+  form.setAttribute('novalidate', true);
+  let m = document.getElementById('sMenus');
+
+  // Validar datos.
+  form.addEventListener('submit', function (event) {
+      // Prevenir el comportamiento por defecto del enlace.
+      event.preventDefault();
+
+      let isValid = true;
+      let firstInvalidElement = null;
+
+      let selec = [];
+      // Guardamos los select seleccionados. 
+      for (const elem of m.options) {
+        if (elem.selected == true) {
+          selec.push(elem.value);
+        }
+      }
+      
+      if (selec.length!=0) {
+        this.sMenus.value = selec;
+      }
+      else {
+        isValid = false;
+      }
+
+      this.seDish.value = this.seDish.value.trim();
+      showFeedBack(this.seDish, true);
+
+      if (!this.sMenus.checkValidity()) {
+        sMenus = false;
+        showFeedBack(this.sMenus, false);
+        firstInvalidElement = this.sMenus;
+      } else {
+        showFeedBack(this.sMenus, true);
+      }
+
+      if (!this.seDish.checkValidity()) {
+        isValid = false;
+        showFeedBack(this.seDish, false);
+        firstInvalidElement = this.seDish;
+      } else {
+        showFeedBack(this.seDish, true);
+      }
+
+      if (!isValid) {
+          firstInvalidElement.focus();
+      } else {
+          handler(selec, this.seDish.value);
+      }
+      event.stopPropagation();
+  });
+}
+
+// Función para desasignar un plato a varios menús.
+function desasignMenuValidation(handler) {
+  const form = document.forms.fDesasignDishes;
+  form.setAttribute('novalidate', true);
+  let m = document.getElementById('seMenus');
+
+  // Validar datos.
+  form.addEventListener('submit', function (event) {
+      // Prevenir el comportamiento por defecto del enlace.
+      event.preventDefault();
+
+      let isValid = true;
+      let firstInvalidElement = null;
+
+      let selec = [];
+      // Guardamos los select seleccionados. 
+      for (const elem of m.options) {
+        if (elem.selected == true) {
+          selec.push(elem.value);
+        }
+      }
+      
+      if (selec.length!=0) {
+        this.seMenus.value = selec;
+      }
+      else {
+        isValid = false;
+      }
+
+      this.selDish.value = this.selDish.value.trim();
+      showFeedBack(this.selDish, true);
+
+      if (!this.selDish.checkValidity()) {
+        isValid = false;
+        showFeedBack(this.selDish, false);
+        firstInvalidElement = this.selDish;
+      } else {
+        showFeedBack(this.selDish, true);
+      }
+
+      if (!this.seMenus.checkValidity()) {
+        seMenus = false;
+        showFeedBack(this.seMenus, false);
+        firstInvalidElement = this.seMenus;
+      } else {
+        showFeedBack(this.seMenus, true);
+      }
+
+      if (!isValid) {
+          firstInvalidElement.focus();
+      } else {
+          handler(selec, this.selDish.value);
+      }
+      event.stopPropagation();
+  });
+}
 
 // Función para crear una nueva categoría.
 function createCategoryValidation(handler) {
@@ -260,15 +373,129 @@ function createRestaurantValidation(handler) {
   form.lonRest.addEventListener('change', defaultCheckElement);
 }
 
-// Añadir
+// Función para asignar un plato a varios menús.
+function asignCategoryValidation(handler) {
+  const form = document.forms.fModifyAsign;
+  form.setAttribute('novalidate', true);
+  let d = document.getElementById('seleDish');
+
+  // Validar datos.
+  form.addEventListener('submit', function (event) {
+      // Prevenir el comportamiento por defecto del enlace.
+      event.preventDefault();
+
+      let isValid = true;
+      let firstInvalidElement = null;
+
+      let selec = [];
+      // Guardamos los select seleccionados. 
+      for (const elem of d.options) {
+        if (elem.selected == true) {
+          selec.push(elem.value);
+        }
+      }
+      
+      if (selec.length!=0) {
+        this.seleDish.value = selec;
+      }
+      else {
+        isValid = false;
+      }
+
+      this.seCategories.value = this.seCategories.value.trim();
+      showFeedBack(this.seCategories, true);
+
+      if (!this.seleDish.checkValidity()) {
+        seleDish = false;
+        showFeedBack(this.seleDish, false);
+        firstInvalidElement = this.seleDish;
+      } else {
+        showFeedBack(this.seleDish, true);
+      }
+
+      if (!this.seCategories.checkValidity()) {
+        isValid = false;
+        showFeedBack(this.seCategories, false);
+        firstInvalidElement = this.seCategories;
+      } else {
+        showFeedBack(this.seCategories, true);
+      }
+
+      if (!isValid) {
+          firstInvalidElement.focus();
+      } else {
+          handler(selec, this.seCategories.value);
+      }
+      event.stopPropagation();
+  });
+}
+
+// Función para desasignar un plato a varios menús.
+function desasignCategoryValidation(handler) {
+  const form = document.forms.fModifyDesasign;
+  form.setAttribute('novalidate', true);
+  let d = document.getElementById('selecDish');
+
+  // Validar datos.
+  form.addEventListener('submit', function (event) {
+      // Prevenir el comportamiento por defecto del enlace.
+      event.preventDefault();
+
+      let isValid = true;
+      let firstInvalidElement = null;
+
+      let selec = [];
+      // Guardamos los select seleccionados. 
+      for (const elem of d.options) {
+        if (elem.selected == true) {
+          selec.push(elem.value);
+        }
+      }
+      
+      if (selec.length!=0) {
+        this.selecDish.value = selec;
+      }
+      else {
+        isValid = false;
+      }
+
+      this.fCategories.value = this.fCategories.value.trim();
+      showFeedBack(this.fCategories, true);
+
+      if (!this.fCategories.checkValidity()) {
+        isValid = false;
+        showFeedBack(this.fCategories, false);
+        firstInvalidElement = this.fCategories;
+      } else {
+        showFeedBack(this.fCategories, true);
+      }
+
+      if (!this.selecDish.checkValidity()) {
+        selecDish = false;
+        showFeedBack(this.selecDish, false);
+        firstInvalidElement = this.selecDish;
+      } else {
+        showFeedBack(this.selecDish, true);
+      }
+
+      if (!isValid) {
+          firstInvalidElement.focus();
+      } else {
+          handler(selec, this.fCategories.value);
+      }
+      event.stopPropagation();
+  });
+}
 
 
 export {
-    createDishValidation,
-    deleteDishValidation,
-
-    createCategoryValidation,
-    deleteCategoryValidation,
-    createRestaurantValidation,
-
+  createDishValidation,
+  deleteDishValidation,
+  asignMenuValidation, 
+  desasignMenuValidation,
+  createCategoryValidation,
+  deleteCategoryValidation,
+  createRestaurantValidation,
+  asignCategoryValidation, 
+  desasignCategoryValidation,
 };

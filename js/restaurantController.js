@@ -109,11 +109,14 @@ class RestaurantController {
         this[VIEW].showAdmin(dishes, menus, categories, this[MODEL].getRestaurants(), this[MODEL].getAllergens());
         this[VIEW].bindCreateDish(this.handleCreateDish);
         this[VIEW].bindDeleteDish(this.handleDeleteDish);
-        // Asignar
+        this[VIEW].bindAsignMenu(this.handleAsignMenu);
+        this[VIEW].bindDesasignMenu(this.handleDesasignMenu);
         this[VIEW].bindCreateCategory(this.handleCreateCategory);
         this[VIEW].bindDeleteCategory(this.handleDeleteCategory);
         this[VIEW].bindCreateRestaurant(this.handleCreateRestaurant);
-        // Añadir
+
+        this[VIEW].bindAsignCategory(this.handleAsignCategory);
+        this[VIEW].bindDesasignCategory(this.handleDesasignCategory);
     }
 
     // Crear plato.
@@ -154,8 +157,8 @@ class RestaurantController {
           this[MODEL].removeDish(dish);
         }
         this[VIEW].showNewDishModal(done, nameD, error);
-        const dishes = [...this[MODEL].getDishes()];
-        console.log(dishes);
+        // const dishes = [...this[MODEL].getDishes()];
+        // console.log(dishes);
     };
 
     // Eliminar platos.
@@ -174,19 +177,45 @@ class RestaurantController {
           error = exception;
         }
         this[VIEW].showRemoveDishModal(done, arrayD.toString(), error);
-        const dishes = [...this[MODEL].getDishes()];
-        console.log(dishes);
+        // const dishes = [...this[MODEL].getDishes()];
+        // console.log(dishes);
     };
 
-    // Asignar Categoría.
-    handleAsignCategory = (nameCat, nameD) => {
+    // Asignar Menú.
+    handleAsignMenu = (arrayM, nameD) => {
         let done;
         let error;
         try {
-          if (nameCat != "" && nameD != "") {
-            let cat = this[MODEL].getCategory(nameCat); // Buscamos la categoría.
+            if (arrayM.length!=0 && nameD != "") {
+                let dis = this[MODEL].getDish(nameD).elem;  // Buscamos el plato.
+                for (const nameM of arrayM) {
+                    let men = this[MODEL].getMenu(nameM).elem; // Buscamos el menú.
+                    this[MODEL].assignDishToMenu(dis, men);
+                }
+            }
+          
+          done = true;
+          this.onAdmin();
+        } catch (exception) {
+          done = false;
+          error = exception;
+        }
+        this[VIEW].showAsignMenuyModal(done, nameD, arrayM.toString(), error);
+        // const m = [...this[MODEL].getMenus()];
+        // console.log(m);
+    };
+
+    // Desasignar Menú.
+    handleDesasignMenu = (arrayM, nameD) => {
+        let done;
+        let error;
+        try {
+          if (arrayM.length!=0 && nameD != "") {
             let dis = this[MODEL].getDish(nameD).elem;  // Buscamos el plato.
-            this[MODEL].assignCategoryToDish(cat, dis);
+            for (const nameM of arrayM) {
+                let men = this[MODEL].getMenu(nameM).elem; // Buscamos el menú.
+                this[MODEL].deassignDishToMenu(dis, men);
+            }
           }
           
           done = true;
@@ -195,16 +224,13 @@ class RestaurantController {
           done = false;
           error = exception;
         }
-        this[VIEW].showAsignCategoryModal(done, nameCat, nameD, error);
-        const dishes = [...this[MODEL].getDishes()];
-        console.log(dishes);
+        this[VIEW].showDesasignMenuModal(done, nameD, arrayM.toString(), error);
+        // const m = [...this[MODEL].getMenus()];
+        // console.log(m);
     };
-
 
     // Crear categoría.
     handleCreateCategory = (nameC, des) => {
-        const cat = this[MODEL].createCategory(nameC);
-    
         if (des != "" && des != undefined) {
             cat.description = des;
         }
@@ -212,18 +238,18 @@ class RestaurantController {
         let done;
         let error;
         try {
-          this[MODEL].addCategory(cat);
-          
-          done = true;
-          this.onAdmin();
+            const cat = this[MODEL].createCategory(nameC);
+            this[MODEL].addCategory(cat);
+            
+            done = true;
+            this.onAdmin();
         } catch (exception) {
-          done = false;
-          error = exception;
-          this[MODEL].removeCategory(cat);
+            done = false;
+            error = exception;
         }
         this[VIEW].showNewCategoryModal(done, nameC, error);
-        const c = [...this[MODEL].getCategories()];
-        console.log(c);
+        // const c = [...this[MODEL].getCategories()];
+        // console.log(c);
     };
 
     // Eliminar categorías.
@@ -242,10 +268,9 @@ class RestaurantController {
           error = exception;
         }
         this[VIEW].showRemoveCategoryModal(done, arrayC.toString(), error);
-        const c = [...this[MODEL].getCategories()];
-        console.log(c);
+        // const c = [...this[MODEL].getCategories()];
+        // console.log(c);
     };
-
 
     // Crear restaurante.
     handleCreateRestaurant = (nameR, des, latitude, longitude) => {
@@ -272,11 +297,59 @@ class RestaurantController {
           this[MODEL].removeRestaurant(res);
         }
         this[VIEW].showNewRestaurantModal(done, nameR, error);
-        const r = [...this[MODEL].getRestaurants()];
-        console.log(r);
+        // const r = [...this[MODEL].getRestaurants()];
+        // console.log(r);
     };
 
-    // Añadir 
+    // Asignar Categoría.
+    handleAsignCategory = (arrayD, nameC) => {
+        let done;
+        let error;
+        try {
+          if (nameC != "" && arrayD.length!=0) {
+            let cat = this[MODEL].getCategory(nameC); // Buscamos la categoría.
+            for (const nameD of arrayD) {
+                let dis = this[MODEL].getDish(nameD).elem;  // Buscamos los platos.
+                this[MODEL].assignCategoryToDish(cat, dis);
+            }
+          }
+          
+          done = true;
+          this.onAdmin();
+        } catch (exception) {
+          done = false;
+          error = exception;
+        }
+        this[VIEW].showAsignMenuyModal(done, arrayD.toString(), nameC, error);
+        // const m = [...this[MODEL].getMenus()];
+        // console.log(m);
+    };
+
+    // Desasignar Categoría.
+    handleDesasignCategory = (arrayD, nameC) => {
+        let done;
+        let error;
+        try {
+          if (nameC != "" && arrayD.length!=0) {
+            let cat = this[MODEL].getCategory(nameC); // Buscamos la categoría.
+            for (const nameD of arrayD){
+                let dis = this[MODEL].getDish(nameD).elem;  // Buscamos los platos.
+                this[MODEL].deassignCategoryToDish(cat, dis);
+            }
+          }
+          
+          done = true;
+          this.onAdmin();
+        } catch (exception) {
+          done = false;
+          error = exception;
+        }
+        this[VIEW].showDesasignMenuModal(done, arrayD.toString(), nameC, error);
+        // const m = [...this[MODEL].getMenus()];
+        // console.log(m);
+    };
+
+
 
     // Abrir una ventana nueva.
     handleOpenWindow = (nameD) => {
@@ -314,6 +387,7 @@ class RestaurantController {
         });
         this.openedWindows = [];
     }
+
     
     [LOAD_RESTAURANT_OBJECTS]() {
         // Los platos.

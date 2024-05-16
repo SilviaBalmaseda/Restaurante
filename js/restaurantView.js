@@ -1,4 +1,4 @@
-import { createDishValidation, deleteDishValidation,   createCategoryValidation, deleteCategoryValidation, createRestaurantValidation, } from "./validation.js";
+import { createDishValidation, deleteDishValidation, asignMenuValidation, desasignMenuValidation, createCategoryValidation, deleteCategoryValidation, createRestaurantValidation, asignCategoryValidation, desasignCategoryValidation } from "./validation.js";
 
 const EXCECUTE_HANDLER = Symbol('excecuteHandler');
 
@@ -353,7 +353,7 @@ class RestaurantView {
 
               <div class="collapse" id="asign">
 
-                <select name="seDish" class="form-select" id="seDish" aria-describedby="seDish" multiple>
+                <select name="seDish" class="form-select" id="seDish" aria-describedby="seDish">
     `;
 
     for (const dis of dishes) {
@@ -361,7 +361,7 @@ class RestaurantView {
     }
 
     formu += `</select>
-              <select name="sMenus" class="form-select" id="sMenus" aria-describedby="sMenus">
+              <select name="sMenus" class="form-select" id="sMenus" aria-describedby="sMenus" multiple>
     `;
 
     for (const men of menus) {
@@ -527,82 +527,82 @@ class RestaurantView {
 
   // Mostrar formulario para modificar categoría de un plato.
   showFormModifyCategory(dishes, categories){
-  let formu = `
-    <div class="col">
-      <div class="card" style="width: 23rem">
-        <div class="card-text">
-          <form name="fModifyAsign" role="form" class="row g-3 formu" novalidate>
-            <h3>Añadir platos a categoría: </h3>
+    let formu = `
+      <div class="col">
+        <div class="card" style="width: 23rem">
+          <div class="card-text">
+            <form name="fModifyAsign" role="form" class="row g-3 formu" novalidate>
+              <h3>Añadir platos a categoría: </h3>
 
-            <button class="btn btn-dark" type="button"
-            data-bs-toggle="collapse" data-bs-target="#add" aria-expanded="false"
-            aria-controls="add">
-              ELEGIR ASIGNACIÓN
-            </button>
-
-            <div class="collapse" id="add">
-
-              <select name="seleDish" class="form-select" id="seleDish" aria-describedby="seleDish" multiple>
-  `;
-
-  for (const dis of dishes) {
-    formu += `<option value="${dis.elem.name}">${dis.elem.name}</option>`;
-  }
-
-  formu += `</select>
-            <select name="fCategories" class="form-select" id="fCategories" aria-describedby="fCategories">
-  `;
-
-  for (const cat of categories) {
-    formu += `<option value="${cat.name}">${cat.name}</option>`;
-  }
-
-  formu += `  </select>
-              <button class="btn btn-dark" type="submit">
-                ASIGNAR
+              <button class="btn btn-dark" type="button"
+              data-bs-toggle="collapse" data-bs-target="#add" aria-expanded="false"
+              aria-controls="add">
+                ELEGIR ASIGNACIÓN
               </button>
-            </div>
-          </form>
 
-          <hr>
+              <div class="collapse" id="add">
 
-          <form name="fModifyDesasign" role="form" class="row g-3 formu" novalidate>
-            <h3>Eliminar platos a categoría: </h3>
-            
-            <button class="btn btn-dark" type="button"
-            data-bs-toggle="collapse" data-bs-target="#desasignC" aria-expanded="false"
-            aria-controls="desasignC">
-              ELEGIR DESASIGNACIÓN
-            </button>
+                <select name="seleDish" class="form-select" id="seleDish" aria-describedby="seleDish" multiple>
+    `;
 
-            <div class="collapse" id="desasignC">
+    for (const dis of dishes) {
+      formu += `<option value="${dis.elem.name}">${dis.elem.name}</option>`;
+    }
 
-              <select name="selecDish" class="form-select" id="selecDish" aria-describedby="selecDish" multiple>
-  `;
+    formu += `</select>
+              <select name="seCategories" class="form-select" id="seCategories" aria-describedby="seCategories">
+    `;
 
-  for (const dis of dishes) {
-    formu += `<option value="${dis.elem.name}">${dis.elem.name}</option>`;
-  }
+    for (const cat of categories) {
+      formu += `<option value="${cat.name}">${cat.name}</option>`;
+    }
 
-  formu += `</select>
-            <select name="fCategories" class="form-select" id="fCategories" aria-describedby="fCategories">
-  `;
+    formu += `  </select>
+                <button class="btn btn-dark" type="submit">
+                  ASIGNAR
+                </button>
+              </div>
+            </form>
 
-  for (const cat of categories) {
-    formu += `<option value="${cat.name}">${cat.name}</option>`;
-  }
+            <hr>
 
-  formu += `
-            </select>
-            <button class="btn btn-dark" type="submit">
-              DESASIGNAR 
-            </button>
-          </form>
+            <form name="fModifyDesasign" role="form" class="row g-3 formu" novalidate>
+              <h3>Eliminar platos a categoría: </h3>
+              
+              <button class="btn btn-dark" type="button"
+              data-bs-toggle="collapse" data-bs-target="#desasignC" aria-expanded="false"
+              aria-controls="desasignC">
+                ELEGIR DESASIGNACIÓN
+              </button>
+
+              <div class="collapse" id="desasignC">
+
+                <select name="selecDish" class="form-select" id="selecDish" aria-describedby="selecDish" multiple>
+    `;
+
+    for (const dis of dishes) {
+      formu += `<option value="${dis.elem.name}">${dis.elem.name}</option>`;
+    }
+
+    formu += `</select>
+              <select name="fCategories" class="form-select" id="fCategories" aria-describedby="fCategories">
+    `;
+
+    for (const cat of categories) {
+      formu += `<option value="${cat.name}">${cat.name}</option>`;
+    }
+
+    formu += `
+              </select>
+              <button class="btn btn-dark" type="submit">
+                DESASIGNAR 
+              </button>
+            </form>
+          </div>
         </div>
-      </div>
-    </div>`;
+      </div>`;
 
-  this.mainArea.insertAdjacentHTML("beforeend", formu);
+    this.mainArea.insertAdjacentHTML("beforeend", formu);
   }
 
 	// Mostrar todos los formularios.
@@ -703,9 +703,65 @@ class RestaurantView {
     messageModalContainer.addEventListener('hidden.bs.modal', listener, { once: true });
   }
 
-  // Asignar
+  // Mostrar mensaje(plato y menú) asignados correctamente o de error(si hay alguno).
+  showAsignMenuyModal(done, nameD, nameM, error) {
+    const messageModalContainer = document.getElementById('messageModal');
+    const messageModal = new bootstrap.Modal('#messageModal');
+    const title = document.getElementById('messageModalTitle');
+    title.innerHTML = 'Asignado plato a Menús';
+    const body = messageModalContainer.querySelector('.modal-body');
+    body.replaceChildren();
+    if (done) {
+      body.insertAdjacentHTML('afterbegin', 
+			`<div class="p-3">El plato <strong>${nameD}</strong> ha sido asignado correctamente a los menús <strong>${nameM}</strong>.</div>`);
+    } else {
+      body.insertAdjacentHTML('afterbegin',
+        `<div class="error text-danger p-3">
+					<i class="bi bi-exclamation-triangle"></i>El plato <strong>${nameD}</strong> NO se pudo asignar a los menús <strong>${nameM}</strong>.
+					<br>${error}
+				</div>`,
+      );
+    }
+    messageModal.show();
+    const listener = () => {
+      if (done) {
+        document.fAsignDishes.reset();
+      }
+      document.fAsignDishes.seDish.focus();
+      document.fAsignDishes.sMenus.focus();
+    };
+    messageModalContainer.addEventListener('hidden.bs.modal', listener, { once: true });
+  } 
 
-  
+  // Mostrar mensaje(plato y menú) asignados correctamente o de error(si hay alguno).
+  showDesasignMenuModal(done, nameD, nameM, error) {
+    const messageModalContainer = document.getElementById('messageModal');
+    const messageModal = new bootstrap.Modal('#messageModal');
+    const title = document.getElementById('messageModalTitle');
+    title.innerHTML = 'Asignado plato a Menús';
+    const body = messageModalContainer.querySelector('.modal-body');
+    body.replaceChildren();
+    if (done) {
+      body.insertAdjacentHTML('afterbegin', 
+			`<div class="p-3">El plato <strong>${nameD}</strong> ha sido desasignado correctamente a los menús <strong>${nameM}</strong>.</div>`);
+    } else {
+      body.insertAdjacentHTML('afterbegin',
+        `<div class="error text-danger p-3">
+					<i class="bi bi-exclamation-triangle"></i>El plato <strong>${nameD}</strong> NO se pudo desasignar a los menús <strong>${nameM}</strong>.
+					<br>${error}
+				</div>`,
+      );
+    }
+    messageModal.show();
+    const listener = () => {
+      if (done) {
+        document.fDesasignDishes.reset();
+      }
+      document.fDesasignDishes.selDish.focus();
+      document.fDesasignDishes.seMenus.focus();
+    };
+    messageModalContainer.addEventListener('hidden.bs.modal', listener, { once: true });
+  } 
 
 	// Mostrar mensaje(categoría) creado correctamente o de error(si hay alguno).
   showNewCategoryModal(done, nameC, error) {
@@ -800,12 +856,65 @@ class RestaurantView {
     messageModalContainer.addEventListener('hidden.bs.modal', listener, { once: true });
   }
 
-  // Añadir
+  // Mostrar mensaje(plato y categoría) asignados correctamente o de error(si hay alguno).
+  showAsignCategoryModal(done, nameD, nameC, error) {
+    const messageModalContainer = document.getElementById('messageModal');
+    const messageModal = new bootstrap.Modal('#messageModal');
+    const title = document.getElementById('messageModalTitle');
+    title.innerHTML = 'Asignado plato a Categoría';
+    const body = messageModalContainer.querySelector('.modal-body');
+    body.replaceChildren();
+    if (done) {
+      body.insertAdjacentHTML('afterbegin', 
+      `<div class="p-3">Los platos <strong>${nameD}</strong> han sido asignados correctamente a la categoría <strong>${nameC}</strong>.</div>`);
+    } else {
+      body.insertAdjacentHTML('afterbegin',
+        `<div class="error text-danger p-3">
+          <i class="bi bi-exclamation-triangle"></i>Los platos <strong>${nameD}</strong> NO se pudieron asignar a la categoría <strong>${nameC}</strong>.
+          <br>${error}
+        </div>`,
+      );
+    }
+    messageModal.show();
+    const listener = () => {
+      if (done) {
+        document.fModifyAsign.reset();
+      }
+      document.fModifyAsign.seleDish.focus();
+      document.fModifyAsign.seCategories.focus();
+    };
+    messageModalContainer.addEventListener('hidden.bs.modal', listener, { once: true });
+  } 
 
-
-
-
-
+  // Mostrar mensaje(plato y categoría) asignados correctamente o de error(si hay alguno).
+  showDesasignCategoryModal(done, nameD, nameC, error) {
+    const messageModalContainer = document.getElementById('messageModal');
+    const messageModal = new bootstrap.Modal('#messageModal');
+    const title = document.getElementById('messageModalTitle');
+    title.innerHTML = 'Asignado plato a Categoría';
+    const body = messageModalContainer.querySelector('.modal-body');
+    body.replaceChildren();
+    if (done) {
+      body.insertAdjacentHTML('afterbegin', 
+      `<div class="p-3">El plato <strong>${nameD}</strong> ha sido desasignado correctamente a la categoría <strong>${nameC}</strong>.</div>`);
+    } else {
+      body.insertAdjacentHTML('afterbegin',
+        `<div class="error text-danger p-3">
+          <i class="bi bi-exclamation-triangle"></i>El plato <strong>${nameD}</strong> NO se pudo desasignar a la categoría <strong>${nameC}</strong>.
+          <br>${error}
+        </div>`,
+      );
+    }
+    messageModal.show();
+    const listener = () => {
+      if (done) {
+        document.fModifyDesasign.reset();
+      }
+      document.fModifyDesasign.selecDish.focus();
+      document.fModifyDesasign.fCategories.focus();
+    };
+    messageModalContainer.addEventListener('hidden.bs.modal', listener, { once: true });
+  } 
 
 	// Generar el botón de cierre de todas la ventanas nuevas.
   showCloseAllWindowsButton() {
@@ -930,8 +1039,15 @@ class RestaurantView {
     deleteDishValidation(handler);
   }
   
-  // Asignar
+  // Para validar la asignación de una categoría a varios platos.
+  bindAsignMenu(handler) {
+    asignMenuValidation(handler);
+  }
 
+  // Para validar la desasignación de una categoría a varios platos.
+  bindDesasignMenu(handler) {
+    desasignMenuValidation(handler);
+  }
 
   // Para validar la creación de las categorías.
   bindCreateCategory(handler) {
@@ -943,14 +1059,20 @@ class RestaurantView {
     deleteCategoryValidation(handler);
   }
 
-
   // Para validar la creación de los restaurantes.
   bindCreateRestaurant(handler) {
     createRestaurantValidation(handler);
   }
 
+  // Para validar la asignación de una categoría a varios platos.
+  bindAsignCategory(handler) {
+    asignCategoryValidation(handler);
+  }
 
-  // Añadir
+  // Para validar la desasignación de una categoría a varios platos.
+  bindDesasignCategory(handler) {
+    desasignCategoryValidation(handler);
+  }
 
   // Devuelve un entero random entre 0 y el máximo pasado por parámetro.
   getRandom(max) {

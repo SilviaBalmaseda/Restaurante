@@ -516,13 +516,18 @@ let RestaurantsModel = (function () {
                 return this.#allergens.get(nameA);
             }
 
+            // Devuelve el menú que sea igual al nombre pasado por parámetro, si no undefined.
+            getMenu(nameM) {
+                return this.#menus.get(nameM);
+            }
+
             // Devuelve un objeto Dish si está registrado, o crea un nuevo.
             createDish(name, description, ingredients, image) {
                 let dis = this.#dishes.get(name);
                 if (!dis) {
                     dis = new Dish(name, description, ingredients, image);
                 } else {
-                    dis = dis.dish;
+                    dis = dis.elem;
                 }
                 return dis;
             }
@@ -544,7 +549,7 @@ let RestaurantsModel = (function () {
                 if (!all) {
                     all = new Allergen(name, description);
                 } else {
-                    all = all.allergen;
+                    all = all;
                 }
                 return all;
             }
@@ -555,7 +560,7 @@ let RestaurantsModel = (function () {
                 if (!cat) {
                     cat = new Category(name, description);
                 } else {
-                    cat = cat.category;
+                    cat = cat;
                 }
                 return cat;
             }
@@ -566,7 +571,7 @@ let RestaurantsModel = (function () {
                 if (!res) {
                     res = new Restaurant(name, description, location);
                 } else {
-                    res = res.restaurant;
+                    res = res;
                 }
                 return res;
             }
