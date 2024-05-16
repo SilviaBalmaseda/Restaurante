@@ -329,7 +329,7 @@ class Restaurant {
         return this.#location;
     }
     set location(value) {
-        if (value instanceof Coordinate) throw new InvalidValueException("location", location);
+        if (!(value instanceof Coordinate)) throw new InvalidValueException("location", value);
         this.#location = value;
     }
 

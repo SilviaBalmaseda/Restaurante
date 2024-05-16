@@ -1,4 +1,6 @@
-import { createDishValidation } from "./validation.js";
+import { createDishValidation, deleteDishValidation,   createCategoryValidation, deleteCategoryValidation, createRestaurantValidation, } from "./validation.js";
+
+const EXCECUTE_HANDLER = Symbol('excecuteHandler');
 
 class RestaurantView {
   constructor() {
@@ -12,17 +14,20 @@ class RestaurantView {
     this.mainArea = document.getElementById("mainArea");
   }
 
-  init() {
-    // Migas de pan.
-    this.showBreadcrumb();
+  [EXCECUTE_HANDLER](handler, handlerArguments, scrollElement, data, url, event) {
+    handler(...handlerArguments);
+    const scroll = document.querySelector(scrollElement);
+    if (scroll) scroll.scrollIntoView();
+    history.pushState(data, null, url);
+    event.preventDefault();
   }
 
-  // Migas de pan.
-  showBreadcrumb() {
+  // Muestra el inicio de las migas de pan.
+  init() {
     this.breadcrumb.replaceChildren();
     this.breadcrumb.insertAdjacentHTML("beforeend",
       `<li class="breadcrumb-item" id="breadcrumb-item">
-            <a id="init" href="#">Inicio</a>
+            <a id="initBreadcrumb" href="#">Inicio</a>
        </li>`
     );
   }
@@ -111,10 +116,16 @@ class RestaurantView {
   // Mostrar 3 platos random.
   showRandomDishes(dishes) {
     const num = 3;
+    this.categoryArea.replaceChildren();
     this.mainArea.replaceChildren();
 
+    // Eliminamos el hijo(migas de pan) si se ha seleccionado.
+    if (document.getElementById("breadcrumb-item1")) {
+      this.breadcrumb.removeChild(document.getElementById("breadcrumb-item1"));
+    }
+
     const array = Array.from(dishes); // Guardamos en un array auxiliar.
-    for (let index = 0; index < num; index++) {
+    for (let i = 0; i < num; i++) {
       // Para no repetir el plato le borramos.
       let diss = array.splice(this.getRandom(array.length), 1);
 
@@ -162,130 +173,68 @@ class RestaurantView {
   }
 
   // Método para mostrar los platós(dishes) según el elemento(type) seleccionado(button) de los despegables, 'handleOpenWindow' -> abrir nueva ventana.
-  showDishes(button, type, handleOpenWindow, dishes) {
-    // Verificar si el botón existe y si ya se le agregó un evento clic.
-    if (button) {
-      // Eliminar cualquier evento clic anterior.
-      button.removeEventListener('click', this.typeClickHandler);
+  showDishes(buttonId, type, handleOpenWindow, dishes) {
+    // Eliminamos la anterior categoría si se ha seleccionado.
+    if (document.getElementById("breadcrumb-item1")) {
+      this.breadcrumb.removeChild(document.getElementById("breadcrumb-item1"));
+    }
 
-      // Definir el manejador de eventos clic.
-      this.typeClickHandler = (event) => {
-        // Prevenir el comportamiento por defecto del enlace.
-        event.preventDefault();
+    let cont = 1; // Variable contador para los botones de descripción.
 
-        // Eliminamos la anterior categoría si se ha seleccionado.
-        if (document.getElementById("breadcrumb-item1")) {
-          this.breadcrumb.removeChild(document.getElementById("breadcrumb-item1"));
-        }
+    this.mainArea.replaceChildren();
+    // Si el id del botón empieza por 'men-' ejecuta el código del menú y si no el de categoría y alérgenos.
+    if (buttonId.startsWith('men-')) {
+      // Migas de pan(añadimos el hijo).
+      this.showChildrenBreadcrumbs(type.elem.name);
 
-        let cont = 1; // Variable contador para los botones de descripción.
+      // Para recorrer los platos(value). 
+      type.dishes.entries().forEach(([key, value]) => {
+        // Para los botones de descripción.
+        let cadena = "dis" + cont++;
 
-        this.mainArea.replaceChildren();
-        // Si el id del botón empieza por 'men-' ejecuta el código del menú y si no el de categoría y alérgenos.
-        if (button.id.startsWith('men-')) {
-          // Migas de pan(añadimos el hijo).
-          this.showChildrenBreadcrumbs(type.elem.name);
+        this.showMenuDishe(this.mainArea, value, cadena);
+      });
 
-          // Para recorrer los platos(value). 
-          type.dishes.entries().forEach(([key, value]) => {
+      // Mostramos la categoría seleccionada.
+      this.showSelectedType(type.elem);
+    }
+    // Para categorías, alérgenos y restaurantes.
+    else {
+      // Migas de pan(añadimos el hijo).
+      this.showChildrenBreadcrumbs(type.name);
+
+      if (buttonId.startsWith('res-')) {
+        this.mainArea.insertAdjacentHTML("beforeend",
+          `<section id="rest-list">
+            <div><h1>${type.name}</h1></div>
+            <div>
+              Descripción: ${type.description}.
+            </div>
+            <div>
+              Coordenadas: ${type.location}.
+            </div>
+          </section>`
+        );
+
+      // Quitamos el tipo seleccionado del categoryArea.
+      this.categoryArea.replaceChildren();
+      }
+      // // Para categorías y alérgenos.
+      else {
+        for (const diss of dishes) {
+          if (diss.categories.get(type.name) === type || diss.allergens.get(type.name) === type) {
             // Para los botones de descripción.
             let cadena = "dis" + cont++;
 
-            this.showMenuDishe(this.mainArea, value, cadena);
-          });
-
-          // Mostramos la categoría seleccionada.
-          this.showSelectedType(type.elem);
-        }
-        // Para categorías, alérgenos y restaurantes.
-        else {
-          // Migas de pan(añadimos el hijo).
-          this.showChildrenBreadcrumbs(type.name);
-
-          if (button.id.startsWith('res-')) {
-            this.mainArea.insertAdjacentHTML("beforeend",
-              `<section id="rest-list">
-                <div><h1>${type.name}</h1></div>
-                <div>
-                  Descripción: ${type.description}.
-                </div>
-                <div>
-                  Coordenadas: ${type.location}.
-                </div>
-              </section>`
-            );
-
-          // Quitamos el tipo seleccionado del categoryArea.
-          this.categoryArea.replaceChildren();
-          }
-          // // Para categorías y alérgenos.
-          else {
-            for (const diss of dishes) {
-              if (diss.categories.get(type.name) === type || diss.allergens.get(type.name) === type) {
-                // Para los botones de descripción.
-                let cadena = "dis" + cont++;
-
-                this.showMenuDishe(this.mainArea, diss.elem, cadena);
-              }
-            }
-
-            // Mostramos la categoría seleccionada.
-            this.showSelectedType(type);
+            this.showMenuDishe(this.mainArea, diss.elem, cadena);
           }
         }
-
-        this.bindOpenWindow(handleOpenWindow);
-      };
-
-      // Agregar el evento clic al botón de categoría.
-      button.addEventListener('click', this.typeClickHandler);
+        // Mostramos la categoría seleccionada.
+        this.showSelectedType(type);
+      }
     }
 
-  }
-
-  // Mostrar platos de la categoría seleccionada.
-  showThatCategories(cats, dishes, handleOpenWindow) {
-    // Recorremos las categorías.
-    for (const category of cats) {
-      // Botón de categoría.
-      this.categoryButton = document.getElementById(`cat-${category.name}`);
-
-      this.showDishes(this.categoryButton, category, handleOpenWindow, dishes);
-    }
-  }
-
-  // Mostrar platos del alérgeno seleccionado.
-  showThatAllergens(alls, dishes, handleOpenWindow) {
-    // Recorremos los alérgenos.
-    for (const allergen of alls) {
-      // Botón de alérgenos.
-      this.allergenButton = document.getElementById(`all-${allergen.name}`);
-
-      this.showDishes(this.allergenButton, allergen, handleOpenWindow, dishes);
-      
-    }
-  }
-
-  // Mostrar platos del menú seleccionado.
-  showThatMenus(mens, handleOpenWindow) {
-    // Recorremos los menús.
-    for (const men of mens) {
-      // Botón de menú.
-      this.menButton = document.getElementById(`men-${men.elem.name}`);
-
-      this.showDishes(this.menButton, men, handleOpenWindow);
-    }
-  }
-
-  // Mostrar información del restaurante seleccionado.
-  showThatRestaurants(rests) {
-    // Recorremos los menús.
-    for (const rest of rests) {
-      // Botón de menú.
-      this.restButton = document.getElementById(`res-${rest.name}`);
-
-      this.showDishes(this.restButton, rest);
-    }
+    this.bindOpenWindow(handleOpenWindow);
   }
 
   // FORMULARIOS
@@ -393,7 +342,7 @@ class RestaurantView {
       <div class="col">
         <div class="card" style="width: 23rem">
           <div class="card-text">
-            <form name="fAsignDesDishes" role="form" class="row g-3 formu" novalidate>
+            <form name="fAsignDishes" role="form" class="row g-3 formu" novalidate>
               <h3>Asignar plato a menú: </h3>
 
               <button class="btn btn-dark" type="button"
@@ -425,8 +374,11 @@ class RestaurantView {
                 </button>
               </div>
 
-              <hr>
+            </form>
 
+            <hr>
+
+            <form name="fDesasignDishes" role="form" class="row g-3 formu" novalidate>
               <h3>Desasignar plato a menú: </h3>
               
               <button class="btn btn-dark" type="button"
@@ -453,14 +405,15 @@ class RestaurantView {
     }
 
     formu += `
-            </select>
-            <button class="btn btn-dark" type="submit">
-              DESASIGNAR
-            </button>
-          </form>
+                </select>
+                <button class="btn btn-dark" type="submit">
+                  DESASIGNAR
+                </button>
+              </div>
+            </form>
+          </div>
         </div>
-      </div>
-    </div>`;
+      </div>`;
 
     this.mainArea.insertAdjacentHTML("beforeend", formu);
   }
@@ -471,7 +424,7 @@ class RestaurantView {
       <div class="col">
         <div class="card" style="width: 23rem">
           <div class="card-text">
-            <form name="fCategory" role="form" class="row g-3 formu" novalidate>
+            <form name="fCreateC" role="form" class="row g-3 formu" novalidate>
               <h3>Crear categoría: </h3>
 
               <button class="btn btn-dark" type="button"
@@ -497,7 +450,11 @@ class RestaurantView {
                 </button>
               </div>
 
-              <hr>
+            </form>
+
+            <hr>
+
+            <form name="fDeleteC" role="form" class="row g-3 formu" novalidate>
 
               <h3>Eliminar categoría: </h3>
               <select name="seCategory" class="form-select" id="seCategory" aria-describedby="seCategory" multiple>
@@ -508,14 +465,14 @@ class RestaurantView {
     }
 
     formu += `
-            </select>
-            <button class="btn btn-dark" type="submit">
-              ELIMINAR
-            </button>
-          </form>
+              </select>
+              <button class="btn btn-dark" type="submit">
+                ELIMINAR
+              </button>
+            </form>
+          </div>
         </div>
-      </div>
-    </div>`;
+      </div>`;
 
     this.mainArea.insertAdjacentHTML("beforeend", formu);
   }
@@ -526,7 +483,7 @@ class RestaurantView {
       <div class="col">
         <div class="card" style="width: 23rem">
           <div class="card-text">
-            <form name="fCreateRest role="form" class="row g-3 formu" novalidate>
+            <form name="fCreateRest" role="form" class="row g-3 formu" novalidate>
               <h3>Crear Restaurante: </h3>
 
               <button class="btn btn-dark" type="button"
@@ -574,7 +531,7 @@ class RestaurantView {
     <div class="col">
       <div class="card" style="width: 23rem">
         <div class="card-text">
-          <form name="fModifyCategory" role="form" class="row g-3 formu" novalidate>
+          <form name="fModifyAsign" role="form" class="row g-3 formu" novalidate>
             <h3>Añadir platos a categoría: </h3>
 
             <button class="btn btn-dark" type="button"
@@ -605,9 +562,11 @@ class RestaurantView {
                 ASIGNAR
               </button>
             </div>
+          </form>
 
-            <hr>
+          <hr>
 
+          <form name="fModifyDesasign" role="form" class="row g-3 formu" novalidate>
             <h3>Eliminar platos a categoría: </h3>
             
             <button class="btn btn-dark" type="button"
@@ -634,63 +593,55 @@ class RestaurantView {
   }
 
   formu += `
-          </select>
-          <button class="btn btn-dark" type="submit">
-            DESASIGNAR 
-          </button>
-        </form>
+            </select>
+            <button class="btn btn-dark" type="submit">
+              DESASIGNAR 
+            </button>
+          </form>
+        </div>
       </div>
-    </div>
-  </div>`;
+    </div>`;
 
   this.mainArea.insertAdjacentHTML("beforeend", formu);
   }
 
 	// Mostrar todos los formularios.
   showAdmin(dishes, menus, categories, restaurants, allergens, handler){
-    const button = document.getElementById("admin");
+    // Eliminamos la anterior categoría si se ha seleccionado.
+    if (document.getElementById("breadcrumb-item1")) {
+      this.breadcrumb.removeChild(document.getElementById("breadcrumb-item1"));
+    }
 
-		button.addEventListener('click', (event) => {
-			// Prevenir el comportamiento por defecto del enlace.
-			event.preventDefault();
+    // Quitamos el tipo seleccionado del categoryArea.
+    this.categoryArea.replaceChildren();
+    this.mainArea.replaceChildren();
 
-			// Eliminamos la anterior categoría si se ha seleccionado.
-			if (document.getElementById("breadcrumb-item1")) {
-				this.breadcrumb.removeChild(document.getElementById("breadcrumb-item1"));
-			}
+    // Migas de pan(añadimos el hijo).
+    this.showChildrenBreadcrumbs("Admin");
 
-			// Quitamos el tipo seleccionado del categoryArea.
-			this.categoryArea.replaceChildren();
-			this.mainArea.replaceChildren();
+    // Mostrar FORMULARIOS:
 
-			// Migas de pan(añadimos el hijo).
-			this.showChildrenBreadcrumbs("Admin");
+    // 1 Crear plato y poder añadir categorías y alérgenos.
+    this.showFormCreateDish(categories, allergens);
 
-			// Mostrar FORMULARIOS:
+    // 2 Eliminar plato.
+    this.showFormDeleteDishes(dishes);
 
-			// 1 Crear plato y poder añadir categorías y alérgenos.
-			this.showFormCreateDish(categories, allergens);
+    // 3 Asignar y desasignar
+    this.showFormADDishes(dishes, menus);
 
-			// 2 Eliminar plato.
-			this.showFormDeleteDishes(dishes);
+    // 4 Crear y eliminar categorias.
+    this.showFormCategories(categories);
 
-			// 3 Asignar y desasignar
-			this.showFormADDishes(dishes, menus);
+    // 5 Crear restaurante.
+    this.showFormCreateRestaurant(restaurants);
 
-			// 4 Crear y eliminar categorias.
-			this.showFormCategories(categories);
-
-			// 5 Crear restaurante.
-			this.showFormCreateRestaurant(restaurants);
-
-			// 6 Modificar categoría de un plato.
-			this.showFormModifyCategory(dishes, categories);
-
-      this.bindCreateDish(handler);
-    });
+    // 6 Modificar categoría de un plato.
+    this.showFormModifyCategory(dishes, categories);
+   
   }
 
-	// Mostrar mensaje(plato) de creado correctamente o de error(si hay alguno).
+	// Mostrar mensaje(plato) creado correctamente o de error(si hay alguno).
 	showNewDishModal(done, nameD, error) {
     const messageModalContainer = document.getElementById('messageModal');
     const messageModal = new bootstrap.Modal('#messageModal');
@@ -704,13 +655,13 @@ class RestaurantView {
     } else {
       body.insertAdjacentHTML('afterbegin',
         `<div class="error text-danger p-3">
-					<i class="bi bi-exclamation-triangle"></i> El plato <strong>${nameD}</strong> NO se pudo crear.
+					<i class="bi bi-exclamation-triangle"></i>El plato <strong>${nameD}</strong> NO se pudo crear.
 					<br>${error}
 				</div>`,
       );
     }
     messageModal.show();
-    const listener = (event) => {
+    const listener = () => {
       if (done) {
         document.fCreateDish.reset();
       }
@@ -719,6 +670,7 @@ class RestaurantView {
     messageModalContainer.addEventListener('hidden.bs.modal', listener, { once: true });
   }
 
+  // Mostrar mensaje(plato) eliminado correctamente o de error(si hay alguno).
 	showRemoveDishModal(done, nameD, error) {
     const messageModalContainer = document.getElementById('messageModal');
     const messageModal = new bootstrap.Modal('#messageModal');
@@ -733,7 +685,7 @@ class RestaurantView {
     } else {
       body.insertAdjacentHTML('afterbegin',
         `<div class="error text-danger p-3">
-				<i class="bi bi-exclamation-triangle"></i> El plato <strong>${nameD}</strong> no se ha podido borrar.
+				<i class="bi bi-exclamation-triangle"></i>El plato <strong>${nameD}</strong> NO se ha podido borrar.
 				<br>${error}
 				</div>`,
       );
@@ -751,6 +703,108 @@ class RestaurantView {
     messageModalContainer.addEventListener('hidden.bs.modal', listener, { once: true });
   }
 
+  // Asignar
+
+  
+
+	// Mostrar mensaje(categoría) creado correctamente o de error(si hay alguno).
+  showNewCategoryModal(done, nameC, error) {
+    const messageModalContainer = document.getElementById('messageModal');
+    const messageModal = new bootstrap.Modal('#messageModal');
+    const title = document.getElementById('messageModalTitle');
+    title.innerHTML = 'Nueva Categoría';
+    const body = messageModalContainer.querySelector('.modal-body');
+    body.replaceChildren();
+    if (done) {
+      body.insertAdjacentHTML('afterbegin', 
+			`<div class="p-3">La categoría <strong>${nameC}</strong> ha sido creada correctamente.</div>`);
+    } else {
+      body.insertAdjacentHTML('afterbegin',
+        `<div class="error text-danger p-3">
+					<i class="bi bi-exclamation-triangle"></i>La categoría <strong>${nameC}</strong> NO se pudo crear.
+					<br>${error}
+				</div>`,
+      );
+    }
+    messageModal.show();
+    const listener = () => {
+      if (done) {
+        document.fCreateC.reset();
+      }
+      document.fCreateC.nameCat.focus();
+    };
+    messageModalContainer.addEventListener('hidden.bs.modal', listener, { once: true });
+  }
+
+  // Mostrar mensaje(categoría) eliminado correctamente o de error(si hay alguno).
+  showRemoveCategoryModal(done, nameC, error) {
+    const messageModalContainer = document.getElementById('messageModal');
+    const messageModal = new bootstrap.Modal('#messageModal');
+
+    const title = document.getElementById('messageModalTitle');
+    title.innerHTML = 'Borrado de Categoría';
+    const body = messageModalContainer.querySelector('.modal-body');
+    body.replaceChildren();
+    if (done) {
+      body.insertAdjacentHTML('afterbegin', 
+			`<div class="p-3">La categoría <strong>${nameC}</strong> ha sido eliminada correctamente.</div>`);
+    } else {
+      body.insertAdjacentHTML('afterbegin',
+        `<div class="error text-danger p-3">
+				<i class="bi bi-exclamation-triangle"></i>La categoría <strong>${nameC}</strong> NO se ha podido borrar.
+				<br>${error}
+				</div>`,
+      );
+    }
+    messageModal.show();
+    const listener = (event) => {
+      if (done) {
+        // const removeCategory = document.getElementById('remove-category');
+        // const button = removeCategory.querySelector(`button.btn[data-category="${nameC}"]`);
+        // button.parentElement.parentElement.remove();
+
+				document.fDeleteC.seCategory.focus();
+      }
+    };
+    messageModalContainer.addEventListener('hidden.bs.modal', listener, { once: true });
+  }
+
+	// Mostrar mensaje(restaurante) creado correctamente o de error(si hay alguno).
+  showNewRestaurantModal(done, nameR, error) {
+    const messageModalContainer = document.getElementById('messageModal');
+    const messageModal = new bootstrap.Modal('#messageModal');
+    const title = document.getElementById('messageModalTitle');
+    title.innerHTML = 'Nuevo restaurante';
+    const body = messageModalContainer.querySelector('.modal-body');
+    body.replaceChildren();
+    if (done) {
+      body.insertAdjacentHTML('afterbegin', 
+			`<div class="p-3">El restaurante <strong>${nameR}</strong> ha sido creado correctamente.</div>`);
+    } else {
+      body.insertAdjacentHTML('afterbegin',
+        `<div class="error text-danger p-3">
+					<i class="bi bi-exclamation-triangle"></i>El restaurante <strong>${nameR}</strong> NO se pudo crear.
+					<br>${error}
+				</div>`,
+      );
+    }
+
+    console.log(error);
+    messageModal.show();
+    const listener = () => {
+      if (done) {
+        document.fCreateRest.reset();
+      }
+      document.fCreateRest.nameRest.focus();
+    };
+    messageModalContainer.addEventListener('hidden.bs.modal', listener, { once: true });
+  }
+
+  // Añadir
+
+
+
+
 
 
 	// Generar el botón de cierre de todas la ventanas nuevas.
@@ -762,12 +816,17 @@ class RestaurantView {
 
   // Métodos bind.
   bindInit(handler) {
-    // Les pone el enlace a los de inicio.
-    document.querySelectorAll('#init').forEach(function (init) {
-      init.setAttribute('href', 'index.html');
+    document.getElementById('init').addEventListener('click', (event) => {
+      this[EXCECUTE_HANDLER](handler, [], 'body', { action: 'init' }, '#', event);
+      handler();
     });
-    document.getElementById('init').addEventListener("click", (event) => {
-      handler;
+    document.getElementById('initBreadcrumb').addEventListener('click', (event) => {
+      this[EXCECUTE_HANDLER](handler, [], 'body', { action: 'init' }, '#', event);
+      handler();
+    });
+    document.getElementById('initFooter').addEventListener('click', (event) => {
+      this[EXCECUTE_HANDLER](handler, [], 'body', { action: 'init' }, '#', event);
+      handler();
     });
   }
 
@@ -788,10 +847,110 @@ class RestaurantView {
     closeAllWindowsButton.addEventListener('click', handler);
   }
 
+  // Para mostrar los despegables(Categorías, alérgenos, menús, y restaurantes).
+  bindCategoryDropdown(handler) {
+    document.getElementById("categoriesDrop").addEventListener("click", (event) => {
+      this[EXCECUTE_HANDLER](handler, [], "nav", { action: "showCategories" }, "#Categories", event);
+    });
+  }
+
+  bindAllergenDropdown(handler) {
+    document.getElementById("allergensDrop").addEventListener("click", (event) => {
+      this[EXCECUTE_HANDLER](handler, [], "nav", { action: "showAllergens" }, "#Allergens", event);
+    });
+  }
+
+  bindMenuDropdown(handler) {
+    document.getElementById("menusDrop").addEventListener("click", (event) => {
+      this[EXCECUTE_HANDLER](handler, [], "nav", { action: "showMenus" }, "#Menus", event);
+    });
+  }
+
+  bindRestaurantDropdown(handler) {
+    document.getElementById("restaurantsDrop").addEventListener("click", (event) => {
+      this[EXCECUTE_HANDLER](handler, [], "nav", { action: "showRestaurants" }, "#Restaurants", event);
+    });
+  }
+
+  // Para mostrar en el main las categorias, alérgenos, menús y restaurantes seleccionado en el desplegable
+  bindCategory(categories, handler) {
+    for (const category of categories) {
+      let button = document.getElementById(`cat-${category.name}`);
+      button.addEventListener("click", (event) => {
+        this[EXCECUTE_HANDLER](handler, [button.id, category], "main", { action: "showDishes" }, "#Category-list", event);
+        handler(button.id, category);
+      });
+    }
+  }
+
+  bindAllergen(allergens, handler) {
+    for (const all of allergens) {
+      let button = document.getElementById(`all-${all.name}`);
+      button.addEventListener("click", (event) => {
+        this[EXCECUTE_HANDLER](handler, [button.id, all], "main", { action: "showDishes" }, "#Category-list", event);
+        handler(button.id, all);
+      });
+    }
+  }
+
+  bindMenu(menus, handler) {
+    for (const men of menus) {
+      let button = document.getElementById(`men-${men.elem.name}`);
+      button.addEventListener("click", (event) => {
+        this[EXCECUTE_HANDLER](handler, [button.id, men], "main", { action: "showDishes" }, "#Category-list", event);
+        handler(button.id, men);
+      });
+    }
+  }
+
+  bindRestaurant(restaurants, handler) {
+    for (const rest of restaurants) {
+      let button = document.getElementById(`res-${rest.name}`);
+      button.addEventListener("click", (event) => {
+        this[EXCECUTE_HANDLER](handler, [button.id, rest], "main", { action: "showDishes" }, "#Category-list", event);
+        handler(button.id, rest);
+      });
+    }
+  }
+
+  // Para mostrar la parte del admin(formularios);
+  bindAdmin(handler) {
+    document.getElementById("admin").addEventListener("click", (event) => {
+      this[EXCECUTE_HANDLER](handler, [], "nav", { action: "showAdmin" }, "#Admin", event);
+    });
+  }
+
   // Para validar la creación de los platos.
-	bindCreateDish(handler) {
+  bindCreateDish(handler) {
     createDishValidation(handler);
   }
+
+  // Para validar la eliminación de los platos.
+  bindDeleteDish(handler) {
+    deleteDishValidation(handler);
+  }
+  
+  // Asignar
+
+
+  // Para validar la creación de las categorías.
+  bindCreateCategory(handler) {
+    createCategoryValidation(handler);
+  }
+
+  // Para validar la eliminación de las categorías.
+  bindDeleteCategory(handler) {
+    deleteCategoryValidation(handler);
+  }
+
+
+  // Para validar la creación de los restaurantes.
+  bindCreateRestaurant(handler) {
+    createRestaurantValidation(handler);
+  }
+
+
+  // Añadir
 
   // Devuelve un entero random entre 0 y el máximo pasado por parámetro.
   getRandom(max) {

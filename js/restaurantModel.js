@@ -506,6 +506,16 @@ let RestaurantsModel = (function () {
                 return this.#dishes.get(nameD);
             }
 
+            // Devuelve la categoría que sea igual al nombre pasado por parámetro, si no undefined.
+            getCategory(nameC) {
+                return this.#categories.get(nameC);
+            }
+
+            // Devuelve el alérgeno que sea igual al nombre pasado por parámetro, si no undefined.
+            getAllergen(nameA) {
+                return this.#allergens.get(nameA);
+            }
+
             // Devuelve un objeto Dish si está registrado, o crea un nuevo.
             createDish(name, description, ingredients, image) {
                 let dis = this.#dishes.get(name);

@@ -8,49 +8,275 @@ class RestaurantController {
     constructor(modelRestaurant, viewRestaurant) {
         this[MODEL] = modelRestaurant;
         this[VIEW] = viewRestaurant;
+        this[LOAD_RESTAURANT_OBJECTS]();
         this.openedWindows = []; // Array para almacenar las ventanas abiertas.
 
         // Eventos iniciales del Controlador
-        this.onInit();
         this.onLoad();
-
+        this.onInit();
+        
         // Enlazamos handlers con la vista
         this[VIEW].bindInit(this.handleInit);
     }
 
     onInit = () => {
-        this[VIEW].init();
+        let dishes = [...this[MODEL].getDishes()];
+        this[VIEW].showRandomDishes(dishes);
     };
 
     onLoad = () => {
-        this[LOAD_RESTAURANT_OBJECTS]();
-        // Almacenar los iteradorse en arrays.
-        const dishes = [...this[MODEL].getDishes()];
-        const categories = [...this[MODEL].getCategories()];
-        const allergens = [...this[MODEL].getAllergens()];
-        const menus = [...this[MODEL].getMenus()];
-        const restaurants = [...this[MODEL].getRestaurants()];
+        this[VIEW].init();
 
-        this[VIEW].showCategories(categories);
-        // this[VIEW].showCategoriesMain(categories);
-        this[VIEW].showAllergens(allergens);
-        this[VIEW].showMenus(menus);
-        this[VIEW].showRestaurants(restaurants);
-        this[VIEW].showRandomDishes(dishes);
-        this[VIEW].showAdmin(dishes, menus, categories, restaurants, allergens, this.handleCreateDish)
+        this[VIEW].bindCategoryDropdown(this.handleCategory);
+        this[VIEW].bindAllergenDropdown(this.handleAllergen);
+        this[VIEW].bindMenuDropdown(this.handleMenu);
+        this[VIEW].bindRestaurantDropdown(this.handleRestaurant);
+        this[VIEW].bindAdmin(this.handleAdmin);
+
         this[VIEW].showCloseAllWindowsButton();
-
-        this[VIEW].showThatCategories(categories, dishes, this.handleOpenWindow);
-        this[VIEW].showThatAllergens(allergens, dishes, this.handleOpenWindow);
-        this[VIEW].showThatMenus(menus, this.handleOpenWindow);
-        this[VIEW].showThatRestaurants(restaurants);
-
         this[VIEW].bindCloseAllWindows(this.handleCloseAllWindows);
     };
 
     handleInit = () => {
         this.onInit();
     };
+
+    // Handles para mostrar en la barra de navegación los despegables y en main los platos. 
+    handleCategory = () => {
+        this.onCategories();
+    };
+
+    handleShowCategory = (buttonId, category) => {
+        let dishes = [...this[MODEL].getDishes()];
+        this[VIEW].showDishes(buttonId, category, this.handleOpenWindow, dishes);
+    };
+
+    handleAllergen = () => {
+        this.onAllergens();
+    };
+
+    handleShowAllergen = (buttonId, allergen) => {
+        let dishes = [...this[MODEL].getDishes()];
+        this[VIEW].showDishes(buttonId, allergen, this.handleOpenWindow, dishes);
+    };
+
+    handleMenu = () => {
+        this.onMenus();
+    };
+
+    handleShowMenu = (buttonId, menu) => {
+        this[VIEW].showDishes(buttonId, menu, this.handleOpenWindow);
+    };
+
+    handleRestaurant = () => {
+        this.onRestaurants();
+    };
+
+    handleShowRestaurant = (buttonId, restaurant) => {
+        this[VIEW].showDishes(buttonId, restaurant);
+    };
+
+    // Para mostrar en la barra de navegación la parte de admin(formularios).
+    handleAdmin = () => {
+        this.onAdmin();
+    };
+
+    // Métodos que están en la barra de navegación.
+    onCategories = () => {
+        this[VIEW].showCategories(this[MODEL].getCategories());
+        this[VIEW].bindCategory(this[MODEL].getCategories(), this.handleShowCategory);
+    };
+
+    onAllergens = () => {
+        this[VIEW].showAllergens(this[MODEL].getAllergens());
+        this[VIEW].bindAllergen(this[MODEL].getAllergens(), this.handleShowCategory);
+    };
+
+    onMenus = () => {
+        this[VIEW].showMenus(this[MODEL].getMenus());
+        this[VIEW].bindMenu(this[MODEL].getMenus(), this.handleShowCategory);
+    };
+
+    onRestaurants = () => {
+        this[VIEW].showRestaurants(this[MODEL].getRestaurants());
+        this[VIEW].bindRestaurant(this[MODEL].getRestaurants(), this.handleShowCategory);
+    };
+
+    onAdmin = () => {
+        let dishes = [...this[MODEL].getDishes()];
+        let menus = [...this[MODEL].getMenus()];
+        let categories = [...this[MODEL].getCategories()];
+        this[VIEW].showAdmin(dishes, menus, categories, this[MODEL].getRestaurants(), this[MODEL].getAllergens());
+        this[VIEW].bindCreateDish(this.handleCreateDish);
+        this[VIEW].bindDeleteDish(this.handleDeleteDish);
+        // Asignar
+        this[VIEW].bindCreateCategory(this.handleCreateCategory);
+        this[VIEW].bindDeleteCategory(this.handleDeleteCategory);
+        this[VIEW].bindCreateRestaurant(this.handleCreateRestaurant);
+        // Añadir
+    }
+
+    // Crear plato.
+    handleCreateDish = (nameD, des, ing, img, nameCat, nameAll) => {
+        const dish = this[MODEL].createDish(nameD);
+    
+        if (des != "" && des != undefined) {
+            dish.description = des;
+        }
+
+        if (ing != "" && ing != undefined) {
+            dish.ingredients = ing;
+        }
+
+        if (img != "" && img != undefined) {
+            dish.image = img;
+        }
+        
+        let done;
+        let error;
+        try {
+          this[MODEL].addDish(dish);
+          if (nameCat != "") {
+            let cat = this[MODEL].getCategory(nameCat); // Buscamos la categoría.
+            this[MODEL].assignCategoryToDish(cat, dish);
+          }
+    
+          if (nameAll != "") {
+            let all = this[MODEL].getAllergen(nameAll); // Buscamos el alérgeno.
+            this[MODEL].assignAllergenToDish(all, dish);
+          }
+    
+          done = true;
+          this.onAdmin();
+        } catch (exception) {
+          done = false;
+          error = exception;
+          this[MODEL].removeDish(dish);
+        }
+        this[VIEW].showNewDishModal(done, nameD, error);
+        const dishes = [...this[MODEL].getDishes()];
+        console.log(dishes);
+    };
+
+    // Eliminar platos.
+    handleDeleteDish = (arrayD) => {
+        let done;
+        let error;
+        try {
+            for (const nameD of arrayD) {
+                this[MODEL].removeDish(this[MODEL].getDish(nameD).elem);
+            }
+            
+            done = true;
+            this.onAdmin();
+        } catch (exception) {
+          done = false;
+          error = exception;
+        }
+        this[VIEW].showRemoveDishModal(done, arrayD.toString(), error);
+        const dishes = [...this[MODEL].getDishes()];
+        console.log(dishes);
+    };
+
+    // Asignar Categoría.
+    handleAsignCategory = (nameCat, nameD) => {
+        let done;
+        let error;
+        try {
+          if (nameCat != "" && nameD != "") {
+            let cat = this[MODEL].getCategory(nameCat); // Buscamos la categoría.
+            let dis = this[MODEL].getDish(nameD).elem;  // Buscamos el plato.
+            this[MODEL].assignCategoryToDish(cat, dis);
+          }
+          
+          done = true;
+          this.onAdmin();
+        } catch (exception) {
+          done = false;
+          error = exception;
+        }
+        this[VIEW].showAsignCategoryModal(done, nameCat, nameD, error);
+        const dishes = [...this[MODEL].getDishes()];
+        console.log(dishes);
+    };
+
+
+    // Crear categoría.
+    handleCreateCategory = (nameC, des) => {
+        const cat = this[MODEL].createCategory(nameC);
+    
+        if (des != "" && des != undefined) {
+            cat.description = des;
+        }
+        
+        let done;
+        let error;
+        try {
+          this[MODEL].addCategory(cat);
+          
+          done = true;
+          this.onAdmin();
+        } catch (exception) {
+          done = false;
+          error = exception;
+          this[MODEL].removeCategory(cat);
+        }
+        this[VIEW].showNewCategoryModal(done, nameC, error);
+        const c = [...this[MODEL].getCategories()];
+        console.log(c);
+    };
+
+    // Eliminar categorías.
+    handleDeleteCategory = (arrayC) => {
+        let done;
+        let error;
+        try {
+            for (const nameC of arrayC) {
+                this[MODEL].removeCategory(this[MODEL].getCategory(nameC));
+            }
+            
+            done = true;
+            this.onAdmin();
+        } catch (exception) {
+          done = false;
+          error = exception;
+        }
+        this[VIEW].showRemoveCategoryModal(done, arrayC.toString(), error);
+        const c = [...this[MODEL].getCategories()];
+        console.log(c);
+    };
+
+
+    // Crear restaurante.
+    handleCreateRestaurant = (nameR, des, latitude, longitude) => {
+        const res = this[MODEL].createRestaurant(nameR);
+    
+        if (des != "" && des != undefined) {
+            res.description = des;
+        }
+        
+        let done;
+        let error;
+        try {
+          this[MODEL].addRestaurant(res);
+          if (latitude != "" && longitude != "") {
+            console.log(longitude);
+            res.location = new Coordinate(latitude, longitude);
+          }
+    
+          done = true;
+          this.onAdmin();
+        } catch (exception) {
+          done = false;
+          error = exception;
+          this[MODEL].removeRestaurant(res);
+        }
+        this[VIEW].showNewRestaurantModal(done, nameR, error);
+        const r = [...this[MODEL].getRestaurants()];
+        console.log(r);
+    };
+
+    // Añadir 
 
     // Abrir una ventana nueva.
     handleOpenWindow = (nameD) => {
@@ -88,51 +314,7 @@ class RestaurantController {
         });
         this.openedWindows = [];
     }
-
-    handleCreateDish = (nameD, des, ing, img, cat, all) => {
-        // console.log(nameD + " " + desc + " " + ing + " " + img +" " + cat + " " + all);
-        const dish = this[MODEL].createDish(nameD);
     
-        console.log(des);
-        if (des != "" && des != undefined) {
-            dish.description = des;
-        }
-
-        if (ing != "" && ing != undefined) {
-            dish.ingredients = ing;
-        }
-
-        if (img != "" && img != undefined) {
-            dish.image = img;
-        }
-        
-        let done;
-        let error;
-        try {
-          this[MODEL].addDish(dish);
-          if (cat != "") {
-            this[MODEL].assignCategoryToDish(cat, dish);
-          }
-    
-          if (all != "") {
-            this[MODEL].assignAllergenToDish(all, dish);
-          }
-    
-          done = true;
-          this.onAdmin();
-        } catch (exception) {
-          done = false;
-          error = exception;
-        }
-        this[VIEW].showNewDishModal(done, nameD, error);
-        const dishes = [...this[MODEL].getDishes()];
-        console.log(dishes);
-    };
-    
-    onAdmin = () => {
-        this[VIEW].bindCreateDish(this.handleCreateDish);
-    }
-
     [LOAD_RESTAURANT_OBJECTS]() {
         // Los platos.
         const dis1 = this[MODEL].createDish("Croquetas");
