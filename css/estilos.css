@@ -13,6 +13,7 @@ html body {
     display: flex;
     justify-content: center;
     align-items: flex-start;
+	height: 4.4em;
 }
 
 .cabecera .cabecera-menu {
@@ -22,13 +23,37 @@ html body {
     list-style: none;
     display: flex;
     justify-content: space-around;
+	height: 4.4em;
 }
 
 .cabecera-menu {
-    height: 2.75em;
+    height: 4.4em;
     display: flex;
     justify-content: center;
     align-items: center;
+}
+
+.cabecera .cabecera-menu-admin {
+    border-radius: 50%;
+    width: 80%;
+    background-color: lightgrey;
+	height: 4.4em;
+}
+
+.cabecera-menu-admin a {
+    color: blueviolet;
+    font-size: 2em;
+    text-decoration: none;
+    text-shadow: 1px 1px 1px black;
+}
+
+.iconoLogin {
+	text-align: center;
+    font-size: 0.85em !important;
+}
+
+.iconoLogin div{
+    font-size: 1.50em !important;
 }
 
 .cabecera-menu a {

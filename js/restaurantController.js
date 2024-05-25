@@ -58,6 +58,7 @@ class RestaurantController {
         this[VIEW].bindDisconnect();
     };
 
+    // Cuando el usuario hace login.
     onOpenSession() { 
         this.onInit();
         this[VIEW].initHistory();
@@ -69,6 +70,7 @@ class RestaurantController {
         this[VIEW].bindfavorite(this.handlefavorite);
     }
 
+    // Cuando el ususario cierra sesión.
     onCloseSession() {
         this[USER] = null;
         this[VIEW].deleteUserCookie();
@@ -77,11 +79,13 @@ class RestaurantController {
         this[VIEW].removeAdminMenu();
     }
 
+    // Para mostrar el formulario de login.
     handleLoginForm = () => {
         this[VIEW].showLogin();
         this[VIEW].bindLogin(this.handleLogin);
     };
 
+    // Para validar si el usuario y la contraseña son correctos y si quiere recordarlo.
     handleLogin = (username, password, remember) => {
         if (this[AUTH].validateUser(username, password)) {
           this[USER] = this[AUTH].getUser(username);
@@ -90,12 +94,13 @@ class RestaurantController {
             this[VIEW].setUserCookie(this[USER]);
             saveUser();
           }
+          greetUser();
         } else {
           this[VIEW].showInvalidUserMessage();
         }
-        greetUser();
     };
 
+    // Para cuando se cierre sesión.
     handleCloseSession = () => {
         this.onCloseSession();
         this.onInit();
@@ -173,6 +178,7 @@ class RestaurantController {
         this[VIEW].bindRestaurant(this[MODEL].getRestaurants(), this.handleShowRestaurant);
     };
 
+    // Mostrar todo lo que tiene que ver con la administración.
     onAdmin = () => {
         let dishes = [...this[MODEL].getDishes()];
         let menus = [...this[MODEL].getMenus()];
@@ -189,8 +195,19 @@ class RestaurantController {
         this[VIEW].bindDesasignCategory(this.handleDesasignCategory);
     }
 
+    // Para mostrar y eliminar los platos favoritos.
     onfavorite = () => {
-        let dishes = [...this[MODEL].getDishes()];
+        // Eliminar del localStorage, si en el formulario han eliminado el plato.
+        for (let index = localStorage.length-1; index >= 0; index--) {
+
+            let dish = localStorage.key(index);
+            
+            if (this[MODEL].getDish(dish) == undefined) {
+                // Eliminar en localStorage.
+                localStorage.removeItem(dish);
+            }
+        }
+
         this[VIEW].showFavorite(this.handleDeletefavoriteBtn);
     }
 

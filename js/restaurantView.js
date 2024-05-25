@@ -52,7 +52,6 @@ class RestaurantView {
 
   // Para mostrar en la barra de navegación el Inicio.
   showInicio() {
-    this.menuCabecera.replaceChildren();
     this.menuCabecera.insertAdjacentHTML(
       "afterbegin",
       `<div class="cabecera-menu" id="menuInicio">
@@ -270,7 +269,6 @@ class RestaurantView {
   }
 
   // FORMULARIOS
-
   // Mostrar formulario de platos(Crear).
   showFormCreateDish(categories, allergens){
     let formu = `
@@ -1056,19 +1054,24 @@ class RestaurantView {
     btnDismissCookie.addEventListener('click', denyCookieFunction);
   }
 
+  // Mostrar en la barra de navegación la parte de Identificate.
   showIdentificationLink() {
     const userArea = document.getElementById('userArea');
     userArea.replaceChildren();
+    if (document.getElementsByClassName('cabecera-menu-admin')) {
+      userArea.classList.remove("cabecera-menu-admin");
+      userArea.classList.add("cabecera-menu");
+    }
     userArea.insertAdjacentHTML('afterbegin', 
     `<div class="account d-flex mx-2 flex-column" style="text-align: right; height: 40px">
 			<a id="login" href="#"><i class="bi bi-person-circle" aria-hidden="true"></i> Identificate</a>
 		</div>`);
   }
 
+  // Mostrar el formulario(login) para loguearse.
   showLogin() {
     // Añadimos el hijo.
     this.showChildrenBreadcrumbs("Login");
-
     this.mainArea.replaceChildren();
     const login = `<div class="container h-100 identificar">
 			<div class="d-flex justify-content-center h-100">
@@ -1104,6 +1107,7 @@ class RestaurantView {
     this.mainArea.insertAdjacentHTML('afterbegin', login);
   }
 
+  // Mostrar mensaje de mal login.
   showInvalidUserMessage() {
     this.mainArea.insertAdjacentHTML('beforeend', 
       `<div class="container my-3">
@@ -1115,40 +1119,43 @@ class RestaurantView {
     document.forms.fLogin.username.focus();
   }
 
-  // RETORCAR EL DISEÑO.
+  // Mostrar cuando el usuario esta autenticado..
   showAuthUserProfile(user) { 
     const userArea = document.getElementById('userArea');
     userArea.replaceChildren(); 
+    userArea.classList.remove("cabecera-menu");
+    userArea.classList.add("cabecera-menu-admin");
     userArea.insertAdjacentHTML('afterbegin', 
       `<div class="dropdown">
-        <a id="aCloseSession" href="#">Cerrar sesión</a>
-        ${user.username} <img class="iconoIdioma" alt="${user.username}" src="img/user.png" />
+        <div class="iconoLogin">
+          <a id="aCloseSession" href="#">Cerrar sesión</a> 
+          <div>${user.username} <img class="iconoIdioma" alt="${user.username}" src="img/user.png" /></div>
+        </div>
       </div>`
     );
 
     if (document.getElementById("menuInicio")) this.menuCabecera.removeChild(document.getElementById("menuInicio"));
   }
   
+  // Volver a dejar la página como si fuera un usuario normal.
   removeAdminMenu() {
     const adminMenu = document.getElementById('adminMenu');
     if (adminMenu) adminMenu.parentElement.remove();
 
-    this.showInicio;
+    if (!document.getElementById('menuInicio')) {
+      this.showInicio();
+    }
   }
 
+  // Crear la cookie cuando se identifica.
   setUserCookie(user) {
     setCookie("activeUser", user.username, 1);
   }
 
+  // Eliminar la cookie cuando se Identifica, pero no le da a recordar.
   deleteUserCookie() {
     setCookie("activeUser", "", 0);
   }
-
-
-
-  
-
-
 
 	// Generar el botón de cierre de todas la ventanas nuevas.
   showCloseAllWindowsButton() {
@@ -1223,7 +1230,7 @@ class RestaurantView {
     for (const category of categories) {
       let button = document.getElementById(`cat-${category.name}`);
       button.addEventListener("click", (event) => {
-        this[EXCECUTE_HANDLER](handler, [button.id, category], "main", { action: "showDishes" }, "#Category-list", event);
+        // this[EXCECUTE_HANDLER](handler, [button.id, category], "main", { action: "showDishes" }, "#Category-list", event);
         handler(button.id, category);
       });
     }
@@ -1233,7 +1240,7 @@ class RestaurantView {
     for (const all of allergens) {
       let button = document.getElementById(`all-${all.name}`);
       button.addEventListener("click", (event) => {
-        this[EXCECUTE_HANDLER](handler, [button.id, all], "main", { action: "showDishes" }, "#Category-list", event);
+        // this[EXCECUTE_HANDLER](handler, [button.id, all], "main", { action: "showDishes" }, "#Category-list", event);
         handler(button.id, all);
       });
     }
@@ -1243,7 +1250,7 @@ class RestaurantView {
     for (const men of menus) {
       let button = document.getElementById(`men-${men.elem.name}`);
       button.addEventListener("click", (event) => {
-        this[EXCECUTE_HANDLER](handler, [button.id, men], "main", { action: "showDishes" }, "#Category-list", event);
+        // this[EXCECUTE_HANDLER](handler, [button.id, men], "main", { action: "showDishes" }, "#Category-list", event);
         handler(button.id, men);
       });
     }
@@ -1253,7 +1260,7 @@ class RestaurantView {
     for (const rest of restaurants) {
       let button = document.getElementById(`res-${rest.name}`);
       button.addEventListener("click", (event) => {
-        this[EXCECUTE_HANDLER](handler, [button.id, rest], "main", { action: "showDishes" }, "#Category-list", event);
+        // this[EXCECUTE_HANDLER](handler, [button.id, rest], "main", { action: "showDishes" }, "#Category-list", event);
         handler(button.id, rest);
       });
     }
@@ -1376,8 +1383,6 @@ class RestaurantView {
       });
     }
   }
-
-
 
   // Para el historial.
   initHistory() {
