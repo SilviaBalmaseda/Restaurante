@@ -1,13 +1,19 @@
 import { Coordinate } from "./objectsRestaurants.js";
+import { getCookie, greetUser, saveUser } from "./util.js";
+import RestaurantApp from './restaurantApp.js';
 
 const MODEL = Symbol('RestaurantModel');
 const VIEW = Symbol('RestaurantView');
 const LOAD_RESTAURANT_OBJECTS = Symbol('Load Restaurant Objects');
+const AUTH = Symbol('AUTH');
+const USER = Symbol('USER');
 
 class RestaurantController {
-    constructor(modelRestaurant, viewRestaurant) {
+    constructor(modelRestaurant, viewRestaurant, auth) {
         this[MODEL] = modelRestaurant;
         this[VIEW] = viewRestaurant;
+        this[AUTH] = auth;
+        this[USER] = null;
         this[LOAD_RESTAURANT_OBJECTS]();
         this.openedWindows = []; // Array para almacenar las ventanas abiertas.
 
@@ -25,16 +31,76 @@ class RestaurantController {
     };
 
     onLoad = () => {
+        if (getCookie('accetedCookieMessage') !== 'true') {
+            this[VIEW].showCookiesMessage();
+        }
+        const userCookie = getCookie('activeUser');
+        console.log(userCookie);
+        if (userCookie) {
+            const user = this[AUTH].getUser(userCookie);
+            if (user) {
+                this[USER] = user;
+                this.onOpenSession();
+            }
+        } else {
+            this.onCloseSession();
+        }
+
         this[VIEW].init();
 
         this[VIEW].bindCategoryDropdown(this.handleCategory);
         this[VIEW].bindAllergenDropdown(this.handleAllergen);
         this[VIEW].bindMenuDropdown(this.handleMenu);
         this[VIEW].bindRestaurantDropdown(this.handleRestaurant);
-        this[VIEW].bindAdmin(this.handleAdmin);
 
         this[VIEW].showCloseAllWindowsButton();
         this[VIEW].bindCloseAllWindows(this.handleCloseAllWindows);
+        this[VIEW].bindDisconnect();
+    };
+
+    onOpenSession() { 
+        this.onInit();
+        this[VIEW].initHistory();
+        this[VIEW].showAuthUserProfile(this[USER]);
+        this[VIEW].bindCloseSession(this.handleCloseSession);
+        this[VIEW].showNavAdmin();
+        this[VIEW].bindAdmin(this.handleAdmin);
+        this[VIEW].showNavfavorite();
+        this[VIEW].bindfavorite(this.handlefavorite);
+    }
+
+    onCloseSession() {
+        this[USER] = null;
+        this[VIEW].deleteUserCookie();
+        this[VIEW].showIdentificationLink();
+        this[VIEW].bindIdentificationLink(this.handleLoginForm);
+        this[VIEW].removeAdminMenu();
+    }
+
+    handleLoginForm = () => {
+        this[VIEW].showLogin();
+        this[VIEW].bindLogin(this.handleLogin);
+    };
+
+    handleLogin = (username, password, remember) => {
+        if (this[AUTH].validateUser(username, password)) {
+          this[USER] = this[AUTH].getUser(username);
+          this.onOpenSession();
+          if (remember) {
+            this[VIEW].setUserCookie(this[USER]);
+            saveUser();
+          }
+        } else {
+          this[VIEW].showInvalidUserMessage();
+        }
+        greetUser();
+    };
+
+    handleCloseSession = () => {
+        this.onCloseSession();
+        this.onInit();
+        RestaurantApp.onInit();
+        this[VIEW].initHistory();
     };
 
     handleInit = () => {
@@ -48,7 +114,7 @@ class RestaurantController {
 
     handleShowCategory = (buttonId, category) => {
         let dishes = [...this[MODEL].getDishes()];
-        this[VIEW].showDishes(buttonId, category, this.handleOpenWindow, dishes);
+        this[VIEW].showDishes(buttonId, category, this.handleOpenWindow, this.handlefavoriteBtn, dishes);
     };
 
     handleAllergen = () => {
@@ -57,7 +123,7 @@ class RestaurantController {
 
     handleShowAllergen = (buttonId, allergen) => {
         let dishes = [...this[MODEL].getDishes()];
-        this[VIEW].showDishes(buttonId, allergen, this.handleOpenWindow, dishes);
+        this[VIEW].showDishes(buttonId, allergen, this.handleOpenWindow, this.handlefavoriteBtn, dishes);
     };
 
     handleMenu = () => {
@@ -65,7 +131,7 @@ class RestaurantController {
     };
 
     handleShowMenu = (buttonId, menu) => {
-        this[VIEW].showDishes(buttonId, menu, this.handleOpenWindow);
+        this[VIEW].showDishes(buttonId, menu, this.handleOpenWindow, this.handlefavoriteBtn);
     };
 
     handleRestaurant = () => {
@@ -81,6 +147,11 @@ class RestaurantController {
         this.onAdmin();
     };
 
+    // Para mostrar en la barra de navegación la parte de Favoritos(platos).
+    handlefavorite = () => {
+        this.onfavorite();
+    };
+
     // Métodos que están en la barra de navegación.
     onCategories = () => {
         this[VIEW].showCategories(this[MODEL].getCategories());
@@ -89,17 +160,17 @@ class RestaurantController {
 
     onAllergens = () => {
         this[VIEW].showAllergens(this[MODEL].getAllergens());
-        this[VIEW].bindAllergen(this[MODEL].getAllergens(), this.handleShowCategory);
+        this[VIEW].bindAllergen(this[MODEL].getAllergens(), this.handleShowAllergen);
     };
 
     onMenus = () => {
         this[VIEW].showMenus(this[MODEL].getMenus());
-        this[VIEW].bindMenu(this[MODEL].getMenus(), this.handleShowCategory);
+        this[VIEW].bindMenu(this[MODEL].getMenus(), this.handleShowMenu);
     };
 
     onRestaurants = () => {
         this[VIEW].showRestaurants(this[MODEL].getRestaurants());
-        this[VIEW].bindRestaurant(this[MODEL].getRestaurants(), this.handleShowCategory);
+        this[VIEW].bindRestaurant(this[MODEL].getRestaurants(), this.handleShowRestaurant);
     };
 
     onAdmin = () => {
@@ -114,9 +185,13 @@ class RestaurantController {
         this[VIEW].bindCreateCategory(this.handleCreateCategory);
         this[VIEW].bindDeleteCategory(this.handleDeleteCategory);
         this[VIEW].bindCreateRestaurant(this.handleCreateRestaurant);
-
         this[VIEW].bindAsignCategory(this.handleAsignCategory);
         this[VIEW].bindDesasignCategory(this.handleDesasignCategory);
+    }
+
+    onfavorite = () => {
+        let dishes = [...this[MODEL].getDishes()];
+        this[VIEW].showFavorite(this.handleDeletefavoriteBtn);
     }
 
     // Crear plato.
@@ -349,8 +424,6 @@ class RestaurantController {
         // console.log(m);
     };
 
-
-
     // Abrir una ventana nueva.
     handleOpenWindow = (nameD) => {
         // Buscar el plato.
@@ -379,6 +452,32 @@ class RestaurantController {
         }
     }
 
+    // Guardar el plato seleccionado favorito en el localStorage.
+    handlefavoriteBtn = (nameD) => {
+        let dish = this[MODEL].getDish(nameD).elem;  // Buscamos el plato.
+
+        if (dish !== undefined) {
+            let myObj = {
+                name: dish.name,
+                description: dish.description,
+                ingredients: dish.ingredients,
+                image: dish.image,
+            };
+
+            // Guardar en localStorage.
+            localStorage.setItem(dish.name, JSON.stringify(myObj));
+        }
+    }
+
+    // Eliminar el plato seleccionado en el localStorage.
+    handleDeletefavoriteBtn = (nameD) => {
+        // Eliminar en localStorage.
+        localStorage.removeItem(nameD);
+
+        // para que se muestres los platos despues de eliminar uno.
+        this.handlefavorite();
+    }
+
     // Cerrar todas las ventanas abiertas.
     handleCloseAllWindows = () => {
         const windows = this.openedWindows;
@@ -387,7 +486,6 @@ class RestaurantController {
         });
         this.openedWindows = [];
     }
-
     
     [LOAD_RESTAURANT_OBJECTS]() {
         // Los platos.

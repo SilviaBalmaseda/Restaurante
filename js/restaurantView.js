@@ -1,4 +1,5 @@
 import { createDishValidation, deleteDishValidation, asignMenuValidation, desasignMenuValidation, createCategoryValidation, deleteCategoryValidation, createRestaurantValidation, asignCategoryValidation, desasignCategoryValidation } from "./validation.js";
+import { setCookie } from "./util.js";
 
 const EXCECUTE_HANDLER = Symbol('excecuteHandler');
 
@@ -6,6 +7,7 @@ class RestaurantView {
   constructor() {
     this.breadcrumb = document.getElementById("breadcrumb");
     this.main = document.getElementsByTagName("main")[0];
+    this.menuCabecera = document.getElementById("menuCabecera");
     this.categories = document.getElementById("categories");
     this.categoryArea = document.getElementById("categoryArea");
     this.allergens = document.getElementById("allergens");
@@ -34,27 +36,50 @@ class RestaurantView {
 
   // Hijos de migas de pan.
   showChildrenBreadcrumbs(type) {
-    this.breadcrumb.insertAdjacentHTML("beforeend",
-      `<li class="breadcrumb-item" id="breadcrumb-item1">
-        <a href="#">${type}</a>
-      </li>`
+    // Eliminamos el hijo(migas de pan) si se ha seleccionado.
+    if (document.getElementById("breadcrumb-item1")) {
+      this.breadcrumb.removeChild(document.getElementById("breadcrumb-item1"));
+    }
+    
+    if (type != undefined) {
+      this.breadcrumb.insertAdjacentHTML("beforeend",
+        `<li class="breadcrumb-item" id="breadcrumb-item1">
+          <a href="#">${type}</a>
+        </li>`
+      );
+    }
+  }
+
+  // Para mostrar en la barra de navegación el Inicio.
+  showInicio() {
+    this.menuCabecera.replaceChildren();
+    this.menuCabecera.insertAdjacentHTML(
+      "afterbegin",
+      `<div class="cabecera-menu" id="menuInicio">
+        <a id="init" href="#" title="Link para recargar la página.">Inicio</a>
+      </div>`
     );
   }
 
-  // Mostrar categorías en el main.
-  // showCategoriesMain(cats) {
-  //   this.categoryArea.replaceChildren();
-  //   for (const category of cats) {
-  //     this.categoryArea.insertAdjacentHTML("beforeend",
-  //       `<div class="col-md-auto">
-  //         <a id="cat-${category.name}" href="#">${category.name}</a>
-  //       </div>`
-  //     );
-  //   }
-  // }
+  // Para mostrar en la barra de navegación el Admin.
+  showNavAdmin() {
+    document.getElementById("menuRestaurant").insertAdjacentHTML("afterend", 
+      `<div id="menuAdmin" class="cabecera-menu">
+        <a id="admin" href="#" title="Link para ir a la parte de formularios.">Admin</a>
+      </div>`
+    );
+  }
+
+  // Para mostrar en la barra de navegación el Favoritos.
+  showNavfavorite() {
+    document.getElementById("menuAdmin").insertAdjacentHTML("afterend", 
+      `<div id="menuFavorite" class="cabecera-menu">
+        <a id="favoritos" href="#" title="Link para ir a la parte de platos favoritos.">Favoritos</a>
+      </div>`
+    );
+  }
 
   // Desplegables.
-
   showCategories(cats) {
     this.categories.replaceChildren();
     for (const category of cats) {
@@ -106,23 +131,21 @@ class RestaurantView {
   // Mostrar el nombre del elemento(type) seleccionado en el despegable.
   showSelectedType(type) {
     this.categoryArea.replaceChildren();
-    this.categoryArea.insertAdjacentHTML("beforeend",
-      `<div class="col-md-auto">
-        <p>${type.name}</p>
-      </div>`
-    );
+      if (type != undefined) {
+        this.categoryArea.insertAdjacentHTML("beforeend",
+        `<div class="col-md-auto">
+          <p>${type}</p>
+        </div>`
+      );
+    }
   }
 
   // Mostrar 3 platos random.
   showRandomDishes(dishes) {
     const num = 3;
-    this.categoryArea.replaceChildren();
+    this.showSelectedType();
     this.mainArea.replaceChildren();
-
-    // Eliminamos el hijo(migas de pan) si se ha seleccionado.
-    if (document.getElementById("breadcrumb-item1")) {
-      this.breadcrumb.removeChild(document.getElementById("breadcrumb-item1"));
-    }
+    this.showChildrenBreadcrumbs();
 
     const array = Array.from(dishes); // Guardamos en un array auxiliar.
     for (let i = 0; i < num; i++) {
@@ -141,7 +164,7 @@ class RestaurantView {
 
   // Mostrar la carta del plato(value) en la zona pasada(area), la 'cadena' -> abrir la descripción.
   showMenuDishe(area, value, cadena = "1") {
-    area.insertAdjacentHTML("beforeend",
+    let carta =
       `<div class="col">
         <div class="card" style="width: 23rem">
           <img class="tamImg" src="./img/${value.image}" alt="Imagen del plato: ${value.name}" />
@@ -158,8 +181,17 @@ class RestaurantView {
               data-desc="${value.description}" data-ing="${value.ingredients}" 
               class="btn btn-dark openWindowButton" type="button">
                 Abrir página
-            </button>
+            </button>`
+
+    let menuFavorite = document.getElementById("menuFavorite");
+    if (menuFavorite) {
+      carta += 
+            `<br><button data-name="${value.name}" class="btn btn-dark favoriteBtn" type="button">
+              <i class="bi bi-star"></i>
+            </button>`;
+    }
             
+    carta += `
             <div class="collapse" id="${cadena}">
               <div class="card-text">
                 Descripción: ${value.description}. 
@@ -169,16 +201,12 @@ class RestaurantView {
           </div>
         </div>
       </div>`
-    );
+
+    area.insertAdjacentHTML("beforeend", carta);
   }
 
   // Método para mostrar los platós(dishes) según el elemento(type) seleccionado(button) de los despegables, 'handleOpenWindow' -> abrir nueva ventana.
-  showDishes(buttonId, type, handleOpenWindow, dishes) {
-    // Eliminamos la anterior categoría si se ha seleccionado.
-    if (document.getElementById("breadcrumb-item1")) {
-      this.breadcrumb.removeChild(document.getElementById("breadcrumb-item1"));
-    }
-
+  showDishes(buttonId, type, handleOpenWindow, handlefavoriteBtn, dishes) {
     let cont = 1; // Variable contador para los botones de descripción.
 
     this.mainArea.replaceChildren();
@@ -196,12 +224,15 @@ class RestaurantView {
       });
 
       // Mostramos la categoría seleccionada.
-      this.showSelectedType(type.elem);
+      this.showSelectedType(type.elem.name);
     }
     // Para categorías, alérgenos y restaurantes.
     else {
       // Migas de pan(añadimos el hijo).
       this.showChildrenBreadcrumbs(type.name);
+
+      // Quitamos el tipo seleccionado del categoryArea.
+      this.showSelectedType();
 
       if (buttonId.startsWith('res-')) {
         this.mainArea.insertAdjacentHTML("beforeend",
@@ -215,9 +246,6 @@ class RestaurantView {
             </div>
           </section>`
         );
-
-      // Quitamos el tipo seleccionado del categoryArea.
-      this.categoryArea.replaceChildren();
       }
       // // Para categorías y alérgenos.
       else {
@@ -230,10 +258,14 @@ class RestaurantView {
           }
         }
         // Mostramos la categoría seleccionada.
-        this.showSelectedType(type);
+        this.showSelectedType(type.name);
       }
     }
 
+    // Para añadir un plato a favoritos.
+    this.bindfavoriteBtn(handlefavoriteBtn);
+
+    // Para abrir el plato en una ventana nueva.
     this.bindOpenWindow(handleOpenWindow);
   }
 
@@ -606,14 +638,9 @@ class RestaurantView {
   }
 
 	// Mostrar todos los formularios.
-  showAdmin(dishes, menus, categories, restaurants, allergens, handler){
-    // Eliminamos la anterior categoría si se ha seleccionado.
-    if (document.getElementById("breadcrumb-item1")) {
-      this.breadcrumb.removeChild(document.getElementById("breadcrumb-item1"));
-    }
-
+  showAdmin(dishes, menus, categories, restaurants, allergens){
     // Quitamos el tipo seleccionado del categoryArea.
-    this.categoryArea.replaceChildren();
+    this.showSelectedType("Formularios/Administración");
     this.mainArea.replaceChildren();
 
     // Migas de pan(añadimos el hijo).
@@ -638,7 +665,60 @@ class RestaurantView {
 
     // 6 Modificar categoría de un plato.
     this.showFormModifyCategory(dishes, categories);
-   
+  }
+
+  // Mostrar los platos favoritos.
+  showFavorite(handleDeletefavoriteBtn){
+    // Quitamos el tipo seleccionado del categoryArea.
+    this.showSelectedType("Favoritos");
+    this.mainArea.replaceChildren();
+
+    // Migas de pan(añadimos el hijo).
+    this.showChildrenBreadcrumbs("Favoritos");
+
+    let cont = 0;
+
+    for (let index = 0; index < localStorage.length; index++) {
+
+      // Obtener la clave(nombre del plato).
+      let dish = localStorage.key(index);
+
+      // Recuperar el objeto guardado en localStorage;
+      let diss = JSON.parse(localStorage.getItem(dish));
+
+      let cadena = "dis" + cont++;
+
+      let carta =
+      `<div class="col">
+        <div class="card" style="width: 23rem">
+          <img class="tamImg" src="./img/${diss.image}" alt="Imagen del plato: ${diss.name}" />
+          <div class="card-body">
+            <h5 class="card-title">${diss.name}</h5>
+
+            <button class="btn btn-dark" type="button"
+              data-bs-toggle="collapse" data-bs-target="#${cadena}" aria-expanded="false"
+              aria-controls="${cadena}">
+                Descripción
+            </button>
+            
+            <button data-name="${diss.name}" class="btn btn-dark deleteFavoriteBtn" type="button">
+              Eliminar Favorito
+            </button>
+            
+            <div class="collapse" id="${cadena}">
+              <div class="card-text">
+                Descripción: ${diss.description}. 
+                Incredientes: ${diss.ingredients}      
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>`;
+
+      this.mainArea.insertAdjacentHTML("beforeend", carta);
+    }
+
+    this.bindDeletefavoriteBtn(handleDeletefavoriteBtn);
   }
 
 	// Mostrar mensaje(plato) creado correctamente o de error(si hay alguno).
@@ -916,6 +996,160 @@ class RestaurantView {
     messageModalContainer.addEventListener('hidden.bs.modal', listener, { once: true });
   } 
 
+  // Mostrar el mensaje de Cookies.
+  showCookiesMessage() {
+    const toast = `<div class="fixed-top p-5 mt-5">
+			<div id="cookies-message" class="toast fade show bg-dark text-white w-100 mw-100" role="alert" aria-live="assertive" aria-atomic="true">
+				<div class="toast-header">
+					<h4 class="me-auto">Aviso de uso de cookies</h4>
+					<button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close" id="btnDismissCookie"></button>
+				</div>
+				<div class="toast-body p-4 d-flex flex-column">
+					<p> Este sitio web almacenda datos en cookies para activar su funcionalidad, entre las que se encuentra datos analíticos y 
+            personalización. Para poder utilizar este sitio, estás automáticamente aceptando que utilizamos cookies.
+					</p>
+					<div class="ml-auto">
+						<button type="button" class="btn btn-outline-light mr-3 deny" id="btnDenyCookie" data-bs-dismiss="toast">
+							Denegar
+						</button>
+						<button type="button" class="btn btn-primary" id="btnAcceptCookie" data-bs-dismiss="toast">
+							Aceptar
+						</button>
+					</div>
+				</div>
+			</div>
+		</div>`;
+    document.body.insertAdjacentHTML('afterbegin', toast);
+
+		//  Bootstrap genera el evento hidden.bs.toast. Lo capturamos para eliminar la notificación del árbol DOM de la página.
+    const cookiesMessage = document.getElementById('cookies-message');
+    cookiesMessage.addEventListener('hidden.bs.toast', (event) => {
+      event.currentTarget.parentElement.remove();
+    });
+
+		// Para dejar la cookie para evitar que muestre el mensaje nuevamente en la página.
+    const btnAcceptCookie = document.getElementById('btnAcceptCookie');
+    btnAcceptCookie.addEventListener('click', (event) => {
+      setCookie('accetedCookieMessage', 'true', 1);
+    });
+
+		// Para que elimine el contenido de la página y muestre un mensaje que es necesario aceptar el uso de las cookies.
+    const denyCookieFunction = (event) => {
+      this.main.replaceChildren();
+      this.main.insertAdjacentHTML('afterbegin', 
+      `<div class="container my-3">
+        <div class="alert alert-warning" role="alert">
+            <strong>Para utilizar esta web es necesario aceptar el uso de cookies. Debe recargar la página y aceptar las condicones para seguir navegando. Gracias.</strong>
+        </div>
+      </div>`);
+
+      // Hacer función para crear una barra de navegación con el inicio y el identificador(para el estilo mejorarlo)
+      this.menuCabecera.removeChild(document.getElementById("menuCategorias"));
+      this.menuCabecera.removeChild(document.getElementById("menuAlergenos"));
+      this.menuCabecera.removeChild(document.getElementById("menuMenu"));
+      this.menuCabecera.removeChild(document.getElementById("menuRestaurant"));
+    };
+
+    const btnDenyCookie = document.getElementById('btnDenyCookie');
+    btnDenyCookie.addEventListener('click', denyCookieFunction);
+    const btnDismissCookie = document.getElementById('btnDismissCookie');
+    btnDismissCookie.addEventListener('click', denyCookieFunction);
+  }
+
+  showIdentificationLink() {
+    const userArea = document.getElementById('userArea');
+    userArea.replaceChildren();
+    userArea.insertAdjacentHTML('afterbegin', 
+    `<div class="account d-flex mx-2 flex-column" style="text-align: right; height: 40px">
+			<a id="login" href="#"><i class="bi bi-person-circle" aria-hidden="true"></i> Identificate</a>
+		</div>`);
+  }
+
+  showLogin() {
+    // Añadimos el hijo.
+    this.showChildrenBreadcrumbs("Login");
+
+    this.mainArea.replaceChildren();
+    const login = `<div class="container h-100 identificar">
+			<div class="d-flex justify-content-center h-100">
+				<div class="user_card">
+					<div class="d-flex justify-content-center form_container">
+					  <form name="fLogin" role="form" novalidate>
+							<div class="input-group mb-3">
+								<div class="input-group-append">
+									<span class="input-group-text"><i class="bi bi-person-circle"></i></span>
+								</div>
+								<input type="text" name="username" class="form-control input_user" value="" placeholder="usuario">
+							</div>
+							<div class="input-group mb-2">
+								<div class="input-group-append">
+									<span class="input-group-text"><i class="bi bi-key-fill"></i></span>
+								</div>
+								<input type="password" name="password" class="form-control input_pass" value="" placeholder="contraseña">
+							</div>
+							<div class="form-group">
+								<div class="custom-control custom-checkbox">
+									<input name="remember" type="checkbox" class="custom-control-input" id="customControlInline">
+									<label class="custom-control-label" for="customControlInline">Recuerdame</label>
+								</div>
+							</div>
+								<div class="d-flex justify-content-center mt-3 login_container">
+									<button class="btn login_btn" type="submit">Acceder</button>
+						  </div>
+						</form>
+					</div>
+				</div>
+			</div>
+		</div>`;
+    this.mainArea.insertAdjacentHTML('afterbegin', login);
+  }
+
+  showInvalidUserMessage() {
+    this.mainArea.insertAdjacentHTML('beforeend', 
+      `<div class="container my-3">
+        <div class="alert alert-warning" role="alert">
+          <strong>El usuario y la contraseña no son válidos. Inténtelo nuevamente.</strong>
+        </div>
+      </div>`);
+    document.forms.fLogin.reset();
+    document.forms.fLogin.username.focus();
+  }
+
+  // RETORCAR EL DISEÑO.
+  showAuthUserProfile(user) { 
+    const userArea = document.getElementById('userArea');
+    userArea.replaceChildren(); 
+    userArea.insertAdjacentHTML('afterbegin', 
+      `<div class="dropdown">
+        <a id="aCloseSession" href="#">Cerrar sesión</a>
+        ${user.username} <img class="iconoIdioma" alt="${user.username}" src="img/user.png" />
+      </div>`
+    );
+
+    if (document.getElementById("menuInicio")) this.menuCabecera.removeChild(document.getElementById("menuInicio"));
+  }
+  
+  removeAdminMenu() {
+    const adminMenu = document.getElementById('adminMenu');
+    if (adminMenu) adminMenu.parentElement.remove();
+
+    this.showInicio;
+  }
+
+  setUserCookie(user) {
+    setCookie("activeUser", user.username, 1);
+  }
+
+  deleteUserCookie() {
+    setCookie("activeUser", "", 0);
+  }
+
+
+
+  
+
+
+
 	// Generar el botón de cierre de todas la ventanas nuevas.
   showCloseAllWindowsButton() {
     this.mainArea.insertAdjacentHTML("afterend",
@@ -952,8 +1186,11 @@ class RestaurantView {
 
   // Si le ha dado click cerrar todas las ventanas abiertas(handler).
   bindCloseAllWindows(handler) {
-    const closeAllWindowsButton = document.getElementById('closeAllWindowsButton');
-    closeAllWindowsButton.addEventListener('click', handler);
+    // const closeAllWindowsButton = document.getElementById('closeAllWindowsButton');
+    // closeAllWindowsButton.addEventListener('click', handler);
+    document.getElementById("closeAllWindowsButton").addEventListener("click", (event) => {
+      this[EXCECUTE_HANDLER](handler, [], "main", { action: "CloseAllWindows" }, "#CloseAllWindows", event);
+    });
   }
 
   // Para mostrar los despegables(Categorías, alérgenos, menús, y restaurantes).
@@ -1024,7 +1261,7 @@ class RestaurantView {
 
   // Para mostrar la parte del admin(formularios);
   bindAdmin(handler) {
-    document.getElementById("admin").addEventListener("click", (event) => {
+    document.getElementById("menuAdmin").addEventListener("click", (event) => {
       this[EXCECUTE_HANDLER](handler, [], "nav", { action: "showAdmin" }, "#Admin", event);
     });
   }
@@ -1072,6 +1309,79 @@ class RestaurantView {
   // Para validar la desasignación de una categoría a varios platos.
   bindDesasignCategory(handler) {
     desasignCategoryValidation(handler);
+  }
+
+  // COOKIES
+  // Cuando le das al botón de Identificate.
+  bindIdentificationLink(handler) {
+    const login = document.getElementById('login');
+    login.addEventListener('click', (event) => {
+      this[EXCECUTE_HANDLER](handler, [], 'main', { action: 'login' }, '#', event);
+    });
+  }
+
+  // Cuando le das al botón de Acceder del Login.
+  bindLogin(handler) {
+    const form = document.forms.fLogin;
+    form.addEventListener('submit', (event) => {
+      handler(form.username.value, form.password.value, form.remember.checked);
+      event.preventDefault();
+    });
+  }
+
+  // Cuando se cierre sesión(se eliminana también El Admin y Favorito de la barra de navegación).
+  bindCloseSession(handler) {
+    document.getElementById("aCloseSession").addEventListener("click", (event) => {
+      handler();
+      event.preventDefault();
+      if (document.getElementById("menuAdmin")) this.menuCabecera.removeChild(document.getElementById("menuAdmin"));
+      if (document.getElementById("menuFavorite")) this.menuCabecera.removeChild(document.getElementById("menuFavorite"));
+    });
+  }
+
+  // Para cuando el usuario se desconecte, eliminar la cookie del equipo.
+  bindDisconnect() {
+    window.addEventListener("beforeunload", function(event) {
+      // No funciona está deprecado. 
+      // event.returnValue = "Si se desconecta, se eliminara la cookie";
+      setCookie("accetedCookieMessage", "", 0);
+    });
+  }
+
+  // Para mostrar la parte de Favoritos(platos);
+  bindfavorite(handler) {
+    document.getElementById("menuFavorite").addEventListener("click", (event) => {
+      this[EXCECUTE_HANDLER](handler, [], "nav", { action: "showFavorite" }, "#Favorite", event);
+    });
+  }
+
+  // Cuando le das al botón de favorito(estrella). 
+  bindfavoriteBtn(handler) {
+    const buttons = mainArea.getElementsByClassName('favoriteBtn');
+    for (const button of buttons) {
+      button.addEventListener('click', (event) => {
+        // se puede usar así(event.currentTarget) o button.
+        handler(event.currentTarget.dataset.name);
+      });
+    }
+  }
+
+  // Cuando le das al botón de elminar favorito.
+  bindDeletefavoriteBtn(handler) {
+    const buttons = mainArea.getElementsByClassName('deleteFavoriteBtn');
+    for (const button of buttons) {
+      button.addEventListener('click', (event) => {
+        // se puede usar así(event.currentTarget) o button.
+        handler(event.currentTarget.dataset.name);
+      });
+    }
+  }
+
+
+
+  // Para el historial.
+  initHistory() {
+    history.replaceState({ action: 'init' }, null);
   }
 
   // Devuelve un entero random entre 0 y el máximo pasado por parámetro.

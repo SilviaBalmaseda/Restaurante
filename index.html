@@ -26,12 +26,12 @@
 
 <body>
     <header>
-        <nav class="cabecera">
-            <div class="cabecera-menu">
+        <nav class="cabecera" id="menuCabecera">
+            <div class="cabecera-menu" id="menuInicio">
                 <a id="init" href="#" title="Link para recargar la página.">Inicio</a>
             </div>
 
-            <div class="cabecera-menu">
+            <div class="cabecera-menu" id="menuCategorias">
                 <div class="dropdown">
                     <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
                         <a id="categoriesDrop" href="#">Categorías</a>
@@ -43,7 +43,7 @@
                 </div>
             </div>
 
-            <div class="cabecera-menu">
+            <div class="cabecera-menu" id="menuAlergenos">
                 <div class="dropdown">
                     <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
                         <a id="allergensDrop" href="#">Alérgenos</a>
@@ -55,7 +55,7 @@
                 </div>
             </div>
 
-            <div class="cabecera-menu">
+            <div class="cabecera-menu" id="menuMenu">
                 <div class="dropdown">
                     <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
                         <a id="menusDrop" href="#">Menús</a>
@@ -67,7 +67,7 @@
                 </div>
             </div>
 
-            <div class="cabecera-menu">
+            <div class="cabecera-menu" id="menuRestaurant">
                 <div class="dropdown">
                     <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
                         <a id="restaurantsDrop" href="#">Restaurantes</a>
@@ -79,13 +79,13 @@
                 </div>
             </div>
 
-            <div class="cabecera-menu">
-                <a id="admin" href="#" title="Link para ir a la parte de formularios.">Admin</a>
+            <div class="cabecera-menu" id="userArea">
+                
             </div>
         </nav>
 
         <!-- Migas de pan -->
-        <div class="miga" style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
+        <div id="migaPan" class="miga" style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
             <ol id="breadcrumb" class="breadcrumb">
 
             </ol>
@@ -93,7 +93,6 @@
     </header>
 
     <main class="container text-center">
-
         <section id="categoryArea" data-type="list" class="row justify-content-md-center principal">
 
         </section>
