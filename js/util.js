@@ -26,7 +26,7 @@ function greetUser() {
     let user = getCookie("username");
     if (user) {
         alert("Hola " + user);
-    } 
+    }
 }
 
 function saveUser() {

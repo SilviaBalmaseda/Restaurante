@@ -19,13 +19,13 @@ this.sectionS = document.getElementById("sectionS");
 
 // Recibir el plato y mostrarlo por pantalla.
 window.addEventListener('message', function (event) {
-    // Procesar el mensaje(plato) recibido.
-    const myObj = event.data;
-    // Deserializar.
-    let restored = JSON.parse(myObj);
-    
-    this.sectionS.insertAdjacentHTML("beforeend",
-      `<div class="col">
+  // Procesar el mensaje(plato) recibido.
+  const myObj = event.data;
+  // Deserializar.
+  let restored = JSON.parse(myObj);
+
+  this.sectionS.insertAdjacentHTML("beforeend",
+    `<div class="col">
         <div class="card" style="width: 23rem">
           <img class="tamImg" src="./img/${restored.image}" alt="Imagen del plato: ${restored.name}" />
           <div class="card-body">
@@ -38,9 +38,5 @@ window.addEventListener('message', function (event) {
           </div>
         </div>
       </div>`
-    );
-
-
-
+  );
 });
-  

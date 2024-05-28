@@ -1,6 +1,6 @@
-import { 
+import {
     BaseException,
-    InvalidAccessConstructorException 
+    InvalidAccessConstructorException
 } from "../js/exceptions.js";
 import { User } from "../js/user.js";
 
@@ -37,13 +37,12 @@ const AuthenticationService = (function () {
     }
     return {
         getInstance() {
-        if (!instantiated) {
-            instantiated = init();
-        }
-        return instantiated;
+            if (!instantiated) {
+                instantiated = init();
+            }
+            return instantiated;
         },
     };
 }());
 
 export default AuthenticationService;
-  

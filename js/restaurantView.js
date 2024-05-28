@@ -285,7 +285,6 @@ class RestaurantView {
               </button>
               
               <div class="collapse" id="create1">
-
                 <label class="form-label" for="nameDish">Nombre: </label>
                 <input type="text" class="form-control" id="nameDish" name="nameDish"
                   placeholder="Nombre del plato" value="" required>
@@ -312,28 +311,28 @@ class RestaurantView {
     `;
 
     for (const cat of categories) {
-      formu += `<option value="${cat.name}">${cat.name}</option>`;
+      formu += `  <option value="${cat.name}">${cat.name}</option>`;
     }
 
-    formu += `</select>
-              <h3>Asignar plato a alégeno: </h3>
+    formu += `  </select>
+                <h3>Asignar plato a alégeno: </h3>
                 <select name="sAllergen" class="form-select" id="sAllergen" aria-describedby="sAllergen" >
                   <option selected value=''>No tiene alérgeno</option> 
     `;
 
     for (const all of allergens) {
-      formu += `<option value="${all.name}">${all.name}</option>`;
+      formu += `  <option value="${all.name}">${all.name}</option>`;
     }
 
-      formu +=`</select>
-              <button class="btn btn-dark" id="btnCreateDish" type="submit">
-                  CREAR PLATO
-              </button>
-            </div>
-          </form>
+    formu +=`   </select>
+                <button class="btn btn-dark" id="btnCreateDish" type="submit">
+                    CREAR PLATO
+                </button>
+              </div>
+            </form>
+          </div>
         </div>
-      </div>
-    </div>`;
+      </div>`;
 
     this.mainArea.insertAdjacentHTML("beforeend", formu);
   }
@@ -382,20 +381,19 @@ class RestaurantView {
               </button>
 
               <div class="collapse" id="asign">
-
                 <select name="seDish" class="form-select" id="seDish" aria-describedby="seDish">
     `;
 
     for (const dis of dishes) {
-      formu += `<option value="${dis.elem.name}">${dis.elem.name}</option>`;
+      formu += `  <option value="${dis.elem.name}">${dis.elem.name}</option>`;
     }
 
-    formu += `</select>
-              <select name="sMenus" class="form-select" id="sMenus" aria-describedby="sMenus" multiple>
+    formu += `  </select>
+                <select name="sMenus" class="form-select" id="sMenus" aria-describedby="sMenus" multiple>
     `;
 
     for (const men of menus) {
-      formu += `<option value="${men.elem.name}">${men.elem.name}</option>`;
+      formu += `  <option value="${men.elem.name}">${men.elem.name}</option>`;
     }
 
     formu += `  </select>
@@ -403,7 +401,6 @@ class RestaurantView {
                   ASIGNAR
                 </button>
               </div>
-
             </form>
 
             <hr>
@@ -418,20 +415,19 @@ class RestaurantView {
               </button>
 
               <div class="collapse" id="desasign">
-
                 <select name="selDish" class="form-select" id="selDish" aria-describedby="selDish">
     `;
 
     for (const dis of dishes) {
-      formu += `<option value="${dis.elem.name}">${dis.elem.name}</option>`;
+      formu += `  <option value="${dis.elem.name}">${dis.elem.name}</option>`;
     }
 
-    formu += `</select>
-              <select name="seMenus" class="form-select" id="seMenus" aria-describedby="seMenus" multiple>
+      formu += `</select>
+                <select name="seMenus" class="form-select" id="seMenus" aria-describedby="seMenus" multiple>
     `;
 
     for (const men of menus) {
-      formu += `<option value="${men.elem.name}">${men.elem.name}</option>`;
+      formu += `  <option value="${men.elem.name}">${men.elem.name}</option>`;
     }
 
     formu += `
@@ -464,7 +460,6 @@ class RestaurantView {
               </button>
               
               <div class="collapse" id="create2">
-
                 <label class="form-label" for="nameCat">Nombre: </label>
                 <input type="text" class="form-control" id="nameCat" name="nameCat"
                   placeholder="Nombre de la categoría" value="" required>
@@ -479,19 +474,17 @@ class RestaurantView {
                   CREAR CATEGORÍA
                 </button>
               </div>
-
             </form>
 
             <hr>
 
             <form name="fDeleteC" role="form" class="row g-3 formu" novalidate>
-
               <h3>Eliminar categoría: </h3>
               <select name="seCategory" class="form-select" id="seCategory" aria-describedby="seCategory" multiple>
     `;
 
     for (const cat of categories) {
-      formu += `<option value="${cat.name}">${cat.name}</option>`;
+      formu += `  <option value="${cat.name}">${cat.name}</option>`;
     }
 
     formu += `
@@ -523,7 +516,6 @@ class RestaurantView {
               </button>
               
               <div class="collapse" id="create3">
-
                 <label class="form-label" for="nameRest">Nombre: </label>
                 <input type="text" class="form-control" id="nameRest" name="nameRest"
                   placeholder="Nombre del restaurante" value="" required>
@@ -571,20 +563,19 @@ class RestaurantView {
               </button>
 
               <div class="collapse" id="add">
-
                 <select name="seleDish" class="form-select" id="seleDish" aria-describedby="seleDish" multiple>
     `;
 
     for (const dis of dishes) {
-      formu += `<option value="${dis.elem.name}">${dis.elem.name}</option>`;
+      formu += `  <option value="${dis.elem.name}">${dis.elem.name}</option>`;
     }
 
-    formu += `</select>
-              <select name="seCategories" class="form-select" id="seCategories" aria-describedby="seCategories">
+    formu += `  </select>
+                <select name="seCategories" class="form-select" id="seCategories" aria-describedby="seCategories">
     `;
 
     for (const cat of categories) {
-      formu += `<option value="${cat.name}">${cat.name}</option>`;
+      formu += `  <option value="${cat.name}">${cat.name}</option>`;
     }
 
     formu += `  </select>
@@ -606,20 +597,19 @@ class RestaurantView {
               </button>
 
               <div class="collapse" id="desasignC">
-
                 <select name="selecDish" class="form-select" id="selecDish" aria-describedby="selecDish" multiple>
     `;
 
     for (const dis of dishes) {
-      formu += `<option value="${dis.elem.name}">${dis.elem.name}</option>`;
+      formu += `  <option value="${dis.elem.name}">${dis.elem.name}</option>`;
     }
 
-    formu += `</select>
-              <select name="fCategories" class="form-select" id="fCategories" aria-describedby="fCategories">
+    formu += `  </select>
+                <select name="fCategories" class="form-select" id="fCategories" aria-describedby="fCategories">
     `;
 
     for (const cat of categories) {
-      formu += `<option value="${cat.name}">${cat.name}</option>`;
+      formu += `  <option value="${cat.name}">${cat.name}</option>`;
     }
 
     formu += `
@@ -677,7 +667,6 @@ class RestaurantView {
     let cont = 0;
 
     for (let index = 0; index < localStorage.length; index++) {
-
       // Obtener la clave(nombre del plato).
       let dish = localStorage.key(index);
 
@@ -763,8 +752,8 @@ class RestaurantView {
     } else {
       body.insertAdjacentHTML('afterbegin',
         `<div class="error text-danger p-3">
-				<i class="bi bi-exclamation-triangle"></i>El plato <strong>${nameD}</strong> NO se ha podido borrar.
-				<br>${error}
+          <i class="bi bi-exclamation-triangle"></i>El plato <strong>${nameD}</strong> NO se ha podido borrar.
+          <br>${error}
 				</div>`,
       );
     }
@@ -816,7 +805,7 @@ class RestaurantView {
     const messageModalContainer = document.getElementById('messageModal');
     const messageModal = new bootstrap.Modal('#messageModal');
     const title = document.getElementById('messageModalTitle');
-    title.innerHTML = 'Asignado plato a Menús';
+    title.innerHTML = 'Desasignado plato a Menús';
     const body = messageModalContainer.querySelector('.modal-body');
     body.replaceChildren();
     if (done) {
@@ -885,8 +874,8 @@ class RestaurantView {
     } else {
       body.insertAdjacentHTML('afterbegin',
         `<div class="error text-danger p-3">
-				<i class="bi bi-exclamation-triangle"></i>La categoría <strong>${nameC}</strong> NO se ha podido borrar.
-				<br>${error}
+          <i class="bi bi-exclamation-triangle"></i>La categoría <strong>${nameC}</strong> NO se ha podido borrar.
+          <br>${error}
 				</div>`,
       );
     }
@@ -969,7 +958,7 @@ class RestaurantView {
     const messageModalContainer = document.getElementById('messageModal');
     const messageModal = new bootstrap.Modal('#messageModal');
     const title = document.getElementById('messageModalTitle');
-    title.innerHTML = 'Asignado plato a Categoría';
+    title.innerHTML = 'Desasignado plato a Categoría';
     const body = messageModalContainer.querySelector('.modal-body');
     body.replaceChildren();
     if (done) {
@@ -1041,7 +1030,6 @@ class RestaurantView {
         </div>
       </div>`);
 
-      // Hacer función para crear una barra de navegación con el inicio y el identificador(para el estilo mejorarlo)
       this.menuCabecera.removeChild(document.getElementById("menuCategorias"));
       this.menuCabecera.removeChild(document.getElementById("menuAlergenos"));
       this.menuCabecera.removeChild(document.getElementById("menuMenu"));
@@ -1096,8 +1084,8 @@ class RestaurantView {
 									<label class="custom-control-label" for="customControlInline">Recuerdame</label>
 								</div>
 							</div>
-								<div class="d-flex justify-content-center mt-3 login_container">
-									<button class="btn login_btn" type="submit">Acceder</button>
+              <div class="d-flex justify-content-center mt-3 login_container">
+                <button class="btn login_btn" type="submit">Acceder</button>
 						  </div>
 						</form>
 					</div>
@@ -1116,7 +1104,7 @@ class RestaurantView {
         </div>
       </div>`);
     document.forms.fLogin.reset();
-    document.forms.fLogin.username.focus();
+    document.forms.fLogin.username.focus(); 
   }
 
   // Mostrar cuando el usuario esta autenticado..
@@ -1193,8 +1181,6 @@ class RestaurantView {
 
   // Si le ha dado click cerrar todas las ventanas abiertas(handler).
   bindCloseAllWindows(handler) {
-    // const closeAllWindowsButton = document.getElementById('closeAllWindowsButton');
-    // closeAllWindowsButton.addEventListener('click', handler);
     document.getElementById("closeAllWindowsButton").addEventListener("click", (event) => {
       this[EXCECUTE_HANDLER](handler, [], "main", { action: "CloseAllWindows" }, "#CloseAllWindows", event);
     });
@@ -1230,7 +1216,6 @@ class RestaurantView {
     for (const category of categories) {
       let button = document.getElementById(`cat-${category.name}`);
       button.addEventListener("click", (event) => {
-        // this[EXCECUTE_HANDLER](handler, [button.id, category], "main", { action: "showDishes" }, "#Category-list", event);
         handler(button.id, category);
       });
     }
@@ -1240,7 +1225,6 @@ class RestaurantView {
     for (const all of allergens) {
       let button = document.getElementById(`all-${all.name}`);
       button.addEventListener("click", (event) => {
-        // this[EXCECUTE_HANDLER](handler, [button.id, all], "main", { action: "showDishes" }, "#Category-list", event);
         handler(button.id, all);
       });
     }
@@ -1250,7 +1234,6 @@ class RestaurantView {
     for (const men of menus) {
       let button = document.getElementById(`men-${men.elem.name}`);
       button.addEventListener("click", (event) => {
-        // this[EXCECUTE_HANDLER](handler, [button.id, men], "main", { action: "showDishes" }, "#Category-list", event);
         handler(button.id, men);
       });
     }
@@ -1260,7 +1243,6 @@ class RestaurantView {
     for (const rest of restaurants) {
       let button = document.getElementById(`res-${rest.name}`);
       button.addEventListener("click", (event) => {
-        // this[EXCECUTE_HANDLER](handler, [button.id, rest], "main", { action: "showDishes" }, "#Category-list", event);
         handler(button.id, rest);
       });
     }
@@ -1378,7 +1360,6 @@ class RestaurantView {
     const buttons = mainArea.getElementsByClassName('deleteFavoriteBtn');
     for (const button of buttons) {
       button.addEventListener('click', (event) => {
-        // se puede usar así(event.currentTarget) o button.
         handler(event.currentTarget.dataset.name);
       });
     }

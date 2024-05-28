@@ -1,0 +1,249 @@
+{
+    "dishes": [
+        {
+            "name": "Croquetas",
+            "description": "Croquetas de jamón, pollo, queso",
+            "ingredients": [
+                "leche",
+                "mantequilla",
+                "cebolla",
+                "huevo",
+                "harina de trigo",
+                "pan rallado"
+            ],
+            "image": "croquetas.jpg"
+        },
+        {
+            "name": "Pulpo a la gallega",
+            "description": "Pulpo al estilo gallego",
+            "ingredients": [
+                "pulpo",
+                "patatas",
+                "sal",
+                "pimentón dulce o picante",
+                "agua",
+                "aceite de oliva"
+            ],
+            "image": "pulpoGallega.jpg"
+        },
+        {
+            "name": "Pisto Manchego",
+            "description": "Pisto Manchego tradicional",
+            "ingredients": [
+                "tomate",
+                "cebolla",
+                "pimiento verder y rojo",
+                "calabacín o berenjenas",
+                "ajo",
+                "sal",
+                "aceite de oliva"
+            ],
+            "image": "pistoManchego.jpg"
+        },
+        {
+            "name": "Torrijas",
+            "description": "Torrijas tradicionales",
+            "ingredients": [
+                "pan",
+                "leche",
+                "canela",
+                "limón",
+                "azúcar",
+                "huevo",
+                "aceite de oliva"
+            ],
+            "image": "torrijas.jpg"
+        },
+        {
+            "name": "Ceviche de Salmón",
+            "description": "Ceviche de Salmón",
+            "ingredients": [
+                "salmón",
+                "cebolla",
+                "cilantro",
+                "lima",
+                "aguacate",
+                "ají amarillo",
+                "sal"
+            ],
+            "image": "cevicheSalmon.jpg"
+        },
+        {
+            "name": "Pita de pollo",
+            "description": "Pan de pita con pollo",
+            "ingredients": [
+                "pollo",
+                "ajo",
+                "cebolla",
+                "pan pita",
+                "tomate",
+                "lechuga",
+                "aceitunas",
+                "mayonesa"
+            ],
+            "image": "pitaPollo.jpg"
+        },
+        {
+            "name": "Espaguetis de calabacín con gambas",
+            "description": "Calabacín en forma de espaguetis con gambas",
+            "ingredients": [
+                "calabacín",
+                "ajo",
+                "sal",
+                "gambas",
+                "perejil o guindilla",
+                "aceite de oliva"
+            ],
+            "image": "espaguetisGambas.jpg"
+        },
+        {
+            "name": "Tarta de selva negra",
+            "description": "Varias capas de bizcocho de chocolate con nata y cerezas",
+            "ingredients": [
+                "harina",
+                "azúcar",
+                "mantequilla",
+                "cacao en polvo",
+                "levadura en polvo",
+                "nata líquida",
+                "licor de cerezas",
+                "cerezas",
+                "chocolate",
+                "agua"
+            ],
+            "image": "tartaSelvaNegra.jpg"
+        },
+        {
+            "name": "Cachapas",
+            "description": "Cachapas venezolanas",
+            "ingredients": [
+                "maíz dulce",
+                "huevo",
+                "mantequilla",
+                "sal",
+                "leche entera",
+                "azúcar",
+                "harina",
+                "queso(tierno o mozzarella)"
+            ],
+            "image": "cachapa.jpg"
+        },
+        {
+            "name": "Rollitos de primavera",
+            "description": "Comida original de China",
+            "ingredients": [
+                "repollo",
+                "zanahoria",
+                "cebolla",
+                "aceite vegetal",
+                "brotes de soja",
+                "sal",
+                "cerdo o ternera(carne picada)",
+                "pasta wonton",
+                "huevo"
+            ],
+            "image": "rollitosPrimavera.jpg"
+        },
+        {
+            "name": "Barramundi tradicional",
+            "description": "Pescado típico australiano",
+            "ingredients": [
+                "barramundi",
+                "aceite de macadamia o de oliva",
+                "mirto de limón o ralladura de limón",
+                "hojas de laurel",
+                "sal",
+                "pimienta",
+                "ajo"
+            ],
+            "image": "Barramundi.webp"
+        },
+        {
+            "name": "Koeksisters",
+            "description": "típico dulce africano(es como la masa de donuts)",
+            "ingredients": [
+                "azúcar moreno",
+                "harina blanca",
+                "limón",
+                "canela",
+                "margarina",
+                "huevo",
+                "agua",
+                "aceite de girasol"
+            ],
+            "image": "Koeksisters.jpg"
+        }
+    ],
+    "categories": [
+        {
+            "name": "Estrella",
+            "description": "Platos con gran popularidad"
+        },
+        {
+            "name": "Tradicional",
+            "description": "Platos tradicionales"
+        },
+        {
+            "name": "Postre",
+            "description": "Platos dulces"
+        }
+    ],
+    "allergens": [
+        {
+            "name": "Lactosa",
+            "description": "Alimentos derivados de los lácteos"
+        },
+        {
+            "name": "Marísco",
+            "description": "Pescado y productos a base de pescado"
+        },
+        {
+            "name": "Huevo",
+            "description": "Huevos y productos a base de huevo"
+        },
+        {
+            "name": "Soja",
+            "description": "Soja y productos a base de soja"
+        }
+    ],
+    "menus": [
+        {
+            "name": "Clásica",
+            "description": "Platos tradicionales españoles"
+        },
+        {
+            "name": "Innovador",
+            "description": "Platos que te los comes con la vista"
+        },
+        {
+            "name": "Internacional",
+            "description": "Platos de diferentes continentes"
+        }
+    ],
+    "restaurants": [
+        {
+            "name": "Serendipia 1º",
+            "description": "Primer restaurante",
+            "coordinates": {
+                "latitude": 12,
+                "longitude": 20
+            }
+        },
+        {
+            "name": "Serendipia 2º",
+            "description": "Segundo restaurante",
+            "coordinates": {
+                "latitude": 35,
+                "longitude": 62
+            }
+        },
+        {
+            "name": "Serendipia 3º",
+            "description": "Tercer restaurante",
+            "coordinates": {
+                "latitude": 71,
+                "longitude": 29
+            }
+        }
+    ]
+}

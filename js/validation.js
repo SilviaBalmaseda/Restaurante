@@ -1,87 +1,87 @@
 function showFeedBack(input, valid, message) {
-    const validClass = (valid) ? 'is-valid' : 'is-invalid';
-    const messageDiv = (valid) ? input.parentElement.querySelector('div.valid-feedback') : input.parentElement.querySelector('div.invalid-feedback');
-    for (const div of input.parentElement.getElementsByTagName('div')) {
-        div.classList.remove('d-block');
-    }
-    // messageDiv.classList.remove('d-none');
-    // messageDiv.classList.add('d-block');
-    input.classList.remove('is-valid');
-    input.classList.remove('is-invalid');
-    input.classList.add(validClass);
-    if (message) {
-        messageDiv.innerHTML = message;
-    }
+  const validClass = (valid) ? 'is-valid' : 'is-invalid';
+  const messageDiv = (valid) ? input.parentElement.querySelector('div.valid-feedback') : input.parentElement.querySelector('div.invalid-feedback');
+  for (const div of input.parentElement.getElementsByTagName('div')) {
+    div.classList.remove('d-block');
+  }
+  // messageDiv.classList.remove('d-none');
+  // messageDiv.classList.add('d-block');
+  input.classList.remove('is-valid');
+  input.classList.remove('is-invalid');
+  input.classList.add(validClass);
+  if (message) {
+    messageDiv.innerHTML = message;
+  }
 }
 
 // Validación en línea.
 function defaultCheckElement() {
-    this.value = this.value.trim();
-    if (!this.checkValidity()) {
-        showFeedBack(this, false);
-    } else {
-        showFeedBack(this, true);
-    }
+  this.value = this.value.trim();
+  if (!this.checkValidity()) {
+    showFeedBack(this, false);
+  } else {
+    showFeedBack(this, true);
+  }
 }
 
 // Función para crear un nuevo plato.
 function createDishValidation(handler) {
-    const form = document.forms.fCreateDish;
-    form.setAttribute('novalidate', true);
-    // Validar datos.
-    form.addEventListener('submit', function (event) {
-      // Prevenir el comportamiento por defecto del enlace.
-      event.preventDefault();
+  const form = document.forms.fCreateDish;
+  form.setAttribute('novalidate', true);
+  // Validar datos.
+  form.addEventListener('submit', function (event) {
+    // Prevenir el comportamiento por defecto del enlace.
+    event.preventDefault();
 
-      let isValid = true;
-      let firstInvalidElement = null;
+    let isValid = true;
+    let firstInvalidElement = null;
 
-      // Seleccionar el nombre de la imágen pasada.
-      let imgDish = undefined;
-      if (this.imgDish.files[0] != undefined) {
-          imgDish = this.imgDish.files[0].name;
-      }
-      showFeedBack(this.imgDish, true);
-      
-      let arrayIng = this.ingDish.value.split(","); // Pasarlo a array, elemento separador comas','.
-      let ingredients = []; // variable para guardar el array sin espacios en blanco al inicio y final de cada ingrediente.
-      arrayIng.forEach((element) => ingredients.push(element.trim())); // Quitar los espaciós en blanco en las palabras.
-      this.ingDish.value = ingredients
-      showFeedBack(this.ingDish, true);
+    // Seleccionar el nombre de la imágen pasada.
+    let imgDish = undefined;
+    if (this.imgDish.files[0] != undefined) {
+      imgDish = this.imgDish.files[0].name;
+    }
+    showFeedBack(this.imgDish, true);
 
-      this.desDish.value = this.desDish.value.trim();
-      showFeedBack(this.desDish, true);
+    let arrayIng = this.ingDish.value.split(","); // Pasarlo a array, elemento separador comas','.
+    let ingredients = []; // variable para guardar el array sin espacios en blanco al inicio y final de cada ingrediente.
+    arrayIng.forEach((element) => ingredients.push(element.trim())); // Quitar los espaciós en blanco en las palabras.
+    this.ingDish.value = ingredients
+    showFeedBack(this.ingDish, true);
 
-      this.sCategory.value = this.sCategory.value.trim();
-      showFeedBack(this.sCategory, true);
-      
-      this.sAllergen.value = this.sAllergen.value.trim();
-      showFeedBack(this.sAllergen, true);
-  
-      if (!this.nameDish.checkValidity()) {
-        isValid = false;
-        showFeedBack(this.nameDish, false);
-        firstInvalidElement = this.nameDish;
-      } else {
-        showFeedBack(this.nameDish, true);
-      }
+    this.desDish.value = this.desDish.value.trim();
+    showFeedBack(this.desDish, true);
 
-      if (!isValid) {
-          firstInvalidElement.focus();
-      } else {
-          handler(this.nameDish.value, this.desDish.value, ingredients, imgDish, this.sCategory.value, this.sAllergen.value);
-          // handler(this.nameDish.value, this.desDish.value, this.ingDish.value, this.imgDish.value, this.sCategory.value, this.sAllergen.value);
-      }
-      event.stopPropagation();
-    });
-  
-    // Estilo si está bien(verde) o mal(rojo).
-    form.nameDish.addEventListener('change', defaultCheckElement);
-    form.desDish.addEventListener('change', defaultCheckElement);
-    form.ingDish.addEventListener('change', defaultCheckElement);
-    form.imgDish.addEventListener('change', defaultCheckElement);
-    form.sCategory.addEventListener('change', defaultCheckElement);
-    form.sAllergen.addEventListener('change', defaultCheckElement);
+    this.sCategory.value = this.sCategory.value.trim();
+    showFeedBack(this.sCategory, true);
+
+    this.sAllergen.value = this.sAllergen.value.trim();
+    showFeedBack(this.sAllergen, true);
+
+    if (!this.nameDish.checkValidity()) {
+      isValid = false;
+      showFeedBack(this.nameDish, false);
+      firstInvalidElement = this.nameDish;
+    } else {
+      showFeedBack(this.nameDish, true);
+    }
+
+    if (!isValid) {
+      firstInvalidElement.focus();
+    } else {
+      handler(this.nameDish.value, this.desDish.value, ingredients, imgDish, this.sCategory.value, this.sAllergen.value);
+      // handler(this.nameDish.value, this.desDish.value, this.ingDish.value, this.imgDish.value, this.sCategory.value, this.sAllergen.value);
+    }
+    event.stopPropagation();
+  });
+
+  // Estilo si está bien(verde) o mal(rojo).
+  form.nameDish.addEventListener('change', defaultCheckElement);
+  form.desDish.addEventListener('change', defaultCheckElement);
+  form.ingDish.addEventListener('change', defaultCheckElement);
+  // form.imgDish.addEventListener('change', defaultCheckElement);
+  form.sCategory.addEventListener('change', defaultCheckElement);
+  form.sAllergen.addEventListener('change', defaultCheckElement);
 }
 
 // Función para eliminar varios platos.
@@ -89,7 +89,7 @@ function deleteDishValidation(handler) {
   const form = document.forms.fDeleteDishes;
   form.setAttribute('novalidate', true);
   let d = document.getElementById('sDish');
-  
+
   form.addEventListener('submit', (function (event) {
     // Prevenir el comportamiento por defecto del enlace.
     event.preventDefault();
@@ -104,8 +104,8 @@ function deleteDishValidation(handler) {
         selec.push(elem.value);
       }
     }
-    
-    if (selec.length!=0) {
+
+    if (selec.length != 0) {
       this.sDish.value = selec;
     }
     else {
@@ -140,52 +140,52 @@ function asignMenuValidation(handler) {
 
   // Validar datos.
   form.addEventListener('submit', function (event) {
-      // Prevenir el comportamiento por defecto del enlace.
-      event.preventDefault();
+    // Prevenir el comportamiento por defecto del enlace.
+    event.preventDefault();
 
-      let isValid = true;
-      let firstInvalidElement = null;
+    let isValid = true;
+    let firstInvalidElement = null;
 
-      let selec = [];
-      // Guardamos los select seleccionados. 
-      for (const elem of m.options) {
-        if (elem.selected == true) {
-          selec.push(elem.value);
-        }
+    let selec = [];
+    // Guardamos los select seleccionados. 
+    for (const elem of m.options) {
+      if (elem.selected == true) {
+        selec.push(elem.value);
       }
-      
-      if (selec.length!=0) {
-        this.sMenus.value = selec;
-      }
-      else {
-        isValid = false;
-      }
+    }
 
-      this.seDish.value = this.seDish.value.trim();
+    if (selec.length != 0) {
+      this.sMenus.value = selec;
+    }
+    else {
+      isValid = false;
+    }
+
+    this.seDish.value = this.seDish.value.trim();
+    showFeedBack(this.seDish, true);
+
+    if (!this.sMenus.checkValidity()) {
+      sMenus = false;
+      showFeedBack(this.sMenus, false);
+      firstInvalidElement = this.sMenus;
+    } else {
+      showFeedBack(this.sMenus, true);
+    }
+
+    if (!this.seDish.checkValidity()) {
+      isValid = false;
+      showFeedBack(this.seDish, false);
+      firstInvalidElement = this.seDish;
+    } else {
       showFeedBack(this.seDish, true);
+    }
 
-      if (!this.sMenus.checkValidity()) {
-        sMenus = false;
-        showFeedBack(this.sMenus, false);
-        firstInvalidElement = this.sMenus;
-      } else {
-        showFeedBack(this.sMenus, true);
-      }
-
-      if (!this.seDish.checkValidity()) {
-        isValid = false;
-        showFeedBack(this.seDish, false);
-        firstInvalidElement = this.seDish;
-      } else {
-        showFeedBack(this.seDish, true);
-      }
-
-      if (!isValid) {
-          firstInvalidElement.focus();
-      } else {
-          handler(selec, this.seDish.value);
-      }
-      event.stopPropagation();
+    if (!isValid) {
+      firstInvalidElement.focus();
+    } else {
+      handler(selec, this.seDish.value);
+    }
+    event.stopPropagation();
   });
 }
 
@@ -197,52 +197,52 @@ function desasignMenuValidation(handler) {
 
   // Validar datos.
   form.addEventListener('submit', function (event) {
-      // Prevenir el comportamiento por defecto del enlace.
-      event.preventDefault();
+    // Prevenir el comportamiento por defecto del enlace.
+    event.preventDefault();
 
-      let isValid = true;
-      let firstInvalidElement = null;
+    let isValid = true;
+    let firstInvalidElement = null;
 
-      let selec = [];
-      // Guardamos los select seleccionados. 
-      for (const elem of m.options) {
-        if (elem.selected == true) {
-          selec.push(elem.value);
-        }
+    let selec = [];
+    // Guardamos los select seleccionados. 
+    for (const elem of m.options) {
+      if (elem.selected == true) {
+        selec.push(elem.value);
       }
-      
-      if (selec.length!=0) {
-        this.seMenus.value = selec;
-      }
-      else {
-        isValid = false;
-      }
+    }
 
-      this.selDish.value = this.selDish.value.trim();
+    if (selec.length != 0) {
+      this.seMenus.value = selec;
+    }
+    else {
+      isValid = false;
+    }
+
+    this.selDish.value = this.selDish.value.trim();
+    showFeedBack(this.selDish, true);
+
+    if (!this.selDish.checkValidity()) {
+      isValid = false;
+      showFeedBack(this.selDish, false);
+      firstInvalidElement = this.selDish;
+    } else {
       showFeedBack(this.selDish, true);
+    }
 
-      if (!this.selDish.checkValidity()) {
-        isValid = false;
-        showFeedBack(this.selDish, false);
-        firstInvalidElement = this.selDish;
-      } else {
-        showFeedBack(this.selDish, true);
-      }
+    if (!this.seMenus.checkValidity()) {
+      seMenus = false;
+      showFeedBack(this.seMenus, false);
+      firstInvalidElement = this.seMenus;
+    } else {
+      showFeedBack(this.seMenus, true);
+    }
 
-      if (!this.seMenus.checkValidity()) {
-        seMenus = false;
-        showFeedBack(this.seMenus, false);
-        firstInvalidElement = this.seMenus;
-      } else {
-        showFeedBack(this.seMenus, true);
-      }
-
-      if (!isValid) {
-          firstInvalidElement.focus();
-      } else {
-          handler(selec, this.selDish.value);
-      }
-      event.stopPropagation();
+    if (!isValid) {
+      firstInvalidElement.focus();
+    } else {
+      handler(selec, this.selDish.value);
+    }
+    event.stopPropagation();
   });
 }
 
@@ -252,29 +252,29 @@ function createCategoryValidation(handler) {
   form.setAttribute('novalidate', true);
   // Validar datos.
   form.addEventListener('submit', function (event) {
-      // Prevenir el comportamiento por defecto del enlace.
-      event.preventDefault();
+    // Prevenir el comportamiento por defecto del enlace.
+    event.preventDefault();
 
-      let isValid = true;
-      let firstInvalidElement = null;
+    let isValid = true;
+    let firstInvalidElement = null;
 
-      this.desCat.value = this.desCat.value.trim();
-      showFeedBack(this.desCat, true);
+    this.desCat.value = this.desCat.value.trim();
+    showFeedBack(this.desCat, true);
 
-      if (!this.nameCat.checkValidity()) {
-          isValid = false;
-          showFeedBack(this.nameCat, false);
-          firstInvalidElement = this.nameCat;
-        } else {
-          showFeedBack(this.nameCat, true);
-        }
+    if (!this.nameCat.checkValidity()) {
+      isValid = false;
+      showFeedBack(this.nameCat, false);
+      firstInvalidElement = this.nameCat;
+    } else {
+      showFeedBack(this.nameCat, true);
+    }
 
-      if (!isValid) {
-          firstInvalidElement.focus();
-      } else {
-          handler(this.nameCat.value, this.desCat.value, );
-      }
-      event.stopPropagation();
+    if (!isValid) {
+      firstInvalidElement.focus();
+    } else {
+      handler(this.nameCat.value, this.desCat.value,);
+    }
+    event.stopPropagation();
   });
 
   // Estilo si está bien(verde) o mal(rojo).
@@ -286,7 +286,7 @@ function deleteCategoryValidation(handler) {
   const form = document.forms.fDeleteC;
   form.setAttribute('novalidate', true);
   let c = document.getElementById('seCategory');
-  
+
   form.addEventListener('submit', (function (event) {
     // Prevenir el comportamiento por defecto del enlace.
     event.preventDefault();
@@ -301,8 +301,8 @@ function deleteCategoryValidation(handler) {
         selec.push(elem.value);
       }
     }
-    
-    if (selec.length!=0) {
+
+    if (selec.length != 0) {
       this.seCategory.value = selec;
     }
     else {
@@ -335,35 +335,35 @@ function createRestaurantValidation(handler) {
   form.setAttribute('novalidate', true);
   // Validar datos.
   form.addEventListener('submit', function (event) {
-      // Prevenir el comportamiento por defecto del enlace.
-      event.preventDefault();
+    // Prevenir el comportamiento por defecto del enlace.
+    event.preventDefault();
 
-      let isValid = true;
-      let firstInvalidElement = null;
+    let isValid = true;
+    let firstInvalidElement = null;
 
-      this.lonRest.value = this.lonRest.value.trim();
-      showFeedBack(this.lonRest, true);
+    this.lonRest.value = this.lonRest.value.trim();
+    showFeedBack(this.lonRest, true);
 
-      this.latRest.value = this.latRest.value.trim();
-      showFeedBack(this.latRest, true);
+    this.latRest.value = this.latRest.value.trim();
+    showFeedBack(this.latRest, true);
 
-      this.desRest.value = this.desRest.value.trim();
-      showFeedBack(this.desRest, true);
-  
-      if (!this.nameRest.checkValidity()) {
-        isValid = false;
-        showFeedBack(this.nameRest, false);
-        firstInvalidElement = this.nameRest;
-      } else {
-        showFeedBack(this.nameRest, true);
-      }
+    this.desRest.value = this.desRest.value.trim();
+    showFeedBack(this.desRest, true);
 
-      if (!isValid) {
-          firstInvalidElement.focus();
-      } else {
-          handler(this.nameRest.value, this.desRest.value, this.latRest.value, this.lonRest.value);
-      }
-      event.stopPropagation();
+    if (!this.nameRest.checkValidity()) {
+      isValid = false;
+      showFeedBack(this.nameRest, false);
+      firstInvalidElement = this.nameRest;
+    } else {
+      showFeedBack(this.nameRest, true);
+    }
+
+    if (!isValid) {
+      firstInvalidElement.focus();
+    } else {
+      handler(this.nameRest.value, this.desRest.value, this.latRest.value, this.lonRest.value);
+    }
+    event.stopPropagation();
   });
 
   // Estilo si está bien(verde) o mal(rojo).
@@ -381,52 +381,52 @@ function asignCategoryValidation(handler) {
 
   // Validar datos.
   form.addEventListener('submit', function (event) {
-      // Prevenir el comportamiento por defecto del enlace.
-      event.preventDefault();
+    // Prevenir el comportamiento por defecto del enlace.
+    event.preventDefault();
 
-      let isValid = true;
-      let firstInvalidElement = null;
+    let isValid = true;
+    let firstInvalidElement = null;
 
-      let selec = [];
-      // Guardamos los select seleccionados. 
-      for (const elem of d.options) {
-        if (elem.selected == true) {
-          selec.push(elem.value);
-        }
+    let selec = [];
+    // Guardamos los select seleccionados. 
+    for (const elem of d.options) {
+      if (elem.selected == true) {
+        selec.push(elem.value);
       }
-      
-      if (selec.length!=0) {
-        this.seleDish.value = selec;
-      }
-      else {
-        isValid = false;
-      }
+    }
 
-      this.seCategories.value = this.seCategories.value.trim();
+    if (selec.length != 0) {
+      this.seleDish.value = selec;
+    }
+    else {
+      isValid = false;
+    }
+
+    this.seCategories.value = this.seCategories.value.trim();
+    showFeedBack(this.seCategories, true);
+
+    if (!this.seleDish.checkValidity()) {
+      seleDish = false;
+      showFeedBack(this.seleDish, false);
+      firstInvalidElement = this.seleDish;
+    } else {
+      showFeedBack(this.seleDish, true);
+    }
+
+    if (!this.seCategories.checkValidity()) {
+      isValid = false;
+      showFeedBack(this.seCategories, false);
+      firstInvalidElement = this.seCategories;
+    } else {
       showFeedBack(this.seCategories, true);
+    }
 
-      if (!this.seleDish.checkValidity()) {
-        seleDish = false;
-        showFeedBack(this.seleDish, false);
-        firstInvalidElement = this.seleDish;
-      } else {
-        showFeedBack(this.seleDish, true);
-      }
-
-      if (!this.seCategories.checkValidity()) {
-        isValid = false;
-        showFeedBack(this.seCategories, false);
-        firstInvalidElement = this.seCategories;
-      } else {
-        showFeedBack(this.seCategories, true);
-      }
-
-      if (!isValid) {
-          firstInvalidElement.focus();
-      } else {
-          handler(selec, this.seCategories.value);
-      }
-      event.stopPropagation();
+    if (!isValid) {
+      firstInvalidElement.focus();
+    } else {
+      handler(selec, this.seCategories.value);
+    }
+    event.stopPropagation();
   });
 }
 
@@ -438,52 +438,52 @@ function desasignCategoryValidation(handler) {
 
   // Validar datos.
   form.addEventListener('submit', function (event) {
-      // Prevenir el comportamiento por defecto del enlace.
-      event.preventDefault();
+    // Prevenir el comportamiento por defecto del enlace.
+    event.preventDefault();
 
-      let isValid = true;
-      let firstInvalidElement = null;
+    let isValid = true;
+    let firstInvalidElement = null;
 
-      let selec = [];
-      // Guardamos los select seleccionados. 
-      for (const elem of d.options) {
-        if (elem.selected == true) {
-          selec.push(elem.value);
-        }
+    let selec = [];
+    // Guardamos los select seleccionados. 
+    for (const elem of d.options) {
+      if (elem.selected == true) {
+        selec.push(elem.value);
       }
-      
-      if (selec.length!=0) {
-        this.selecDish.value = selec;
-      }
-      else {
-        isValid = false;
-      }
+    }
 
-      this.fCategories.value = this.fCategories.value.trim();
+    if (selec.length != 0) {
+      this.selecDish.value = selec;
+    }
+    else {
+      isValid = false;
+    }
+
+    this.fCategories.value = this.fCategories.value.trim();
+    showFeedBack(this.fCategories, true);
+
+    if (!this.fCategories.checkValidity()) {
+      isValid = false;
+      showFeedBack(this.fCategories, false);
+      firstInvalidElement = this.fCategories;
+    } else {
       showFeedBack(this.fCategories, true);
+    }
 
-      if (!this.fCategories.checkValidity()) {
-        isValid = false;
-        showFeedBack(this.fCategories, false);
-        firstInvalidElement = this.fCategories;
-      } else {
-        showFeedBack(this.fCategories, true);
-      }
+    if (!this.selecDish.checkValidity()) {
+      selecDish = false;
+      showFeedBack(this.selecDish, false);
+      firstInvalidElement = this.selecDish;
+    } else {
+      showFeedBack(this.selecDish, true);
+    }
 
-      if (!this.selecDish.checkValidity()) {
-        selecDish = false;
-        showFeedBack(this.selecDish, false);
-        firstInvalidElement = this.selecDish;
-      } else {
-        showFeedBack(this.selecDish, true);
-      }
-
-      if (!isValid) {
-          firstInvalidElement.focus();
-      } else {
-          handler(selec, this.fCategories.value);
-      }
-      event.stopPropagation();
+    if (!isValid) {
+      firstInvalidElement.focus();
+    } else {
+      handler(selec, this.fCategories.value);
+    }
+    event.stopPropagation();
   });
 }
 
@@ -491,11 +491,11 @@ function desasignCategoryValidation(handler) {
 export {
   createDishValidation,
   deleteDishValidation,
-  asignMenuValidation, 
+  asignMenuValidation,
   desasignMenuValidation,
   createCategoryValidation,
   deleteCategoryValidation,
   createRestaurantValidation,
-  asignCategoryValidation, 
+  asignCategoryValidation,
   desasignCategoryValidation,
 };

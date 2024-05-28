@@ -473,7 +473,6 @@ let RestaurantsModel = (function () {
             }
         }
 
-
         // Obtiene un iterador que cumpla un criterio concreto en base a una función de callback.
         *findDishes(criterion, ordered) {
             let array = []; // Variable para ordenar los datos.
@@ -574,8 +573,6 @@ let RestaurantsModel = (function () {
             }
             return res;
         }
-
-
     }
 
     function init() { // Inicialización del Singleton.
