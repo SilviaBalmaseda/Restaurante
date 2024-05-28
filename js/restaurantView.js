@@ -144,6 +144,10 @@ class RestaurantView {
     const num = 3;
     this.showSelectedType();
     this.mainArea.replaceChildren();
+    let btngenerataBackup = document.getElementById("generateBackupBtn");
+    if (btngenerataBackup) {
+      this.main.removeChild(btngenerataBackup);
+    }
     this.showChildrenBreadcrumbs();
 
     const array = Array.from(dishes); // Guardamos en un array auxiliar.
@@ -209,6 +213,10 @@ class RestaurantView {
     let cont = 1; // Variable contador para los botones de descripción.
 
     this.mainArea.replaceChildren();
+    let btngenerataBackup = document.getElementById("generateBackupBtn");
+    if (btngenerataBackup) {
+      this.main.removeChild(btngenerataBackup);
+    }
     // Si el id del botón empieza por 'men-' ejecuta el código del menú y si no el de categoría y alérgenos.
     if (buttonId.startsWith('men-')) {
       // Migas de pan(añadimos el hijo).
@@ -630,6 +638,10 @@ class RestaurantView {
     // Quitamos el tipo seleccionado del categoryArea.
     this.showSelectedType("Formularios/Administración");
     this.mainArea.replaceChildren();
+    let btngenerataBackup = document.getElementById("generateBackupBtn");
+    if (btngenerataBackup) {
+      this.main.removeChild(btngenerataBackup);
+    }
 
     // Migas de pan(añadimos el hijo).
     this.showChildrenBreadcrumbs("Admin");
@@ -653,6 +665,8 @@ class RestaurantView {
 
     // 6 Modificar categoría de un plato.
     this.showFormModifyCategory(dishes, categories);
+
+    this.showGenerateBackupBtn();
   }
 
   // Mostrar los platos favoritos.
@@ -660,6 +674,10 @@ class RestaurantView {
     // Quitamos el tipo seleccionado del categoryArea.
     this.showSelectedType("Favoritos");
     this.mainArea.replaceChildren();
+    let btngenerataBackup = document.getElementById("generateBackupBtn");
+    if (btngenerataBackup) {
+      this.main.removeChild(btngenerataBackup);
+    }
 
     // Migas de pan(añadimos el hijo).
     this.showChildrenBreadcrumbs("Favoritos");
@@ -983,6 +1001,32 @@ class RestaurantView {
     messageModalContainer.addEventListener('hidden.bs.modal', listener, { once: true });
   } 
 
+  // Mostrar mensaje creado correctamente o no creado el backup.
+  showBackupModal(done, error) {
+    const messageModalContainer = document.getElementById("messageModal");
+    const messageModal = new bootstrap.Modal("#messageModal");
+    const title = document.getElementById("modal-title");
+    title.innerHTML = "Generar Backup";
+    const body = messageModalContainer.querySelector(".modal-body");
+    body.replaceChildren();
+    if (done) {
+      body.insertAdjacentHTML(
+        "afterbegin",
+        `<div class="p-3">El backup se ha generado <strong>correctamente</strong>.</div>`
+      );
+    } else {
+      body.insertAdjacentHTML(
+        "afterbegin",
+        `<div class="error text-danger p-3">
+          <i class="bi bi-exclamation-triangle"></i><strong>NO</strong> se ha generado el backup.
+          <br>${error}
+        </div>`
+      );
+    }
+    messageModal.show();
+    messageModalContainer.addEventListener("hidden.bs.modal", { once: true });
+  }
+
   // Mostrar el mensaje de Cookies.
   showCookiesMessage() {
     const toast = `<div class="fixed-top p-5 mt-5">
@@ -1061,6 +1105,10 @@ class RestaurantView {
     // Añadimos el hijo.
     this.showChildrenBreadcrumbs("Login");
     this.mainArea.replaceChildren();
+    let btngenerataBackup = document.getElementById("generateBackupBtn");
+    if (btngenerataBackup) {
+      this.main.removeChild(btngenerataBackup);
+    }
     const login = `<div class="container h-100 identificar">
 			<div class="d-flex justify-content-center h-100">
 				<div class="user_card">
@@ -1152,7 +1200,15 @@ class RestaurantView {
     );
   }
 
-  // Métodos bind.
+  // Generar el botón de generar el backup.
+  showGenerateBackupBtn(){
+    let btnCloseWindows = document.getElementById("closeAllWindowsButton");
+    // let btngenerataBackup = document.getElementById("generateBackupBtn");
+    btnCloseWindows.insertAdjacentHTML("beforebegin",
+    `<button id="generateBackupBtn" class="btn btn-warning btn-lg">Generar Backup</button>`);
+  }
+
+  // Métodos BIND.
   bindInit(handler) {
     document.getElementById('init').addEventListener('click', (event) => {
       this[EXCECUTE_HANDLER](handler, [], 'body', { action: 'init' }, '#', event);
@@ -1363,6 +1419,13 @@ class RestaurantView {
         handler(event.currentTarget.dataset.name);
       });
     }
+  }
+
+  // Cuando le das al botón de generar backup.
+  bindGenerateBackupBtn(handler){
+    document.getElementById("generateBackupBtn").addEventListener("click", (event) => {
+      this[EXCECUTE_HANDLER](handler, [], "main", { action: "generateBackup" }, "#generateBackup", event);
+    });
   }
 
   // Para el historial.

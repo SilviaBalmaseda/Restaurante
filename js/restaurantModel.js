@@ -573,6 +573,56 @@ let RestaurantsModel = (function () {
             }
             return res;
         }
+
+        getBackup() {
+            const data = {
+                categories: [],
+                dishes: [],
+                allergens: [],
+                menus: [],
+                restaurants: [],
+            };
+
+            for (const elem of this.#categories.values()) {
+                data.categories.push({
+                    name: elem.name,
+                    description: elem.description,
+                });
+            }
+
+            for (const elem of this.#dishes.values()) {
+                data.dishes.push({
+                    name: elem.dish.name,
+                    description: elem.dish.description,
+                    ingredients: elem.dish.ingredients,
+                    image: elem.dish.image,
+                });
+            }
+
+            for (const elem of this.#allergens) {
+                data.allergens.push({
+                    name: elem.name,
+                    description: elem.description,
+                });
+            }
+
+            for (const elem of this.#menus) {
+                data.menus.push({
+                    name: elem.name,
+                    description: elem.description,
+                });
+            }
+
+            for (const elem of this.#restaurants) {
+                data.restaurants.push({
+                    name: elem.name,
+                    location: elem.location,
+                    description: elem.description,
+                });
+            }
+
+            return data;
+        }
     }
 
     function init() { // Inicialización del Singleton.

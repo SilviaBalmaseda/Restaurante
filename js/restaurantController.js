@@ -296,6 +296,7 @@ class RestaurantController {
         this[VIEW].bindCreateRestaurant(this.handleCreateRestaurant);
         this[VIEW].bindAsignCategory(this.handleAsignCategory);
         this[VIEW].bindDesasignCategory(this.handleDesasignCategory);
+        this[VIEW].bindGenerateBackupBtn(this.handleGenerateBackup);
     }
 
     // Para mostrar y eliminar los platos favoritos.
@@ -607,5 +608,30 @@ class RestaurantController {
         this.openedWindows = [];
     }
 
+    // Generar todos  los objetos actuales en la página, objetos creados y borrados, y guarde el fichero en una carpeta denominada “backup”.
+    handleGenerateBackup = () => {
+        const backup = this[MODEL].getBackup();
+        console.log(backup);
+        let formData = new FormData();
+        formData.append("backup", JSON.stringify(backup));
+        const url = "../backup/backup.php";
+        let done = false;
+
+        fetch(url, {
+        method: "post",
+        body: formData,
+        })
+        .then(function (response) {
+            return response.json();
+        })
+        .then(function (data) {
+            done = true;
+            this[VIEW].showBackupModal(done, error);
+            console.dir(data);
+        })
+        .catch(function (error) {
+            console.log(error);
+        });
+    }
 }
 export default RestaurantController;
