@@ -25,7 +25,11 @@ class RestaurantController {
 
     onLoad = async () => {
         try {
-            const response = await fetch('../JSON/data.json');
+            // Para abrirlo con el liveServer o el localhost, según donde lo abras.
+            const isLiveServer = window.location.hostname === '127.0.0.1';
+            const baseUrl = isLiveServer ? '../JSON/data.json' : 'http://localhost/Ejer/PruebaCliente/Restaurante/JSON/data.json';
+
+            const response = await fetch(baseUrl);
             if (!response.ok) {
                 throw new Error('No se pudo cargar el archivo JSON.');
             }
@@ -611,26 +615,27 @@ class RestaurantController {
     // Generar todos  los objetos actuales en la página, objetos creados y borrados, y guarde el fichero en una carpeta denominada “backup”.
     handleGenerateBackup = () => {
         const backup = this[MODEL].getBackup();
-        console.log(backup);
+        // console.log(backup);
         let formData = new FormData();
         formData.append("backup", JSON.stringify(backup));
-        const url = "../backup/backup.php";
         let done = false;
+        // Para abrirlo con el liveServer(no funciona el mensaje Modal) o el localhost, según donde lo abras.
+        const isLiveServer = window.location.hostname === '127.0.0.1';
+        const url = isLiveServer ? '../backup/backup.php' : 'http://localhost/Ejer/PruebaCliente/Restaurante/backup/backup.php';
 
         fetch(url, {
-        method: "post",
-        body: formData,
+            method: "POST",
+            body: formData,
         })
-        .then(function (response) {
-            return response.json();
-        })
-        .then(function (data) {
+        .then(response => response.json())
+        .then(data => {
             done = true;
-            this[VIEW].showBackupModal(done, error);
-            console.dir(data);
+            this[VIEW].showBackupModal(done, data.message); // Usa `data.message` en lugar de `error` para mostrar el mensaje del servidor
+            // console.dir(data);
         })
-        .catch(function (error) {
+        .catch(error => {
             console.log(error);
+            this[VIEW].showBackupModal(done, error.message); // Muestra el mensaje de error en caso de fallo
         });
     }
 }

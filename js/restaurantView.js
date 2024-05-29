@@ -1005,7 +1005,7 @@ class RestaurantView {
   showBackupModal(done, error) {
     const messageModalContainer = document.getElementById("messageModal");
     const messageModal = new bootstrap.Modal("#messageModal");
-    const title = document.getElementById("modal-title");
+    const title = document.getElementById('messageModalTitle');
     title.innerHTML = "Generar Backup";
     const body = messageModalContainer.querySelector(".modal-body");
     body.replaceChildren();

@@ -576,48 +576,48 @@ let RestaurantsModel = (function () {
 
         getBackup() {
             const data = {
-                categories: [],
                 dishes: [],
+                categories: [],
                 allergens: [],
                 menus: [],
                 restaurants: [],
             };
 
-            for (const elem of this.#categories.values()) {
-                data.categories.push({
-                    name: elem.name,
-                    description: elem.description,
-                });
-            }
-
-            for (const elem of this.#dishes.values()) {
+            for (const diss of this.#dishes.values()) {
                 data.dishes.push({
-                    name: elem.dish.name,
-                    description: elem.dish.description,
-                    ingredients: elem.dish.ingredients,
-                    image: elem.dish.image,
+                    name: diss.elem.name,
+                    description: diss.elem.description,
+                    ingredients: diss.elem.ingredients,
+                    image: diss.elem.image,
                 });
             }
 
-            for (const elem of this.#allergens) {
+            for (const cat of this.#categories.values()) {
+                data.categories.push({
+                    name: cat.name,
+                    description: cat.description,
+                });
+            }
+
+            for (const all of this.#allergens.values()) {
                 data.allergens.push({
-                    name: elem.name,
-                    description: elem.description,
+                    name: all.name,
+                    description: all.description,
                 });
             }
 
-            for (const elem of this.#menus) {
+            for (const men of this.#menus.values()) {
                 data.menus.push({
-                    name: elem.name,
-                    description: elem.description,
+                    name: men.elem.name,
+                    description: men.elem.description,
                 });
             }
 
-            for (const elem of this.#restaurants) {
+            for (const rest of this.#restaurants.values()) {
                 data.restaurants.push({
-                    name: elem.name,
-                    location: elem.location,
-                    description: elem.description,
+                    name: rest.name,
+                    location: rest.location,
+                    description: rest.description,
                 });
             }
 

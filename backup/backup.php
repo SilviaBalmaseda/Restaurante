@@ -1,5 +1,15 @@
 <?php
 
+function jsonResponse($success, $message, $data = null) {
+    header('Content-Type: application/json');
+    echo json_encode([
+        "success" => $success,
+        "message" => $message,
+        "data" => $data
+    ]);
+    exit();
+}
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST') 
 {
     if (isset($_POST['backup']))
@@ -14,15 +24,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST')
 
         // El nombre del fichero debe incluir la fecha en la que se ha generado el fichero.
         $fechaActual = date("dmY_His");     // d = día(2), m = mes(2), Y = año(4), H = hora(2), i = minútos(2) y s = segundos(2).
-        $nombreArchivo = $carpetaBackup . "backup_" . $fechaActual . ".json";
+        $nombreArchivo = $carpetaBackup . "backup-" . $fechaActual . ".json";
 
-        // Escribir datos en un fichero.
-        // file_put_contents($nombreArchivo, $backup);
-
-        $fd = fopen($NombreArchivo,"a+") or die("Error al abrir el archivo $NombreArchivo");
+        // $fd = fopen($NombreArchivo, "a+") or die("Error al abrir el archivo $NombreArchivo");
+        if (!$fd = fopen($nombreArchivo, "a+")) {
+            jsonResponse(false, "Error al abrir el archivo $nombreArchivo");
+        }
         fputs($fd, $backup);
         fclose($fd);
-    
+        
         $response = [
             "success" => true,
             "message" => "Backup guardado correctamente en: " . $nombreArchivo,
