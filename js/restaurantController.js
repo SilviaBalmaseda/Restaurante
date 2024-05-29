@@ -431,6 +431,7 @@ class RestaurantController {
 
     // Crear categoría.
     handleCreateCategory = (nameC, des) => {
+        const cat = this[MODEL].createCategory(nameC);
         if (des != "" && des != undefined) {
             cat.description = des;
         }
@@ -438,7 +439,6 @@ class RestaurantController {
         let done;
         let error;
         try {
-            const cat = this[MODEL].createCategory(nameC);
             this[MODEL].addCategory(cat);
             
             done = true;
@@ -485,7 +485,6 @@ class RestaurantController {
         try {
           this[MODEL].addRestaurant(res);
           if (latitude != "" && longitude != "") {
-            console.log(longitude);
             res.location = new Coordinate(latitude, longitude);
           }
     

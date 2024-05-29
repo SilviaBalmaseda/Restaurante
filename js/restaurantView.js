@@ -930,7 +930,6 @@ class RestaurantView {
       );
     }
 
-    console.log(error);
     messageModal.show();
     const listener = () => {
       if (done) {
