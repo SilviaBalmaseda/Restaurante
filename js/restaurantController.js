@@ -27,7 +27,7 @@ class RestaurantController {
         try {
             // Para abrirlo con el liveServer o el localhost, según donde lo abras.
             const isLiveServer = window.location.hostname === '127.0.0.1';
-            const baseUrl = isLiveServer ? '../JSON/data.json' : 'http://localhost/Ejer/PruebaCliente/Restaurante/JSON/data.json';
+            const baseUrl = isLiveServer ? '../JSON/data.json' : 'http://localhost/Ejer/Clase/PruebaCliente/Restaurante/JSON/data.json';
 
             const response = await fetch(baseUrl);
             if (!response.ok) {
@@ -620,7 +620,7 @@ class RestaurantController {
         let done = false;
         // Para abrirlo con el liveServer(no funciona el mensaje Modal) o el localhost, según donde lo abras.
         const isLiveServer = window.location.hostname === '127.0.0.1';
-        const url = isLiveServer ? '../backup/backup.php' : 'http://localhost/Ejer/PruebaCliente/Restaurante/backup/backup.php';
+        const url = isLiveServer ? '../backup/backup.php' : 'http://localhost/Ejer/Clase/PruebaCliente/Restaurante/backup/backup.php';
 
         fetch(url, {
             method: "POST",
